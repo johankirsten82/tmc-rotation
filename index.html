@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en" dir="ltr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- =====================================================================
+  TMC BASE APP — CONFIG. Change ONLY this block for a new app, then run:
+      python3 tools/apply_config.py
+  (it writes manifest.json, sw.js cache/version, icons and the QR code).
+  APP_ID: short, lowercase, unique per app (e.g. "purshes", "grv", "food").
+          Every storage key, cache, manifest id and SW is namespaced by it,
+          so apps on the same site / same phone never share data.
+  CACHE_PREFIX (optional): cache name start, lowercase letters/digits and
+          single hyphens (e.g. "tmc-fuel" gives caches "tmc-fuel-v1").
+          Defaults to APP_ID. Storage keys always use APP_ID (no hyphens).
+  SYNC_URL: this app's own Google Apps Script /exec link. Put it HERE so a
+          fresh install is connected at once (the link is public, that's fine).
+  SYNC_CODE: leave EMPTY (VER 4+). Phones then sign in with name + PIN and
+          get a session token from the script. A code is only for old apps;
+          it can also arrive by a join link  .../#k=CODE  (saved, then wiped
+          from the address bar). Never put a real code in a public repo.
+  ADMIN_ALIASES: name keys (lowercase, no spaces/dots) that mean the Admin.
+====================================================================== -->
+<script id="cfg">window.CONFIG=/*CONFIG*/{
+ "APP_ID": "tmctravel",
+ "NAME": "TMC Rotation",
+ "SHORT": "TMC Rotation",
+ "VER": 4,
+ "COLOR": "#1d4ed8",
+ "COLOR_DARK": "#1e3a8a",
+ "BG": "#f1f5f9",
+ "SYNC_URL": "https://script.google.com/macros/s/AKfycbyX4vLQSxgQ1D_oAHkyRDimAh9i7iTO-m7LKnr1McVUsoqguQn3LD-e6X8FKHPsVgurBw/exec",
+ "SYNC_CODE": "",
+ "SHARE_URL": "",
+ "ADMIN_NAME": "JA Kirsten",
+ "ADMIN_ALIASES": [
+  "jakirsten",
+  "johankirsten",
+  "johanakirsten",
+  "jkirsten"
+ ],
+ "PERMS": [
+  {
+   "id": "view",
+   "icon": "👁️",
+   "en": "View",
+   "fr": "Voir",
+   "ar": "عرض"
+  },
+  {
+   "id": "add",
+   "icon": "➕",
+   "en": "Add",
+   "fr": "Ajouter",
+   "ar": "إضافة"
+  },
+  {
+   "id": "reports",
+   "icon": "📊",
+   "en": "Reports",
+   "fr": "Rapports",
+   "ar": "تقارير"
+  },
+  {
+   "id": "export",
+   "icon": "📤",
+   "en": "Export",
+   "fr": "Exporter",
+   "ar": "تصدير"
+  }
+ ],
+ "PERM_DEFAULT": [
+  "view",
+  "add"
+ ],
+ "PERM_KINDS": {
+  "tr": {
+   "view": "view",
+   "add": "add"
+  }
+ },
+ "CACHE_PREFIX": "tmc-travel"
+}/*END*/;</script>
+<title>TMC Rotation</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#1d4ed8">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<style>
+/* TMC look = Purchases look (pa-v85). Colour comes from CONFIG COLOR (--c/--cd). Rule 1: every button/field >= 56px. */
+:root{--c:#0f766e;--cd:#115e59;--bg:#f1f5f9}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:#0f172a;font-size:17px;min-height:100vh;padding-bottom:80px}
+input,select,textarea,button{font:inherit;font-size:18px;min-height:58px;width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px;margin:6px 0;background:#fff;color:#0f172a}
+textarea{min-height:80px}
+button{background:var(--c);color:#fff;border:0;font-weight:600;cursor:pointer;touch-action:manipulation}
+button.sec{background:#e2e8f0;color:#0f172a}button.red{background:#b91c1c}button.sm{width:auto;padding:8px 14px;margin:4px}
+label{display:block;font-size:14px;color:#475569;margin:8px 0 4px}
+.msk:not(.shw){-webkit-text-security:disc}
+.pw{position:relative}.pw .eye{position:absolute;inset-inline-end:4px;top:6px;width:auto;padding:4px 12px;background:transparent;color:#334155;font-size:22px;margin:0;border:0}
+.full{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(var(--c),var(--cd))}
+.signin{position:relative;width:100%;max-width:440px}.signin>.card{margin:0}
+.signin>.ncBox{position:absolute;top:100%;left:0;right:0;margin:16px 0 0}
+.card{background:#fff;border-radius:14px;padding:14px;width:100%;max-width:440px;box-shadow:0 1px 3px #0002;text-align:center;margin-bottom:12px}
+.card h2{margin:6px 0 4px;font-size:22px}.logo{width:84px;height:84px;border-radius:14px}
+.err{color:#b91c1c;font-weight:700;display:none;margin:6px 0}.hint{color:#475569;font-size:15px}
+.langs select{text-align:center}
+header{position:sticky;top:0;z-index:5;background:var(--c);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+header img{width:36px;height:36px;border-radius:8px}header .t{flex:1;font-weight:700;font-size:20px}header .u{font-size:15px;opacity:.9}
+.dot{width:14px;height:14px;border-radius:50%;background:#94a3b8;display:inline-block}.dot.ok{background:#22c55e}.dot.err{background:#ef4444}.dot.busy{background:#f59e0b}
+main{padding:12px 12px 110px;max-width:600px;margin:0 auto}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #cbd5e1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs button{flex:1;margin:0;border-radius:0;background:#fff;color:#475569;min-height:64px;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;padding:0 2px}
+nav.tabs button .ticon{font-size:24px}nav.tabs button.on{color:var(--c);border-top:3px solid var(--c);background:#f0fdfa}
+.badge{position:absolute;top:4px;inset-inline-end:18%;background:#dc2626;color:#fff;border-radius:9px;padding:0 5px;font-size:12px;line-height:18px;font-weight:700}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:150px;margin:0;padding:12px 6px;background:#fff;color:#0f172a;border:2px solid #bbf7d0;border-radius:16px;box-shadow:0 2px 8px #0000000f;font-size:17px;font-weight:700}
+.tile.sec{background:#fff}.tile:active{background:#f0fdf4}.tile b{font-size:40px;line-height:1}
+.box{background:#fff;border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:0 1px 3px #0002}
+.ph{border:4px dashed #f59e0b;background:#fffbeb;text-align:center}
+.bar{display:none;margin:0 0 12px;padding:12px;border-radius:14px;font-weight:700}
+.pendW{background:#fef3c7;border:1px solid #f59e0b;color:#78350f}.updW{background:#fef3c7;border:1px solid #f59e0b;color:#78350f}.updW button{background:#b45309}
+.bar small{display:block;font-weight:500;margin-top:4px}
+.urow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;border-bottom:1px solid #e2e8f0;padding:8px 0}.urow .n{flex:1;min-width:140px;font-weight:700}
+.st{font-size:14px;border-radius:99px;padding:2px 8px;background:#e2e8f0}.st.pending{background:#fef3c7}.st.blocked,.st.rejected{background:#fee2e2}.st.active{background:#dcfce7}
+.insB{background:#16a34a;font-size:20px;min-height:64px}.insH{background:#f1f5f9;border-radius:10px;padding:10px;font-weight:600;margin:6px 0}
+.permBox{width:100%;margin:8px 0;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}.permBox .hint{padding:8px 12px;margin:0}
+.permT{display:flex;align-items:center;gap:12px;min-height:60px;border-top:1px solid #e2e8f0;padding:6px 14px;font-size:19px;font-weight:700;background:#fff;cursor:pointer}
+.permT span{flex:1}.permT.on{background:#ecfdf5}.permT input{width:32px;height:32px;min-height:32px;margin:0;flex:none;accent-color:var(--c)}
+.permT.lock{color:#94a3b8;background:#f8fafc;cursor:default}.permT.lock small{font-size:14px;font-weight:600}
+.uli{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;background:#fff;color:#0f172a;border:0;border-bottom:1px solid #e2e8f0;border-radius:0;padding:8px 4px;text-align:start;font-size:19px;font-weight:700;box-shadow:none}
+.uli .ui{font-size:26px}.uli .ut{flex:1;min-width:0}.uli small{display:block;font-size:14px;font-weight:600;color:#475569}.uli .ch{font-size:26px;color:#94a3b8}
+.uopen{padding:6px 0 12px;border-bottom:1px solid #e2e8f0}.uopen .acts{display:flex;flex-wrap:wrap;gap:6px}
+.canR{display:flex;align-items:center;gap:12px;min-height:58px;font-size:20px;font-weight:700;border-bottom:1px solid #e2e8f0}.canR.no{color:#94a3b8}.canR .ci{font-size:26px}
+.fixB{width:auto;min-width:120px;min-height:56px;background:#b45309;font-size:18px}.fixN{width:100%}
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+.ncW{background:#fee2e2;border:1px solid #dc2626;color:#7f1d1d}
+.qr{width:240px;height:240px;max-width:80vw;max-height:80vw;background:#fff}
+
+/*TMC-SIGNIN v1 — shared sign-in block. Copy as-is. Only --tmcS-c/--tmcS-cd (colour), the logo and the app name may differ.*/
+.tmcS{position:fixed!important;inset:0!important;z-index:9000!important;overflow:auto!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:16px!important;margin:0!important;min-height:0!important;background:linear-gradient(var(--tmcS-c,#0f766e),var(--tmcS-cd,#115e59))!important;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important;box-sizing:border-box!important}
+.tmcS *{box-sizing:border-box!important;font-family:inherit!important;letter-spacing:normal!important}
+.tmcS .signin{position:relative!important;width:100%!important;max-width:380px!important;margin:0!important;padding:0!important}
+.tmcS .signin>.card{display:block!important;background:#fff!important;border-radius:14px!important;padding:16px!important;margin:0!important;width:100%!important;max-width:none!important;box-shadow:0 1px 3px #0002!important;text-align:center!important;border:0!important}
+.tmcS .tmcS-logo{display:block!important;width:84px!important;height:84px!important;margin:0 auto!important;border-radius:14px!important;padding:0!important}
+.tmcS .tmcS-t{display:block!important;margin:10px 0 12px!important;padding:0!important;font-size:22px!important;line-height:28px!important;height:28px!important;font-weight:700!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#0f172a!important}
+.tmcS .tmcS-lang,.tmcS .tmcS-name{display:block!important;width:100%!important;height:58px!important;min-height:58px!important;max-height:58px!important;margin:0 0 12px!important;padding:0 14px!important;font-size:18px!important;line-height:normal!important;border:1px solid #cbd5e1!important;border-radius:12px!important;color:#0f172a!important;box-shadow:none!important;outline-offset:0}
+.tmcS .tmcS-lang{background:#eef2f6!important;text-align:center!important;text-align-last:center!important}
+.tmcS .tmcS-name{background:#fff!important;text-align:start!important}
+.tmcS .tmcS-err{color:#b91c1c!important;font-weight:700!important;margin:0 0 8px!important;font-size:16px!important}
+.tmcS .tmcS-go{display:block!important;width:100%!important;height:58px!important;min-height:58px!important;margin:0!important;padding:0 14px!important;font-size:19px!important;font-weight:700!important;border:0!important;border-radius:12px!important;background:var(--tmcS-c,#0f766e)!important;color:#fff!important;box-shadow:none!important}
+.tmcS .ncBox{position:absolute!important;top:100%!important;left:0!important;right:0!important;bottom:auto!important;width:auto!important;margin:16px 0 0!important;padding:14px!important;background:#fee2e2!important;border:1px solid #dc2626!important;border-radius:14px!important;color:#7f1d1d!important;font-size:15px!important;line-height:20px!important;font-weight:500!important;text-align:start!important;box-shadow:none!important;z-index:auto!important;unicode-bidi:plaintext}
+.tmcS .ncBox:not([style*="none"]){display:flex!important;flex-direction:column!important;gap:0!important}
+.tmcS .ncBox>*,.tmcS .ncBox>div>*{display:block!important;margin:0!important;padding:0!important;font-size:15px!important;line-height:20px!important;flex:none!important;width:auto!important}
+.tmcS .ncBox b{font-size:17px!important;line-height:22px!important;font-weight:700!important;margin:0 0 4px!important}
+.tmcS .ncBox button{width:100%!important;height:58px!important;min-height:58px!important;margin:12px 0 0!important;padding:0 14px!important;font-size:18px!important;line-height:normal!important;font-weight:700!important;border:0!important;border-radius:12px!important;background:#dc2626!important;color:#fff!important}
+/*END TMC-SIGNIN*/
+.trip{display:block;overflow-wrap:anywhere;min-width:0;text-align:start;background:#fff;color:#0f172a;border:2px solid #bfdbfe;font-weight:400;min-height:64px}.trip .tg{display:block;font-size:19px;margin-bottom:4px}.trip .tl{display:block;padding:2px 0}
+.chk{display:flex;align-items:center;gap:10px;min-height:58px;font-size:17px;color:#0f172a;margin:4px 0}.chk input{width:30px;height:30px;min-height:0;margin:0;flex:none}
+.fileB{display:flex;align-items:center;justify-content:center;min-height:58px;border-radius:10px;background:#e2e8f0;color:#0f172a;font-weight:600;font-size:18px;margin:6px 0;cursor:pointer}
+.leg h3{margin:0 0 4px}.rep{text-align:start;overflow-x:auto;overflow-wrap:anywhere}
+</style></head><body>
+<div id="app"></div>
+<script src="lib/jszip.min.js"></script>
+<script>
+"use strict";
+(function(){
+const C=window.CONFIG,P=C.APP_ID+"_";            // every localStorage key starts with APP_ID_
+const CACHE_PREFIX=(C.CACHE_PREFIX||C.APP_ID)+"-v"; // every cache name starts with CACHE_PREFIX-v (default APP_ID)
+document.documentElement.style.setProperty("--c",C.COLOR);document.documentElement.style.setProperty("--cd",C.COLOR_DARK);document.documentElement.style.setProperty("--bg",C.BG);
+const L={get:k=>localStorage.getItem(P+k),set:(k,v)=>localStorage.setItem(P+k,v),del:k=>localStorage.removeItem(P+k),
+  j:(k,d)=>{try{const v=localStorage.getItem(P+k);return v==null?d:JSON.parse(v)}catch(e){return d}},sj:(k,v)=>localStorage.setItem(P+k,JSON.stringify(v))};
+window.TMC={P:P,L:L};
+/* optional join link: .../#k=CODE → saved for this app only, then wiped from the address bar */
+(function(){const m=/(?:^#|&)k=([^&]+)/.exec(location.hash||"");if(!m)return;try{L.set("sycode",decodeURIComponent(m[1]).trim())}catch(e){}
+  try{history.replaceState(null,"",location.pathname+location.search)}catch(e){location.hash=""}})();
+
+/* ---------------- Texts EN / FR / AR ---------------- */
+const T={en:{
+hello:"Hello",name:"Your name",nameH:"Type your name",go:"Continue",needName:"Please type your name.",
+pinT:"Enter your PIN",pin:"PIN",pinWrong:"Wrong PIN. Try again.",pinLock:"Too many wrong PINs. Try again in %m min.",other:"Use a different name",
+setT:"Choose a PIN",setH:"4 to 6 numbers. You will use it every time.",pin2:"Type the PIN again",pinBad:"Use 4 to 6 numbers.",pinDiff:"The two PINs are not the same.",save:"Save",
+setupT:"First Admin setup",setupH:"You are the first user. Choose the Admin PIN.",
+waitT:"Waiting for approval",waitH:"%n, the Admin must approve you. Ask the Admin, then tap Check again.",check:"🔄 Check again",
+rejT:"Not approved",rejH:"The Admin did not approve this name. Ask the Admin.",blkT:"Blocked",blkH:"This name is blocked. Ask the Admin.",
+netT:"Internet needed",netH:"Connect to the internet once so the app can load the users.",retry:"🔄 Try again",loading:"Loading…",
+home:"Home",work:"Work",users:"Users",settings:"Settings",share:"Share app",syncNow:"🔄 Sync now",
+phT:"🧩 APP FEATURES GO HERE",phH:"This tab is a placeholder. Each app puts its own screens here.",exT:"Example note (demo)",exAdd:"Save note",fix:"✏️ Fix",fixT:"✏️ Fix a mistake (Admin)",fixSave:"💾 Save fix",fixOnly:"Only the Admin can fix a saved record.",fixed:"fixed by",can:"What I can do",canH:"Ticked = allowed. Ask the Admin to change it.",canEd:"✅ Allowed for",dupT:"Already asked - wait for Admin",dupH:"This name already asked once. Wait for the Admin. If you were approved, type your name and PIN to sign in.",canAdm:"⭐ Admin only: ✏️ Fix, 👥 Approve users",lkFix:"✏️ Fix",lkApp:"👥 Approve users",admOnly:"Admin only",canAll:"⭐ Admin: you can do everything.",noAccess:"You are not allowed to do this.",repT:"📊 Report",expT:"📤 Export",exNone:"No notes yet.",
+synced:"Synced",syncErr:"Sync problem",syncOff:"Sync not set up",offline:"Offline",last:"Last sync",
+pwT:"⚠️ %n change(s) not sent to the Sheet yet",pwOff:"No internet — they will be sent when you are online.",pwDel:"Tap 🔄 Sync now before deleting the app or clearing data, or these changes will be lost.",
+updT:"🆕 A new version is ready",updB:"⬆️ Update now",updChk:"Check for update",updNone:"You have the latest version.",ver:"Version",
+insBtn:"📲 Install app",insIos:"Tap Share ⬆️ then Add to Home Screen ➕",
+shareH:"Scan this code with the other phone, or send the link.",shareB:"📤 Send link",copy:"📋 Copy link",copied:"Copied",close:"Close",
+pend:"Waiting",act:"Approved",rej:"Rejected",blk:"Blocked",approve:"✅ Approve",reject:"❌ Reject",block:"⛔ Block",unblock:"↩️ Unblock",resetPin:"🔑 Reset PIN",admin:"Admin",noPend:"No one is waiting.",
+lang:"Language",sync:"Sync",syncUrl:"Sync link",syncCode:"Sync code",sv:"Saved",logout:"🚪 Log out",logoutQ:"Log out %n?",
+logoutPend:"⚠️ %n change(s) are not sent yet. They stay on this phone and will be sent later. Log out anyway?",
+wipe:"🗑️ Clear this app on this phone",wipeQ:"Delete this app's data on this phone? Other apps are not touched.",wipePend:"⚠️ %n change(s) are NOT sent and will be LOST. Delete anyway?",
+draft:"Your unsaved text was kept.",ncT:"🔴 Not connected",ncH:"The app cannot reach the Sheet. Your work is kept on this phone and sent when it connects.",ncOff:"Sync link missing in this app. Tell the Admin."},
+fr:{
+hello:"Bonjour",name:"Votre nom",nameH:"Écrivez votre nom",go:"Continuer",needName:"Écrivez votre nom.",
+pinT:"Entrez votre PIN",pin:"PIN",pinWrong:"PIN incorrect. Réessayez.",pinLock:"Trop de PIN erronés. Réessayez dans %m min.",other:"Utiliser un autre nom",
+setT:"Choisissez un PIN",setH:"4 à 6 chiffres. Vous l'utiliserez à chaque fois.",pin2:"Retapez le PIN",pinBad:"Utilisez 4 à 6 chiffres.",pinDiff:"Les deux PIN ne sont pas pareils.",save:"Enregistrer",
+setupT:"Configuration de l'Admin",setupH:"Vous êtes le premier utilisateur. Choisissez le PIN Admin.",
+waitT:"En attente d'approbation",waitH:"%n, l'Admin doit vous approuver. Demandez à l'Admin, puis touchez Vérifier.",check:"🔄 Vérifier",
+rejT:"Non approuvé",rejH:"L'Admin n'a pas approuvé ce nom. Demandez à l'Admin.",blkT:"Bloqué",blkH:"Ce nom est bloqué. Demandez à l'Admin.",
+netT:"Internet nécessaire",netH:"Connectez-vous une fois à internet pour charger les utilisateurs.",retry:"🔄 Réessayer",loading:"Chargement…",
+home:"Accueil",work:"Travail",users:"Utilisateurs",settings:"Réglages",share:"Partager l'app",syncNow:"🔄 Synchroniser",
+phT:"🧩 LES FONCTIONS DE L'APP VONT ICI",phH:"Cet onglet est un emplacement. Chaque app y met ses écrans.",exT:"Note d'exemple (démo)",exAdd:"Enregistrer la note",fix:"✏️ Corriger",fixT:"✏️ Corriger une erreur (Admin)",fixSave:"💾 Enregistrer",fixOnly:"Seul l'Admin peut corriger un enregistrement.",fixed:"corrigé par",can:"Mes droits",canH:"Coché = autorisé. Demandez à l'Admin pour changer.",canEd:"✅ Autorisé pour",dupT:"Déjà demandé - attendez l'Admin",dupH:"Ce nom a déjà demandé. Attendez l'Admin. Si vous êtes accepté, tapez votre nom et PIN.",canAdm:"⭐ Admin seulement : ✏️ Corriger, 👥 Approuver",lkFix:"✏️ Corriger",lkApp:"👥 Approuver",admOnly:"Admin seulement",canAll:"⭐ Admin : vous pouvez tout faire.",noAccess:"Vous n'avez pas le droit de faire ceci.",repT:"📊 Rapport",expT:"📤 Exporter",exNone:"Pas encore de notes.",
+synced:"Synchronisé",syncErr:"Problème de synchro",syncOff:"Synchro non configurée",offline:"Hors ligne",last:"Dernière synchro",
+pwT:"⚠️ %n modification(s) pas encore envoyée(s) à la feuille",pwOff:"Pas d'internet — elles seront envoyées dès que vous serez en ligne.",pwDel:"Touchez 🔄 Synchroniser avant de supprimer l'application ou d'effacer les données, sinon ces modifications seront perdues.",
+updT:"🆕 Une nouvelle version est prête",updB:"⬆️ Mettre à jour",updChk:"Chercher une mise à jour",updNone:"Vous avez la dernière version.",ver:"Version",
+insBtn:"📲 Installer l'application",insIos:"Touchez Partager ⬆️ puis Sur l'écran d'accueil ➕",
+shareH:"Scannez ce code avec l'autre téléphone, ou envoyez le lien.",shareB:"📤 Envoyer le lien",copy:"📋 Copier le lien",copied:"Copié",close:"Fermer",
+pend:"En attente",act:"Approuvé",rej:"Refusé",blk:"Bloqué",approve:"✅ Approuver",reject:"❌ Refuser",block:"⛔ Bloquer",unblock:"↩️ Débloquer",resetPin:"🔑 Réinitialiser PIN",admin:"Admin",noPend:"Personne n'attend.",
+lang:"Langue",sync:"Synchro",syncUrl:"Lien de synchro",syncCode:"Code de synchro",sv:"Enregistré",logout:"🚪 Se déconnecter",logoutQ:"Déconnecter %n ?",
+logoutPend:"⚠️ %n modification(s) pas encore envoyée(s). Elles restent sur ce téléphone et seront envoyées plus tard. Se déconnecter quand même ?",
+wipe:"🗑️ Effacer cette app sur ce téléphone",wipeQ:"Effacer les données de cette app sur ce téléphone ? Les autres apps ne sont pas touchées.",wipePend:"⚠️ %n modification(s) NON envoyée(s) seront PERDUES. Effacer quand même ?",
+draft:"Votre texte non enregistré a été gardé.",ncT:"🔴 Pas connecté",ncH:"L'app n'arrive pas à joindre la feuille. Votre travail reste sur ce téléphone et sera envoyé à la connexion.",ncOff:"Lien de synchro absent dans cette app. Prévenez l'Admin."},
+ar:{
+hello:"مرحبا",name:"اسمك",nameH:"اكتب اسمك",go:"متابعة",needName:"من فضلك اكتب اسمك.",
+pinT:"أدخل رمز PIN",pin:"PIN",pinWrong:"رمز خاطئ. حاول مرة أخرى.",pinLock:"رموز PIN خاطئة كثيرة. حاول مرة أخرى بعد %m دقيقة.",other:"استخدام اسم آخر",
+setT:"اختر رمز PIN",setH:"من 4 إلى 6 أرقام. ستستخدمه كل مرة.",pin2:"اكتب الرمز مرة أخرى",pinBad:"استخدم من 4 إلى 6 أرقام.",pinDiff:"الرمزان غير متطابقين.",save:"حفظ",
+setupT:"إعداد المسؤول الأول",setupH:"أنت أول مستخدم. اختر رمز المسؤول.",
+waitT:"بانتظار الموافقة",waitH:"%n، يجب أن يوافق المسؤول عليك. اسأل المسؤول ثم اضغط تحقق مرة أخرى.",check:"🔄 تحقق مرة أخرى",
+rejT:"غير موافق عليه",rejH:"لم يوافق المسؤول على هذا الاسم. اسأل المسؤول.",blkT:"محظور",blkH:"هذا الاسم محظور. اسأل المسؤول.",
+netT:"يلزم الإنترنت",netH:"اتصل بالإنترنت مرة واحدة ليتم تحميل المستخدمين.",retry:"🔄 حاول مرة أخرى",loading:"جار التحميل…",
+home:"الرئيسية",work:"العمل",users:"المستخدمون",settings:"الإعدادات",share:"مشاركة التطبيق",syncNow:"🔄 مزامنة الآن",
+phT:"🧩 ميزات التطبيق توضع هنا",phH:"هذا التبويب مكان مخصص. كل تطبيق يضع شاشاته هنا.",exT:"ملاحظة مثال (تجربة)",exAdd:"حفظ الملاحظة",fix:"✏️ تصحيح",fixT:"✏️ تصحيح خطأ (المدير)",fixSave:"💾 حفظ التصحيح",fixOnly:"المدير فقط يمكنه تصحيح سجل محفوظ.",fixed:"صححه",can:"ما يمكنني فعله",canH:"المؤشَّر = مسموح. اطلب من المدير التغيير.",canEd:"✅ مسموح لـ",dupT:"تم الطلب - انتظر المدير",dupH:"هذا الاسم طلب من قبل. انتظر المدير. إذا تمت الموافقة، اكتب اسمك والرقم السري.",canAdm:"⭐ للمدير فقط: ✏️ تصحيح، 👥 قبول المستخدمين",lkFix:"✏️ تصحيح",lkApp:"👥 قبول المستخدمين",admOnly:"للمدير فقط",canAll:"⭐ المدير: يمكنك فعل كل شيء.",noAccess:"غير مسموح لك بهذا.",repT:"📊 تقرير",expT:"📤 تصدير",exNone:"لا توجد ملاحظات بعد.",
+synced:"تمت المزامنة",syncErr:"مشكلة في المزامنة",syncOff:"المزامنة غير مُعدة",offline:"غير متصل",last:"آخر مزامنة",
+pwT:"⚠️ %n تغيير لم يُرسل إلى الجدول بعد",pwOff:"لا يوجد إنترنت — سيتم الإرسال عند الاتصال.",pwDel:"اضغط 🔄 مزامنة الآن قبل حذف التطبيق أو مسح البيانات، وإلا ستضيع هذه التغييرات.",
+updT:"🆕 نسخة جديدة جاهزة",updB:"⬆️ تحديث الآن",updChk:"البحث عن تحديث",updNone:"لديك آخر نسخة.",ver:"النسخة",
+insBtn:"📲 تثبيت التطبيق",insIos:"اضغط مشاركة ⬆️ ثم إضافة إلى الشاشة الرئيسية ➕",
+shareH:"امسح هذا الرمز بالهاتف الآخر، أو أرسل الرابط.",shareB:"📤 إرسال الرابط",copy:"📋 نسخ الرابط",copied:"تم النسخ",close:"إغلاق",
+pend:"بانتظار",act:"موافق عليه",rej:"مرفوض",blk:"محظور",approve:"✅ موافقة",reject:"❌ رفض",block:"⛔ حظر",unblock:"↩️ إلغاء الحظر",resetPin:"🔑 إعادة تعيين الرمز",admin:"مسؤول",noPend:"لا أحد بالانتظار.",
+lang:"اللغة",sync:"المزامنة",syncUrl:"رابط المزامنة",syncCode:"رمز المزامنة",sv:"تم الحفظ",logout:"🚪 تسجيل الخروج",logoutQ:"تسجيل خروج %n؟",
+logoutPend:"⚠️ %n تغيير لم يُرسل بعد. ستبقى على هذا الهاتف وتُرسل لاحقا. تسجيل الخروج على أي حال؟",
+wipe:"🗑️ مسح هذا التطبيق من هذا الهاتف",wipeQ:"حذف بيانات هذا التطبيق من هذا الهاتف؟ التطبيقات الأخرى لا تتأثر.",wipePend:"⚠️ %n تغيير لم يُرسل وسيضيع. الحذف على أي حال؟",
+draft:"تم الاحتفاظ بنصك غير المحفوظ.",ncT:"🔴 غير متصل",ncH:"لا يستطيع التطبيق الوصول إلى الجدول. عملك محفوظ على هذا الهاتف وسيُرسل عند الاتصال.",ncOff:"رابط المزامنة غير موجود في هذا التطبيق. أخبر المسؤول."}};
+let lang=L.get("lang")||((navigator.language||"en").slice(0,2)==="fr"?"fr":(navigator.language||"").slice(0,2)==="ar"?"ar":"en");
+if(!T[lang])lang="en";
+const t=k=>(T[lang]&&T[lang][k]!=null)?T[lang][k]:(T.en[k]!=null?T.en[k]:k);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.title=C.NAME}
+window.TMC.T=T;window.TMC.t=t;
+
+/* ---------------- Name rule (shared by all TMC apps) ---------------- */
+const ADMIN_KEY=C.ADMIN_ALIASES[0];
+const NK=x=>{const n=String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[\s.]+/g,"");return C.ADMIN_ALIASES.indexOf(n)>=0?ADMIN_KEY:n};
+const clean=x=>String(x||"").trim().replace(/\s+/g," ");
+window.TMC.NK=NK;
+
+/* ---------------- Records + sync ---------------- */
+let R=L.j("recs",{}),dirty=L.j("dirty",{});
+let dev=L.get("dev");if(!dev){dev="d"+Math.random().toString(36).slice(2,10);L.set("dev",dev)}
+const saveR=()=>{L.sj("recs",R);L.sj("dirty",dirty)};
+const all=kind=>Object.keys(R).map(k=>R[k]).filter(r=>r.kind===kind&&!r.del).map(r=>r.data);
+/* ADMIN FIX RULE: staff may only ADD. Changing/deleting an existing record (not "u") is Admin-only; the server enforces it too. */
+/* PERMISSIONS: the Admin ticks what each person may do (CONFIG.PERMS). Admin = everything. The server checks too. */
+function permsOf(u){return u&&Array.isArray(u.perms)?u.perms:(C.PERM_DEFAULT||[])}
+function can(p,u){u=u||me();return !!u&&(!!u.admin||permsOf(u).indexOf(p)>=0)}
+function canKind(kind,what,u){const k=(C.PERM_KINDS||{})[kind];return !k||!k[what]||can(k[what],u)}
+function permLab(p){return p[lang]||p.en}
+function canFix(){const m=me();return !!(m&&m.admin)}
+function put(kind,id,data){const k=kind+":"+id;if(kind!=="u"&&R[k]&&!R[k].del&&!canFix()){alert(t("fixOnly"));return false}if(kind!=="u"&&!R[k]&&!canKind(kind,"add")){alert(t("noAccess"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:0,data:data};dirty[k]=1;saveR();syncSoon();}
+function remove(kind,id){const k=kind+":"+id;if(kind==="u")return false;if(kind!=="u"&&!canFix()){alert(t("fixOnly"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:1,data:null};dirty[k]=1;saveR();syncSoon();}
+/* fix(): Admin changes one field; old value, Admin name and time are kept in data._fix (audit column) and the server "Fix log" tab. */
+function fix(kind,id,field,val){if(!canFix())return false;const k=kind+":"+id,r=R[k];if(!r||r.del)return false;const d=Object.assign({},r.data),old=d[field];if(String(old)===String(val))return true;
+  d._fix=(Array.isArray(d._fix)?d._fix:[]).concat([{f:field,old:old,by:me().name,at:new Date().toISOString()}]);d[field]=val;return put(kind,id,d)!==false}
+function fixBtn(kind,id,field){return canFix()?`<button type="button" class="fixB" data-k="${esc(kind)}" data-i="${esc(id)}" data-f="${esc(field)}">${esc(t("fix"))}</button>`:""}
+function fixedNote(d){const f=d&&Array.isArray(d._fix)&&d._fix[d._fix.length-1];return f?`<span class="hint fixN">✏️ ${esc(t("fixed"))} ${esc(f.by)} · ${esc(String(f.at).slice(0,16).replace("T"," "))}</span>`:""}
+function bindFix(){if(!canFix())return;document.querySelectorAll(".fixB").forEach(b=>b.onclick=()=>{const kind=b.dataset.k,id=b.dataset.i,f=b.dataset.f,r=R[kind+":"+id];if(!r)return;
+  const m=document.createElement("div");m.className="modal";m.innerHTML=`<div class="card"><h2>${esc(t("fixT"))}</h2><textarea id="fixV" rows="3" spellcheck="true" autocorrect="on"></textarea><button type="button" id="fixS">${esc(t("fixSave"))}</button><button type="button" class="sec" id="fixX">${esc(t("close"))}</button></div>`;
+  document.body.appendChild(m);$("fixV").value=r.data[f]==null?"":String(r.data[f]);const x=()=>m.remove();$("fixX").onclick=x;
+  $("fixS").onclick=()=>{const v=$("fixV").value.trim();if(!v)return;fix(kind,id,f,v);x();render()}})}
+window.TMC.fix=fix;window.TMC.canFix=canFix;window.TMC.fixBtn=fixBtn;window.TMC.bindFix=bindFix;window.TMC.fixedNote=fixedNote;
+window.TMC.can=can;window.TMC.canKind=canKind;window.TMC.permsOf=permsOf;
+window.TMC.put=put;window.TMC.remove=remove;window.TMC.all=all;
+const sUrl=()=>L.get("syurl")||C.SYNC_URL,sCode=()=>L.get("sycode")||C.SYNC_CODE;
+const sTok=()=>L.get("tok")||"";
+const tokMode=()=>!!(sUrl()&&!sCode());           // VER 4: no code → name+PIN session token
+const syncOn=()=>!!(sUrl()&&(sCode()||sTok()));
+let netBad=false;                                   // true only when the server can't be reached or rejects us
+function api(body){return fetch(sUrl(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({device:dev},body))})
+  .then(r=>r.json()).then(j=>{netBad=false;paintSync();return j},e=>{netBad=true;paintSync();throw e})}
+window.TMC.api=api;
+const pending=()=>Object.keys(dirty).length;
+let sState="",busy=null,tmr=null,fails=0;
+function syncSoon(ms){clearTimeout(tmr);tmr=setTimeout(()=>syncNow(),ms==null?800:ms)}
+let relog=null;
+function syncNow(){
+  // token phone signed in offline (or token lost): get a new token with this phone's own stored PIN hash
+  if(tokMode()&&!sTok()){const u=me();if(!u||!u.pinH)return Promise.resolve(false);
+    if(!relog)relog=api({action:"login",id:u.id,pinH:u.pinH}).then(j=>{relog=null;if(j&&j.ok){L.set("tok",j.token);return syncNow()}if(j&&j.error!=="locked"){signOut();render()}return false},()=>{relog=null;syncSoon(30000);return false});
+    return relog}
+  if(!syncOn())return Promise.resolve(false);
+  if(busy)return busy;
+  const keys=Object.keys(dirty),sent={};
+  const changes=keys.map(k=>{const r=R[k];sent[k]=r.u;return {kind:r.kind,id:r.id,u:r.u,del:r.del,data:r.data}});
+  sState="busy";paintSync();
+  busy=fetch(sUrl(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"sync",code:sCode()||undefined,token:sCode()?undefined:sTok(),device:dev,since:+(L.get("since")||0),changes:changes})})
+  .then(r=>r.json()).then(j=>{
+    if(j&&!j.ok&&(j.error==="bad_token"||j.error==="not_active")&&!sCode()){L.del("tok")}
+    if(!j||!j.ok)throw new Error(j&&j.error||"sync");
+    Object.keys(sent).forEach(k=>{if(R[k]&&R[k].u===sent[k])delete dirty[k]});
+    (j.records||[]).forEach(s=>{const k=s.kind+":"+s.id,u=+s.u||0,loc=R[k];if(loc&&(loc.u>u||(dirty[k]&&loc.u>=u)))return;
+      let d=s.data;if(typeof d==="string"){try{d=d?JSON.parse(d):null}catch(e){d=null}}if(s.kind==="u"&&(s.del||!d)&&loc&&!loc.del)return;R[k]={kind:s.kind,id:String(s.id),u:u,del:s.del?1:0,data:d}});
+    L.set("since",String(j.now||Date.now()));L.set("lastOk",String(Date.now()));saveR();fails=0;sState="ok";netBad=false;return true})
+  .catch(e=>{fails++;sState="err";netBad=true;syncSoon(navigator.onLine?Math.min(120000,5000*Math.pow(2,fails-1)):60000);return false})
+  .then(ok=>{busy=null;paintSync();try{onData()}catch(e){console.warn(e)}if(ok&&pending())syncSoon(300);return ok});
+  return busy;
+}
+/* Restore a backup: MERGES records only. Never removes users or any record; a backup with no users keeps the current users. */
+function restoreBackup(b){const recs=Array.isArray(b)?b:(b&&(b.records||b.R))||[];const list=Array.isArray(recs)?recs:Object.keys(recs).map(k=>recs[k]);let n=0;
+  list.forEach(s=>{if(!s||!s.kind||s.id==null||s.del)return;let d=s.data;if(typeof d==="string"){try{d=JSON.parse(d)}catch(e){return}}if(d==null||typeof d!=="object")return;
+    const k=s.kind+":"+s.id,loc=R[k];if(loc&&!loc.del&&(+s.u||0)<=loc.u)return;if(s.kind==="u"&&loc&&!loc.del)return;
+    R[k]={kind:s.kind,id:String(s.id),u:Math.max(+s.u||0,loc?loc.u+1:0),del:0,data:d};dirty[k]=1;n++});
+  saveR();syncSoon();return n}
+window.TMC.restoreBackup=restoreBackup;
+window.TMC.syncNow=syncNow;window.TMC.pending=pending;
+addEventListener("online",()=>syncSoon(100));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){syncSoon(100);checkUpdate()}});
+setInterval(()=>{if(!document.hidden)syncNow()},60000);
+
+/* ---------------- Users / session ---------------- */
+const users=()=>all("u");
+const approved=u=>u&&u.status==="active";
+const hasAdmin=()=>users().some(u=>approved(u)&&u.admin);
+async function H(pin,salt){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+":"+pin));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
+function me(){const id=L.get("uid"),ok=L.get("uok");if(!id||!ok)return null;const u=users().find(x=>x.id===id);if(!u||!approved(u)||ok!==u.id+":"+u.pinH)return null;return u}
+window.TMC.me=me;
+function signOut(){L.del("uid");L.del("uok");if(tokMode())L.del("tok")}
+function fails_(k){const F=L.j("pinFail",{}),now=Date.now();return (F[k]||[]).filter(x=>now-x<36e5)}
+function addFail(k){const F=L.j("pinFail",{});F[k]=fails_(k).concat([Date.now()]);L.sj("pinFail",F)}
+function clearFail(k){const F=L.j("pinFail",{});delete F[k];L.sj("pinFail",F)}
+
+/* ---------------- Screens ---------------- */
+let tab="home",flow=null; // flow = sign-in sub-screen
+function card(inner){return `<div class="full"><div class="signin"><div class="card"><img class="logo" src="icons/icon-192.png" alt="">${inner}${insHTML()}</div><div id="ncW" class="bar ncW ncBox"></div></div></div>`}
+function langBtns(){return `<div class="langs"><select id="langSel" aria-label="Language">${["en","fr","ar"].map(l=>`<option value="${l}"${l===lang?" selected":""}>🌐 ${l==="en"?"English":l==="fr"?"Français":"العربية"}</option>`).join("")}</select></div>`}
+function pinInput(id,ph){return `<div class="pw"><input id="${id}" name="${C.APP_ID}-${id}-${Math.random().toString(36).slice(2,7)}" class="msk" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" placeholder="${esc(ph)}"><button type="button" class="eye" data-eye="${id}">👁</button></div>`}
+function render(){
+  applyLang();const A=$("app");
+  const u=me();
+  if(!u){A.innerHTML=signinHTML();bindSignin();return}
+  flow=null;
+  if(tab==="users"&&!u.admin)tab="home";if(tab==="work"&&!workOk(u))tab="home";
+  A.innerHTML=`<header><img src="icons/icon-192.png" alt=""><div class="t">${esc(C.SHORT)}</div><span class="u">${esc(u.name)}</span><span id="sDot" class="dot"></span></header>
+  <main><div id="ncW" class="bar ncW"></div><div id="updW" class="bar updW"></div><div id="pendW" class="bar pendW"></div><div id="view">${viewHTML(u)}</div></main>
+  <nav class="tabs">${navBtn("home","🏠")}${workOk(u)?navBtn("work","🧩"):""}${u.admin?navBtn("users","👥",users().filter(x=>x.status==="pending").length):""}${navBtn("settings","⚙️")}</nav>`;
+  bindMain(u);paintSync();paintUpd();
+}
+function workOk(u){return (C.PERMS||[]).length===0||["view","add","reports","export"].some(p=>can(p,u))}
+function navBtn(k,ic,n){return `<button type="button" data-tab="${k}" class="${tab===k?"on":""}"><span class="ticon">${ic}</span><span class="tlab">${esc(t(k))}</span>${n?`<span class="badge">${n}</span>`:""}</button>`}
+window.TMC.render=render;
+
+function signinHTML(){
+  const f=flow||{s:"name"};
+  if(f.s==="loading")return card(`<h2>${esc(t("loading"))}</h2>`);
+  if(f.s==="net")return card(`<h2>📶 ${esc(t("netT"))}</h2><p class="hint">${esc(t("netH"))}</p><button type="button" id="fRetry">${esc(t("retry"))}</button><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  if(f.s==="pin")return card(`<h2>${esc(t("pinT"))}</h2><p><b>${esc(f.u.name)}</b></p>${pinInput("fPin",t("pin"))}<p class="err" id="fErr"></p><button type="button" id="fGo">${esc(t("go"))}</button><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  if(f.s==="set")return card(`<h2>${esc(f.setup?t("setupT"):t("setT"))}</h2><p><b>${esc(f.u.name)}</b></p><p class="hint">${esc(f.setup?t("setupH"):t("setH"))}</p>${pinInput("fPin",t("pin"))}${pinInput("fPin2",t("pin2"))}<p class="err" id="fErr"></p><button type="button" id="fSet">${esc(t("save"))}</button><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  if(f.s==="wait")return card(`<h2>⏳ ${esc(t("waitT"))}</h2><p class="hint">${esc(t("waitH").replace("%n",f.name))}</p><button type="button" id="fCheck">${esc(t("check"))}</button><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  if(f.s==="dup")return card(`<h2 id="dupT">✋ ${esc(t("dupT"))}</h2><p class="hint" style="font-size:18px">${esc(t("dupH"))}</p><button type="button" id="fCheck" style="min-height:60px">${esc(t("check"))}</button><button type="button" class="sec" id="fOther" style="min-height:60px">${esc(t("other"))}</button>`);
+  if(f.s==="rej")return card(`<h2>❌ ${esc(t("rejT"))}</h2><p class="hint">${esc(t("rejH"))}</p><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  if(f.s==="blk")return card(`<h2>⛔ ${esc(t("blkT"))}</h2><p class="hint">${esc(t("blkH"))}</p><button type="button" class="sec" id="fOther">${esc(t("other"))}</button>`);
+  return `<div class="full tmcS" style="--tmcS-c:${esc(C.COLOR)};--tmcS-cd:${esc(C.COLOR_DARK)}"><div class="signin"><div class="card"><img class="tmcS-logo logo" src="icons/icon-192.png" width="84" height="84" alt=""><h2 class="tmcS-t">${esc(C.NAME)}</h2><select id="langSel" class="tmcS-lang" aria-label="Language">${["en","fr","ar"].map(l=>`<option value="${l}"${l===lang?" selected":""}>🌐 ${l==="en"?"English":l==="fr"?"Français":"العربية"}</option>`).join("")}</select><input id="fName" class="tmcS-name" name="${C.APP_ID}-who" type="text" autocomplete="off" autocapitalize="words" spellcheck="true" autocorrect="on" data-lpignore="true" data-1p-ignore="true" placeholder="${esc(t("nameH"))}" value="${esc(L.get("lastName")||"")}"><p class="err tmcS-err" id="fErr"></p><button type="button" id="fName2" class="tmcS-go">${esc(t("go"))}</button>${insHTML()}</div><div id="ncW" class="bar ncW ncBox" role="alert"></div></div></div>`;
+}
+function err(m){const e=$("fErr");if(e){e.textContent=m;e.style.display="block"}}
+function bindCommon(){
+  document.querySelectorAll("#langSel").forEach(b=>b.onchange=()=>{lang=b.value;L.set("lang",lang);render()});
+  document.querySelectorAll("[data-eye]").forEach(b=>b.onclick=()=>{const i=$(b.dataset.eye);i.classList.toggle("shw")});
+  bindIns();
+}
+function bindSignin(){
+  bindCommon();
+  const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
+  on("fOther",()=>{flow=null;render()});
+  on("fName2",()=>startName($("fName").value));
+  const n=$("fName");if(n)n.onkeydown=e=>{if(e.key==="Enter")startName(n.value)};
+  on("fRetry",()=>startName(flow.name));
+  on("fCheck",()=>{if(tokMode())return srvLookup(flow.name,false);syncNow().then(()=>lookup(flow.name))});
+  on("fGo",checkPin);on("fSet",setPin);
+  const p=$("fPin");if(p){p.focus();p.onkeydown=e=>{if(e.key==="Enter")(flow.s==="pin"?checkPin:setPin)()}}
+}
+/* VER 4 token flow: ask the script who this name is (works on a fresh phone with no code) */
+async function startName(raw){
+  const name=clean(raw);if(!name)return err(t("needName"));
+  L.set("lastName",name);
+  if(tokMode())return srvLookup(name,true);
+  // fresh phone / reinstall: pull everything from the Sheet BEFORE matching the name
+  if(syncOn()&&!(+(L.get("since")||0)>0)){flow={s:"loading",name:name};render();await syncNow();
+    if(!(+(L.get("since")||0)>0)&&!users().length){flow={s:"net",name:name};render();return}}
+  lookup(name);
+}
+async function srvLookup(name,reg){
+  flow={s:"loading",name:name};render();
+  let j;try{j=await api({action:"status",name:name});if(j&&j.ok&&j.state==="none"&&reg)j=await api({action:"register",name:name})}catch(e){j=null}
+  if(!j||!j.ok){if(users().length)return lookup(name,true);flow={s:"net",name:name};return render()}
+  const st=j.state;
+  if(st==="active"){const u=users().find(x=>x.id===j.id)||{id:j.id,name:j.name};flow={s:j.hasPin?"pin":"set",u:Object.assign({},u,{name:j.name,salt:j.salt||u.salt}),name:name,srv:1};return render()}
+  if(st==="setup"){flow={s:"set",setup:true,u:{id:"",name:C.ADMIN_NAME},name:name,srv:1};return render()}
+  if(st==="blocked"){flow={s:"blk",name:name};return render()}
+  if(st==="rejected"){flow={s:"rej",name:name};return render()}
+  if(st==="dup"||(st==="pending"&&j.other)){flow={s:"dup",name:name,srv:1};return render()}  // ONE request per name per app
+  flow={s:"wait",name:name,srv:1};render();
+}
+async function gotToken(j,u){
+  L.set("tok",j.token);L.del("since");await syncNow();
+  const me_=users().find(x=>x.id===j.id);
+  if(!me_){flow={s:"net",name:flow&&flow.name};return render()}
+  L.set("uid",me_.id);L.set("uok",me_.id+":"+me_.pinH);tab="home";flow=null;render();
+}
+function lookup(name,localOnly){
+  if(tokMode()&&!localOnly)return srvLookup(name,true);
+  const K=NK(name),all_=users().filter(u=>NK(u.name)===K),ok=all_.filter(approved);
+  if(ok.length===1){if(tokMode()&&!ok[0].pinH){flow={s:"net",name:name};return render()}  // token phones only hold their own PIN hash
+    flow={s:ok[0].pinH?"pin":"set",u:ok[0],name:name};return render()}
+  if(ok.length===0){
+    if(all_.some(u=>u.status==="blocked")){flow={s:"blk",name:name};return render()}
+    if(all_.some(u=>u.status==="rejected")){flow={s:"rej",name:name};return render()}
+    if(!hasAdmin()&&K===ADMIN_KEY){flow={s:"set",setup:true,u:{id:"u"+Date.now(),name:C.ADMIN_NAME,status:"active",admin:1,dev:dev,at:new Date().toISOString()},name:name};return render()}
+  }
+  // no single approved match (none, or 2+ sharing the key): a normal approval request
+  if(tokMode()){flow={s:"net",name:name};return render()}  // token phones register on the server only
+  const own=users().find(u=>u.status==="pending"&&NK(u.name)===K&&(ok.length<2||(u.dev===dev&&clean(u.name).toLowerCase()===name.toLowerCase())));
+  if(!own&&ok.length<2&&users().some(u=>NK(u.name)===K&&(u.status==="pending"||u.status==="active"))){flow={s:"dup",name:name};return render()}  // ONE request per name per app
+  if(!own){const r={id:"r"+Date.now(),name:name,status:"pending",dev:dev,at:new Date().toISOString()};put("u",r.id,r)}
+  flow={s:"wait",name:name};render();
+}
+async function checkPin(){
+  const u=flow.u,k=NK(u.name),v=$("fPin").value;
+  let F=fails_(k);
+  if(F.length>=5){$("fPin").value="";return err(t("pinLock").replace("%m",Math.max(1,Math.ceil((F[0]+36e5-Date.now())/6e4))))}
+  if(flow.srv&&navigator.onLine){let j=null;try{j=await api({action:"login",id:u.id,pinH:await H(v,u.salt)})}catch(e){}
+    if(j&&j.ok){clearFail(k);return gotToken(j,u)}
+    if(j){addFail(k);$("fPin").value="";return err(j.error==="locked"?t("pinLock").replace("%m",Math.max(1,Math.ceil(((j.until||Date.now()+36e5)-Date.now())/6e4))):t("pinWrong"))}}
+  if(u.pinH&&await H(v,u.salt)===u.pinH){clearFail(k);L.set("uid",u.id);L.set("uok",u.id+":"+u.pinH);tab="home";flow=null;render();return}
+  addFail(k);F=fails_(k);$("fPin").value="";
+  err(F.length>=5?t("pinLock").replace("%m",60):t("pinWrong"));
+}
+async function setPin(){
+  const a=$("fPin").value,b=$("fPin2").value;
+  if(!/^[0-9]{4,6}$/.test(a))return err(t("pinBad"));if(a!==b)return err(t("pinDiff"));
+  const u=Object.assign({},flow.u),salt=Math.random().toString(36).slice(2,12);u.salt=salt;u.pinH=await H(a,salt);
+  if(flow.srv){let j=null;try{j=await api({action:"setpin",id:u.id,setup:flow.setup?1:0,name:flow.name,salt:salt,pinH:u.pinH})}catch(e){}
+    if(j&&j.ok)return gotToken(j,u);return err(j?j.error:t("ncT"))}
+  put("u",u.id,u);L.set("uid",u.id);L.set("uok",u.id+":"+u.pinH);tab="home";flow=null;render();
+}
+
+/* ---------------- Main views ---------------- */
+function viewHTML(u){
+  if(tab==="work")return workHTML(u);
+  if(tab==="users")return usersHTML(u);
+  if(tab==="settings")return settingsHTML(u);
+  if(tab==="can")return canHTML(u);
+  const np=users().filter(x=>x.status==="pending").length;
+  return `<div class="box"><h2 style="margin:4px 0">👋 ${esc(t("hello"))}, ${esc(u.name)}</h2><p class="hint" id="sLine"></p></div>
+  <div class="tiles">
+   ${workOk(u)?`<button type="button" class="tile" data-tab="work"><b>🧩</b>${esc(t("work"))}</button>`:""}
+   <button type="button" class="tile sec" data-tab="can" id="hCan"><b>✅</b>${esc(t("can"))}</button>
+   ${u.admin?`<button type="button" class="tile" data-tab="users"><b>👥</b>${esc(t("users"))}${np?` (${np})`:""}</button>`:""}
+   <button type="button" class="tile sec" id="hSync"><b>🔄</b>${esc(t("syncNow").replace("🔄 ",""))}</button>
+   <button type="button" class="tile sec" id="hShare"><b>📤</b>${esc(t("share"))}</button>
+   <button type="button" class="tile sec" data-tab="settings"><b>⚙️</b>${esc(t("settings"))}</button>
+  </div>${insHTML()}`;
+}
+/* ==================== APP FEATURES START ====================
+   TMC Rotation: trips (group + numbered legs), import of Shaun's
+   "Rotation Cycle" emails (.txt/.html/.docx), report in Shaun's style (email + .docx).
+   Kinds: "tr" trips, "v" vehicles, "al" name/place lookups, "x" notes. */
+Object.assign(T.en,{work:"Trips",tNew:"New trip",tImp:"Import",tRep:"Report",tMore:"Lists",tUp:"Coming trips",tHist:"History",tNone:"No trips yet.",
+ tGroup:"Who travels (names with /)",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
+ tAddLeg:"➕ Add leg",tDelLeg:"🗑️ Remove leg",tSave:"💾 Save trip",tDel:"🗑️ Delete trip",tDelQ:"Delete this trip?",tBack:"⬅️ Back",tNote:"Note",
+ mRoad:"🚙 Road",mCharter:"🛩️ Charter",mAir:"✈️ Airline",mNone:"—",
+ iPaste:"Paste the email here",iFile:"📎 Choose file (.txt .html .docx)",iRead:"🔍 Read",iFound:"Found %n trip(s)",iSave:"💾 Save %n trip(s)",iNone:"No trips found. Check the text.",iDup:"already saved",iDone:"Saved %n trip(s).",
+ rPick:"Trips in the report",rHello:"Greeting",rIntro:"First line",rFrom:"Your name",rMake:"📝 Make report",rCopy:"📋 Copy email",rDocx:"⬇️ Word file",rCopied:"Copied. Paste it into the email.",
+ vT:"Vehicles",vAdd:"➕ Add vehicle",nT:"Names and places",nA:"Written as",nC:"Means",nAdd:"➕ Add",hNote:"Note (demo box kept)",exT:"Quick note",exAdd:"💾 Save note",exNone:"No notes yet.",src:"From"});
+Object.assign(T.fr,{work:"Voyages",tNew:"Nouveau voyage",tImp:"Importer",tRep:"Rapport",tMore:"Listes",tUp:"Voyages à venir",tHist:"Historique",tNone:"Pas encore de voyages.",
+ tGroup:"Qui voyage (noms avec /)",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
+ tAddLeg:"➕ Ajouter une étape",tDelLeg:"🗑️ Retirer l'étape",tSave:"💾 Enregistrer",tDel:"🗑️ Supprimer le voyage",tDelQ:"Supprimer ce voyage ?",tBack:"⬅️ Retour",tNote:"Note",
+ mRoad:"🚙 Route",mCharter:"🛩️ Charter",mAir:"✈️ Vol",mNone:"—",
+ iPaste:"Collez l'e-mail ici",iFile:"📎 Choisir un fichier (.txt .html .docx)",iRead:"🔍 Lire",iFound:"%n voyage(s) trouvé(s)",iSave:"💾 Enregistrer %n voyage(s)",iNone:"Aucun voyage trouvé. Vérifiez le texte.",iDup:"déjà enregistré",iDone:"%n voyage(s) enregistré(s).",
+ rPick:"Voyages du rapport",rHello:"Salutation",rIntro:"Première ligne",rFrom:"Votre nom",rMake:"📝 Faire le rapport",rCopy:"📋 Copier l'e-mail",rDocx:"⬇️ Fichier Word",rCopied:"Copié. Collez-le dans l'e-mail.",
+ vT:"Véhicules",vAdd:"➕ Ajouter",nT:"Noms et lieux",nA:"Écrit",nC:"Veut dire",nAdd:"➕ Ajouter",hNote:"Note",exT:"Note rapide",exAdd:"💾 Enregistrer la note",exNone:"Pas encore de notes.",src:"Source"});
+Object.assign(T.ar,{work:"الرحلات",tNew:"رحلة جديدة",tImp:"استيراد",tRep:"تقرير",tMore:"القوائم",tUp:"الرحلات القادمة",tHist:"السجل",tNone:"لا توجد رحلات بعد.",
+ tGroup:"من يسافر (أسماء مع /)",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
+ tAddLeg:"➕ إضافة مرحلة",tDelLeg:"🗑️ حذف المرحلة",tSave:"💾 حفظ الرحلة",tDel:"🗑️ حذف الرحلة",tDelQ:"حذف هذه الرحلة؟",tBack:"⬅️ رجوع",tNote:"ملاحظة",
+ mRoad:"🚙 طريق",mCharter:"🛩️ طائرة خاصة",mAir:"✈️ طيران",mNone:"—",
+ iPaste:"الصق البريد هنا",iFile:"📎 اختر ملفا (.txt .html .docx)",iRead:"🔍 قراءة",iFound:"وُجدت %n رحلة",iSave:"💾 حفظ %n رحلة",iNone:"لم توجد رحلات. تحقق من النص.",iDup:"محفوظة من قبل",iDone:"تم حفظ %n رحلة.",
+ rPick:"رحلات التقرير",rHello:"التحية",rIntro:"السطر الأول",rFrom:"اسمك",rMake:"📝 إنشاء التقرير",rCopy:"📋 نسخ البريد",rDocx:"⬇️ ملف وورد",rCopied:"تم النسخ. الصقه في البريد.",
+ vT:"المركبات",vAdd:"➕ إضافة مركبة",nT:"الأسماء والأماكن",nA:"مكتوب",nC:"يعني",nAdd:"➕ إضافة",hNote:"ملاحظة",exT:"ملاحظة سريعة",exAdd:"💾 حفظ الملاحظة",exNone:"لا توجد ملاحظات بعد.",src:"المصدر"});
+
+/* ---- lookup lists (spelling variants → one name) ---- */
+const PLACES={ndjamena:"N'Djamena",ndjemena:"N'Djamena",njamena:"N'Djamena",ndj:"N'Djamena",seneker:"HQ",hq:"HQ",headquarters:"HQ","1tb":"HQ",onetb:"HQ",bardai:"Bardai",faya:"Faya",fayalargeau:"Faya",
+ gz:"GZ",groundzero:"GZ",groundzerocamp:"GZ",sa:"SA",rsa:"SA",southafrica:"SA",johannesburg:"Johannesburg",jnb:"Johannesburg",joburg:"Johannesburg",ortambo:"Johannesburg",
+ addis:"Addis Ababa",addisababa:"Addis Ababa",addisabba:"Addis Ababa",add:"Addis Ababa",capetown:"Cape Town"};
+const PEOPLE={shaun:"Shaun",johan:"Johan",cliff:"Cliff",clifford:"Cliff",elton:"Elton",micheal:"Micheal",michael:"Micheal",pedro:"Pedro",alex:"Alex",ben:"Ben",abdul:"Abdul",
+ hamid:"Hamid",ibrahim:"Ibrahim",brahim:"Ibrahim",sabour:"Sabour",sabo:"Sabour",mahamout:"Mahamout",mahmount:"Mahamout",mahamot:"Mahamout",mahmout:"Mahamout",mahmoud:"Mahamout",
+ ken:"Ken",sean:"Sean",sebastiaan:"Sebastiaan",sebastian:"Sebastiaan",hendrik:"Hendrik",abdoullay:"Abdoullay",abdullah:"Abdoullay",abdoulay:"Abdoullay",andre:"Andre",andrew:"Andrew",
+ abdelhadi:"Abdelhadi",ahmat:"Ahmat",djmal:"Djmal",fadoul:"Fadoul",haroon:"Haroon",nouradine:"Nouradine",
+ haroun:"Haroon",mahamount:"Mahamout",djamal:"Djmal",djamel:"Djmal",abderahamane:"Abdul",aderahame:"Abdul",abdoulhadi:"Abdelhadi",addoullay:"Abdoullay",
+ mahamatmoussaabena:"Mahamat Moussa",mahamatmoussaabema:"Mahamat Moussa",mahamat:"Mahamat Moussa",yacoub:"Yacoub",langsana:"Langsana"};
+const KEY=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+function lookMap(t_){const m=Object.assign({},t_==="p"?PLACES:PEOPLE);all("al").forEach(a=>{if(a&&a.t===t_&&a.a&&a.c)m[KEY(a.a)]=a.c});return m}
+function canPlace(s){s=clean(String(s||"").replace(/[.,;:]+$/,""));if(!s)return "";const m=lookMap("p"),k=KEY(s);if(m[k])return m[k];
+  const w=s.split(" ");for(let i=w.length;i>0;i--){const kk=KEY(w.slice(0,i).join(""));if(m[kk])return m[kk]}return s.replace(/\b[a-z]/g,c=>c.toUpperCase())}
+function canName(s){s=clean(s);if(!s)return "";const m=lookMap("n"),k=KEY(s.split(" ")[0]);return m[KEY(s)]||m[k]||s.replace(/\b[a-z]/g,c=>c.toUpperCase())}
+const splitGroup=s=>String(s||"").split(/\s*[\/,&]\s*|\s+and\s+/i).map(canName).filter(Boolean);
+
+/* ---- dates ---- */
+const MON=["january","february","march","april","may","june","july","august","september","october","november","december"];
+const monIx=s=>{const k=String(s||"").toLowerCase().slice(0,3);return MON.findIndex(m=>m.slice(0,3)===k)};
+const iso=(y,m,d)=>y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+const ord=n=>{n=+n;const s=(n%100>=11&&n%100<=13)?"th":["th","st","nd","rd"][n%10]||"th";return s};
+const DATE_RE=/(\d{1,2})(?:st|nd|rd|th)?(?:\s*(?:\/|&|and|-)\s*(\d{1,2})(?:st|nd|rd|th)?)?\s+(?:of\s+)?(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b\.?(?:,?\s+(\d{4}))?/i;
+/* date parts of a leg → {d1,d2,dt:"18th/19th March 2026"} */
+function dateParts(l){if(!l.d1)return [];const a=l.d1.split("-").map(Number),b=l.d2?l.d2.split("-").map(Number):null;
+  const P=[];const push=(d)=>{P.push({n:String(d[2]),s:ord(d[2])})};
+  push(a);if(b){if(b[1]!==a[1]||b[0]!==a[0]){P.push({t:" "+MON[a[1]-1].replace(/^./,c=>c.toUpperCase())+(b[0]!==a[0]?" "+a[0]:"")+"/"});}else P.push({t:"/"});push(b)}
+  const e=b||a;P.push({t:" "+MON[e[1]-1].replace(/^./,c=>c.toUpperCase())+" "+e[0]});return P}
+const dateText=l=>dateParts(l).map(p=>p.t!=null?p.t:p.n+p.s).join("");
+const fmtShort=d=>{if(!d)return "";const a=d.split("-").map(Number);return a[2]+" "+MON[a[1]-1].slice(0,3).replace(/^./,c=>c.toUpperCase())+" "+a[0]};
+
+/* ---- import parser (text) ---- */
+const GROUP_RE=/^[A-Za-z][A-Za-z' ]{0,30}(\s*\/\s*[A-Za-z][A-Za-z' ]{0,30})+$/;
+function parseText(txt,opt){opt=opt||{};const lines=String(txt||"").replace(/\u00a0/g," ").split(/\r?\n/).map(s=>s.replace(/\s+/g," ").trim());
+  let year=opt.year||null,subject=opt.subject||"",sent=opt.date||"";
+  lines.forEach(s=>{let m=/^Date(?: \(UTC\))?:\s*(\d{4})-(\d\d)-(\d\d)/i.exec(s);if(m&&!sent){sent=m[1]+"-"+m[2]+"-"+m[3];if(!year)year=+m[1]}
+    m=/^Date:.*?(\d{4})/i.exec(s);if(m&&!year)year=+m[1];m=/^Subject:\s*(.+)$/i.exec(s);if(m&&!subject)subject=m[1]});
+  if(!year)year=new Date().getFullYear();
+  const trips=[];let cur=null,lastY=year;
+  const under=opt.under||{};
+  lines.forEach((raw,i)=>{if(!raw)return;let s=raw.replace(/^\d{1,2}[.)]\s*/,"");
+    if(/^(from|to|cc|bcc|subject|date|sent)(\s*\(utc\))?:/i.test(s))return;
+    if((GROUP_RE.test(s)&&!/\bto\b/i.test(s))||(under[i]&&/^[A-Za-z' \/]+$/.test(s)&&s.indexOf("/")>0)){cur={group:splitGroup(s),legs:[]};trips.push(cur);return}
+    const leg=parseLeg(s,lastY,cur&&cur.legs.length?cur.legs[cur.legs.length-1].to:"");
+    if(leg){lastY=+leg.d1.slice(0,4);if(!cur){cur={group:[],legs:[]};trips.push(cur)}cur.legs.push(leg)}
+  });
+  return trips.filter(x=>x.legs.length).map(x=>Object.assign(x,{src:subject?(subject+(sent?" ("+fmtShort(sent)+")":"")):(opt.name||"Import"),sent:sent}))}
+function parseLeg(s,year,prevTo){
+  const dm=DATE_RE.exec(s);if(!dm)return null;
+  const head=s.slice(0,dm.index).replace(/[\s\-–—:,]+(on\s+)?(the\s+)?$/i,"").trim();
+  const m=/^(.*?)\s+to\s+(.+)$/i.exec(head);if(!m)return null;
+  let from=m[1],to=m[2],all_=false,who="";
+  if(/total\s+team/i.test(from)){all_=true}
+  if(/\bfrom\b/i.test(from)){const parts=from.split(/\bfrom\b/i);const pre=parts[0];from=parts[parts.length-1];if(!all_&&pre&&!/team|leave|travel|transport/i.test(pre))who=pre}
+  from=from.replace(/\b(total|the|team|leave|leaves|travel|travels)\b/ig," ").trim();to=to.replace(/\b(team)\b/ig," ").trim();
+  if(from.split(" ").length>3||to.split(" ").length>3)return null;
+  let F=canPlace(from),Tt=canPlace(to);if(!F||!Tt)return null;
+  if(F===Tt&&prevTo)F=prevTo;          // "SA team to SA" = from the last stop back to SA
+  const mi=monIx(dm[3]),y=dm[4]?+dm[4]:year,d1=iso(y,mi,+dm[1]);
+  let d2="";if(dm[2]){const n2=+dm[2];d2=n2>=+dm[1]?iso(y,mi,n2):iso(mi===11?y+1:y,(mi+1)%12,n2)}
+  const mode=/SA|Johannesburg|Addis Ababa/.test(F+" "+Tt)?"air":/N'Djamena|Faya/.test(F+" "+Tt)&&/Bardai|Faya|N'Djamena/.test(F+" "+Tt)?"charter":/HQ|GZ|Bardai/.test(F+Tt)?"road":"";
+  return {from:F,to:Tt,d1:d1,d2:d2,mode:mode,all:all_,who:who?splitGroup(who):[],veh:"",flt:""}}
+/* html → lines (+ which lines were underlined) */
+function htmlLines(html){const doc=new DOMParser().parseFromString(String(html),"text/html");const out=[],U={};let buf="",u=false;
+  const flush=()=>{const s=buf.replace(/\u00a0/g," ").replace(/\s+/g," ").trim();if(s){if(u)U[out.length]=1;out.push(s)}buf="";u=false};
+  const BL=/^(DIV|P|LI|TR|H\d|OL|UL|BR|TABLE|BLOCKQUOTE)$/;
+  (function walk(n,inU){n.childNodes.forEach(c=>{if(c.nodeType===3){buf+=c.nodeValue;if(inU&&c.nodeValue.trim())u=true}else if(c.nodeType===1){if(/^(SCRIPT|STYLE|HEAD)$/.test(c.tagName))return;
+    const b=BL.test(c.tagName);if(b)flush();walk(c,inU||c.tagName==="U"||/underline/.test(c.getAttribute("style")||""));if(b)flush()}})})(doc.body||doc,false);flush();
+  return {text:out.join("\n"),under:U}}
+function parseHtml(html,opt){const h=htmlLines(html);return parseText(h.text,Object.assign({},opt||{},{under:h.under}))}
+async function docxLines(buf){const z=await JSZip.loadAsync(buf);const x=await z.file("word/document.xml").async("string");
+  const d=new DOMParser().parseFromString(x,"application/xml");const W="http://schemas.openxmlformats.org/wordprocessingml/2006/main";const out=[],U={};
+  Array.from(d.getElementsByTagNameNS(W,"p")).forEach(p=>{let s="",u=false;Array.from(p.getElementsByTagNameNS(W,"r")).forEach(r=>{Array.from(r.childNodes).forEach(c=>{if(c.localName==="t")s+=c.textContent;if(c.localName==="tab")s+=" ";if(c.localName==="br")s+="\n"});
+      const uu=r.getElementsByTagNameNS(W,"u")[0];if(uu&&(uu.getAttributeNS(W,"val")||"single")!=="none"&&r.textContent.trim())u=true});
+    s.split("\n").forEach(l=>{l=l.trim();if(!l)return;if(u)U[out.length]=1;out.push(l)})});
+  return {text:out.join("\n"),under:U}}
+/* Shaun's "Rotation Schedule" tables: "Travel from X to Y [& then to Z]" + Item|Name|Date rows */
+function parseSchedule(txt,opt){opt=opt||{};const lines=String(txt||"").replace(/\u00a0/g," ").split(/\r?\n/).map(clean).filter(Boolean);
+  const out=[];let cur=null,nm="";const dt=t=>{const m=DATE_RE.exec(t);return m&&m[4]?iso(+m[4],monIx(m[3]),+m[1]):""};
+  const AIR=/^(SA|Addis Ababa|Johannesburg)$/,modeOf=(a,b)=>AIR.test(a)||AIR.test(b)?"air":[a,b].sort().join("|")==="Bardai|N'Djamena"?"charter":"road";
+  lines.forEach(t=>{const h=/^travel from (.+?) to (.+?)(?:\s*(?:&|and)\s*(?:then\s+)?(?:on)?to\s+(.+))?$/i.exec(t);
+    if(h){cur={from:canPlace(h[1]),via:h[3]?canPlace(h[2]):"",to:canPlace(h[3]||h[2]),who:[],tbc:[],d:[]};out.push(cur);nm="";return}
+    if(!cur||/^(item|name|date|\d{1,2})$/i.test(t))return;
+    if(DATE_RE.test(t)){if(!nm)return;t.split(/\s+[–—-]\s+/).map(dt).filter(Boolean).forEach(x=>{if(cur.d.indexOf(x)<0)cur.d.push(x)});
+      const n=canName(nm.replace(/\s*\(.*?\)\s*/g," ").replace(/\s+-\s+.*$/,""));if(cur.who.indexOf(n)<0)cur.who.push(n);if(/to be confirmed|\btbc\b/i.test(nm))cur.tbc.push(n);nm="";return}
+    nm=t});
+  const src=opt.subject||opt.name||"Schedule";
+  return out.filter(x=>x.who.length&&x.d.length).map(x=>{x.d.sort();return {group:x.who,src:src,sent:opt.date||"",
+    note:(x.via?"Via "+x.via+". ":"")+(x.tbc.length?"To be confirmed: "+x.tbc.join(", ")+".":""),legs:[L_(x.from,x.to,x.d[0],x.d.length>1?x.d[x.d.length-1]:"",modeOf(x.from,x.to))]}})}
+async function parseDocx(buf,opt){const h=await docxLines(buf);const r=parseText(h.text,Object.assign({},opt||{},{under:h.under}));
+  return r.length||!/^travel from /im.test(h.text)?r:parseSchedule(h.text,opt)}
+
+/* ---- back-dated history (Shaun's emails Jan–Mar 2026) + Johan's Dec 2026 trip ---- */
+const L_=(from,to,d1,d2,mode,x)=>Object.assign({from:from,to:to,d1:d1,d2:d2||"",mode:mode||"",all:false,who:[],veh:"",flt:""},x||{});
+const SEED=[
+ {id:"s01",group:["Ken","Sean","Sebastiaan"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Postponed to 18 Feb (see 10 Feb email).",legs:[L_("SA","N'Djamena","2026-02-11","2026-02-12","air"),L_("N'Djamena","Bardai","2026-02-15","","charter"),L_("Bardai","HQ","2026-02-16","","road")]},
+ {id:"s02",group:["Johan","Cliff"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Next charter 5th or 6th March. Later changed.",legs:[L_("Bardai","N'Djamena","2026-03-05","2026-03-06","charter")]},
+ {id:"s03",group:["Ken","Sean","Sebastiaan"],src:"Postponement of SA Flight (10 Feb 2026)",legs:[L_("SA","N'Djamena","2026-02-18","","air")]},
+ {id:"s04",group:["Shaun","Elton","Micheal"],src:"Feb/March Deployment (26 Feb 2026)",legs:[L_("SA","N'Djamena","2026-03-17","2026-03-18","air")]},
+ {id:"s05",group:["Cliff","Johan","Ken","Mahamout"],src:"Feb/March Deployment (26 Feb 2026)",note:"With security. Sleep over at the hospital in Bardai. Mahamout drives back to HQ.",legs:[L_("HQ","Bardai","2026-03-24","","road",{all:true}),L_("Bardai","N'Djamena","2026-03-25","","charter",{who:["Cliff","Johan","Ken"]}),L_("N'Djamena","SA","2026-03-29","","air",{who:["Cliff","Johan","Ken"]})]},
+ {id:"s06",group:["Shaun","Elton","Micheal","Abdul"],src:"Feb/March Deployment (26 Feb 2026)",note:"Back to HQ with Mahamout and security.",legs:[L_("N'Djamena","Faya","2026-03-25","","charter",{all:true}),L_("Faya","Bardai","2026-03-25","","charter",{all:true}),L_("Bardai","HQ","2026-03-26","","road",{all:true})]},
+ {id:"s07",group:["Hamid","Ibrahim"],src:"Rotation Cycle (5 Mar 2026)",note:"Fly with Shaun, Abdul, Elton and Micheal. Sabour and Mahamout go back with Ken, Johan and Cliff.",legs:[L_("N'Djamena","Bardai","2026-03-25","","charter")]},
+ {id:"s08",group:["Shaun","Elton","Micheal","Abdul","Hamid","Ibrahim"],src:"Rotation Cycle (17 Mar 2026)",legs:[L_("SA","N'Djamena","2026-03-18","2026-03-19","air"),L_("N'Djamena","Bardai","2026-03-26","","charter",{all:true}),L_("Bardai","HQ","2026-03-27","","road",{all:true})]},
+ {id:"s09",group:["Johan","Cliff","Ken","Sabour","Mahamout"],src:"Rotation Cycle (17 Mar 2026)",legs:[L_("HQ","Bardai","2026-03-25","","road"),L_("Bardai","N'Djamena","2026-03-26","","charter"),L_("N'Djamena","SA","2026-03-29","2026-03-30","air")]},
+ {id:"s10",group:["Johan","Cliff","Hendrik","Sabour","Mahamout"],src:"Rotation Cycle (17 Mar 2026)",legs:[L_("SA","N'Djamena","2026-04-24","2026-04-25","air"),L_("N'Djamena","Bardai","2026-04-27","","charter",{all:true}),L_("Bardai","HQ","2026-04-28","","road",{all:true})]},
+ {id:"s11",group:["Sean","Sebastiaan"],src:"Rotation Cycle (17 Mar 2026)",legs:[L_("HQ","Bardai","2026-04-26","","road"),L_("Bardai","N'Djamena","2026-04-27","","charter"),L_("N'Djamena","SA","2026-04-30","","air")]},
+ {id:"s12",group:["Shaun","Elton","Micheal","Abdul","Ibrahim"],src:"Convoy 2 sitrep (23 Mar 2026)",note:"Arrive at 1 T/B late afternoon. Ken, Johan, Cliff, Sabour and Mahamout on the way to N'Djamena.",legs:[L_("Bardai","HQ","2026-03-27","","road")]},
+ {id:"s13",group:["Johan","Mahamout","Abdoullay","Sabour"],src:"Johan (Dec 2026 rotation)",note:"Mahamout, Abdoullay and Sabour stop in N'Djamena. Sabour: assumed, check.",legs:[L_("GZ","HQ","2026-12-01","","road"),L_("HQ","Bardai","2026-12-02","","road"),L_("Bardai","N'Djamena","2026-12-03","","charter"),
+   L_("N'Djamena","Addis Ababa","2026-12-05","","air",{who:["Johan"],flt:"ET938 14:05"}),L_("Addis Ababa","Johannesburg","2026-12-05","2026-12-06","air",{who:["Johan"],flt:"ET859 23:30, lands 03:55"})]},
+ /* Shaun's draft rotation schedules (24 Oct 2026, "for review and comment"). Not confirmed. */
+ {id:"s14",group:["Ibrahim","Hamid","Yacoub","Langsana"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Yacoub = new truck driver, Langsana = new translator. Mahamout drives them Bardai to HQ.",legs:[L_("N'Djamena","Bardai","2026-11-01","","charter"),L_("Bardai","HQ","2026-11-02","","road",{all:true})]},
+ {id:"s15",group:["Shaun","Ben","Abdul","Haroon","Mahamat Moussa","Nouradine","Pedro","Djmal"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Mahamout drives HQ to Bardai. Only Shaun, Ben and Pedro fly on to SA (via Addis).",legs:[L_("HQ","Bardai","2026-10-31","","road",{all:true}),L_("Bardai","N'Djamena","2026-11-01","","charter",{all:true}),L_("N'Djamena","SA","2026-11-04","","air",{who:["Shaun","Ben","Pedro"],flt:"via Addis Ababa"})]},
+ {id:"s16",group:["Mahamout"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Driver run: takes the team to Bardai, brings Hamid, Ibrahim, Yacoub and Langsana back.",legs:[L_("HQ","Bardai","2026-10-31","","road"),L_("Bardai","HQ","2026-11-02","","road")]},
+ {id:"s17",group:["Ben","Shaun","Haroon","Nouradine","Abdul","Ibrahim"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Shaun and Abdul to be confirmed. Ibrahim drives Bardai to HQ.",legs:[L_("SA","N'Djamena","2026-11-30","2026-12-01","air",{who:["Ben","Shaun"],flt:"via Addis Ababa"}),L_("N'Djamena","Bardai","2026-12-03","","charter",{who:["Ben","Shaun","Haroon","Nouradine","Abdul"]}),L_("Bardai","HQ","2026-12-04","","road",{all:true})]},
+ {id:"s18",group:["Johan","Cliff","Abdelhadi","Sabour","Mahamout","Fadoul","Ibrahim","Abdoullay"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Same dates as Johan's s13. Abdoullay: 'to resign'. Abdelhadi and Ibrahim stay in Bardai (Ibrahim drives back 4 Dec). Shaun and Abdul also listed Bardai to N'Djamena, to be confirmed.",legs:[L_("HQ","Bardai","2026-12-02","","road",{all:true}),L_("Bardai","N'Djamena","2026-12-03","","charter",{who:["Johan","Cliff","Abdoullay","Sabour","Mahamout","Fadoul"]}),L_("N'Djamena","SA","2026-12-05","","air",{who:["Johan","Cliff"],flt:"via Addis Ababa"})]}
+].map(x=>Object.assign({seed:1,note:""},x));
+const VEH0=[{id:"b052052",name:"Land Cruiser B052052"}];
+function trips(){const own={};all("tr").forEach(x=>{if(x&&x.id)own[x.id]=x});const out=[];
+  SEED.forEach(s=>{if(own[s.id]){if(!own[s.id].gone)out.push(own[s.id]);delete own[s.id]}else out.push(s)});
+  Object.keys(own).forEach(k=>{if(!own[k].gone)out.push(own[k])});
+  const first=x=>(x.legs[0]&&x.legs[0].d1)||"";return out.sort((a,b)=>first(a).localeCompare(first(b)))}
+function vehicles(){const m={};VEH0.forEach(v=>m[v.id]=v);all("v").forEach(v=>{if(v&&v.id)m[v.id]=v});return Object.keys(m).map(k=>m[k]).filter(v=>!v.gone)}
+const today=()=>new Date().toISOString().slice(0,10);
+const lastD=x=>{const l=x.legs[x.legs.length-1];return l?(l.d2||l.d1):""};
+const sig=x=>x.group.join("/")+"|"+x.legs.map(l=>l.from+">"+l.to+"@"+l.d1).join(";");
+
+/* ---- report (Shaun's style) ---- */
+const FONT="font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);";
+function legText(l){return (l.who&&l.who.length?l.who.join("/")+" from ":l.all?"Total team from ":"")+l.from+" to "+l.to}
+function legExtra(l){return l.flt?" ("+l.flt+")":""}
+function reportModel(sel,o){o=o||{};return {hello:o.hello||"Good evening All,",intro:o.intro||"Please find the next rotation cycles for your planning",from:o.from||"Johan",
+  groups:sel.map(x=>({names:x.group.join("/"),legs:x.legs.map(l=>({text:legText(l),date:dateParts(l),extra:legExtra(l)}))}))}}
+function reportHtml(m){const D=(s,mg)=>`<div style="${mg?"margin: 0px; ":""}${FONT}">${s}</div>`,BR=D("<br>");
+  let h=D(esc(m.hello))+BR+D(esc(m.intro))+BR+BR;
+  m.groups.forEach(g=>{h+=D("<u>"+esc(g.names)+"</u>",1)+D("<u><br></u>",1)+`<ol style="margin-top: 0px; margin-bottom: 0px; list-style-type: decimal;" start="1">`+
+    g.legs.map(l=>`<li style="${FONT}"><div style="margin: 0px;">${esc(l.text)} - ${l.date.map(p=>p.t!=null?esc(p.t):esc(p.n)+"<sup>"+p.s+"</sup>").join("")}${esc(l.extra)}</div></li>`).join("")+`</ol>`+BR});
+  h+=D("Kind regards")+D(esc(m.from));return `<div style="${FONT}">${h}</div>`}
+function reportText(m){let s=m.hello+"\n\n"+m.intro+"\n\n";m.groups.forEach(g=>{s+=g.names+"\n\n"+g.legs.map((l,i)=>(i+1)+". "+l.text+" - "+l.date.map(p=>p.t!=null?p.t:p.n+p.s).join("")+l.extra).join("\n")+"\n\n"});return s+"Kind regards\n"+m.from}
+const xe=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function docxXml(m){const RP=x=>`<w:rPr><w:rFonts w:ascii="Aptos" w:hAnsi="Aptos" w:cs="Aptos"/>${x||""}<w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>`;
+  const run=(t,x)=>`<w:r>${RP(x)}<w:t xml:space="preserve">${xe(t)}</w:t></w:r>`,P=(r,pp)=>`<w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/>${pp||""}</w:pPr>${r||""}</w:p>`;
+  let b=P(run(m.hello))+P()+P(run(m.intro))+P()+P();
+  m.groups.forEach((g,gi)=>{b+=P(run(g.names,'<w:u w:val="single"/>'))+P();g.legs.forEach(l=>{b+=P(run(l.text+" - ")+l.date.map(p=>p.t!=null?run(p.t):run(p.n)+run(p.s,'<w:vertAlign w:val="superscript"/>')).join("")+(l.extra?run(l.extra):""),`<w:numPr><w:ilvl w:val="0"/><w:numId w:val="${gi+1}"/></w:numPr>`)});b+=P()});
+  b+=P(run("Kind regards"))+P(run(m.from));
+  const NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${b}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const num=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering ${NS}><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="singleLevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="decimal"/><w:lvlText w:val="%1."/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>${RP()}</w:lvl></w:abstractNum>`+
+    m.groups.map((g,i)=>`<w:num w:numId="${i+1}"><w:abstractNumId w:val="0"/><w:lvlOverride w:ilvl="0"><w:startOverride w:val="1"/></w:lvlOverride></w:num>`).join("")+`</w:numbering>`;
+  const sty=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles ${NS}><w:docDefaults><w:rPrDefault>${RP()}</w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
+  return {doc:doc,num:num,sty:sty}}
+async function reportDocx(m){const x=docxXml(m),z=new JSZip();
+  z.file("[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>`);
+  z.file("_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+  z.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
+  z.file("word/document.xml",x.doc);z.file("word/numbering.xml",x.num);z.file("word/styles.xml",x.sty);
+  return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
+window.TRV={parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
+
+/* ---- screens ---- */
+let wv="list",edit=null,imp=null,rep=null,repSel=null,impMsg="";
+const go_=v=>{wv=v;render();try{scrollTo(0,0)}catch(e){}};
+const modeIc={road:"🚙",charter:"🛩️",air:"✈️"};
+function tripCard(x){const tg=canFix()?"button":"div";return `<${tg}${tg==="button"?' type="button"':""} class="box trip" data-trip="${esc(x.id)}"><b class="tg">${esc(x.group.join("/")||"?")}</b>
+ ${x.legs.map((l,i)=>`<span class="tl">${i+1}. ${modeIc[l.mode]||""} ${esc(l.from)} → ${esc(l.to)} · ${esc(fmtShort(l.d1))}${l.d2?" / "+esc(fmtShort(l.d2)):""}${l.flt?" · "+esc(l.flt):""}</span>`).join("")}
+ <span class="hint">${esc(x.src||"")}</span>${fixedNote(x)}</${tg}>`}
+function workHTML(u){
+  if(wv==="edit"&&edit)return editHTML();if(wv==="imp")return impHTML();if(wv==="rep")return repHTML();if(wv==="more")return moreHTML();
+  const T_=trips(),d=today(),up=T_.filter(x=>lastD(x)>=d),old=T_.filter(x=>lastD(x)<d).reverse();
+  const notes=all("x").sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  const tools=[can("reports")?`<button type="button" class="sec" id="exRep">${esc(t("repT"))}</button>`:"",can("export")?`<button type="button" class="sec" id="exExp">${esc(t("expT"))}</button>`:""].join("");
+  const cAdd=canKind("tr","add"),cView=canKind("tr","view");
+  return `<div class="tiles">${cAdd?`<button type="button" class="tile" id="wNew"><b>➕</b>${esc(t("tNew"))}</button><button type="button" class="tile" id="wImp"><b>📥</b>${esc(t("tImp"))}</button>`:""}
+  ${can("reports")&&cView?`<button type="button" class="tile" id="wRep"><b>📝</b>${esc(t("tRep"))}</button>`:""}<button type="button" class="tile" id="wMore"><b>🚙</b>${esc(t("tMore"))}</button></div>
+  ${cView?`<h3>🗓️ ${esc(t("tUp"))} (${up.length})</h3>${up.length?up.map(tripCard).join(""):`<p class="hint">${esc(t("tNone"))}</p>`}
+  <h3>📚 ${esc(t("tHist"))} (${old.length})</h3>${old.map(tripCard).join("")}`:""}
+  <div class="box"><h3>${esc(t("exT"))}</h3><textarea id="exTxt" rows="3" data-draft="exTxt" autocomplete="off" spellcheck="true" autocorrect="on" autocapitalize="sentences"></textarea><p class="hint" id="drNote" style="display:none">${esc(t("draft"))}</p>
+  <button type="button" id="exAdd">${esc(t("exAdd"))}</button>
+  ${notes.length?notes.map(n=>`<div class="urow"><span class="n">${esc(n.text)}</span><span class="hint">${esc(n.by)}</span>${fixBtn("x",n.id,"text")}${fixedNote(n)}</div>`).join(""):`<p class="hint">${esc(t("exNone"))}</p>`}</div>
+  ${tools?`<div class="box">${tools}<p class="hint" id="exOut"></p></div>`:""}`;
+}
+const placeList=()=>{const s={};Object.keys(PLACES).forEach(k=>s[PLACES[k]]=1);all("al").forEach(a=>{if(a.t==="p")s[a.c]=1});return Object.keys(s).sort()};
+function legHTML(l,i){const V=vehicles();return `<div class="box leg" data-leg="${i}"><h3>${esc(t("tLeg"))} ${i+1}</h3>
+ <label>${esc(t("tFrom"))}</label><input type="text" class="lF" list="plc" value="${esc(l.from)}">
+ <label>${esc(t("tTo"))}</label><input type="text" class="lT" list="plc" value="${esc(l.to)}">
+ <label>${esc(t("tD1"))}</label><input type="date" class="lD1" value="${esc(l.d1)}">
+ <label>${esc(t("tD2"))}</label><input type="date" class="lD2" value="${esc(l.d2)}">
+ <label>${esc(t("tMode"))}</label><select class="lM">${[["",t("mNone")],["road",t("mRoad")],["charter",t("mCharter")],["air",t("mAir")]].map(o=>`<option value="${o[0]}"${l.mode===o[0]?" selected":""}>${esc(o[1])}</option>`).join("")}</select>
+ <label>${esc(t("tVeh"))}</label><select class="lV"><option value="">—</option>${V.map(v=>`<option${l.veh===v.name?" selected":""}>${esc(v.name)}</option>`).join("")}</select>
+ <label>${esc(t("tFlt"))}</label><input type="text" class="lFl" value="${esc(l.flt)}" data-nospell>
+ <label>${esc(t("tWho"))}</label><input type="text" class="lW" value="${esc((l.who||[]).join("/"))}">
+ <label class="chk"><input type="checkbox" class="lA"${l.all?" checked":""}> ${esc(t("tAll"))}</label>
+ <button type="button" class="sec lX">${esc(t("tDelLeg"))}</button></div>`}
+function editHTML(){const x=edit;return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="eGroup">${esc(t("tGroup"))}</label><input type="text" id="eGroup" value="${esc(x.group.join("/"))}">
+ <label for="eNote">${esc(t("tNote"))}</label><textarea id="eNote" rows="2">${esc(x.note||"")}</textarea>${x.src?`<p class="hint">${esc(t("src"))}: ${esc(x.src)}</p>`:""}</div>
+ <datalist id="plc">${placeList().map(p=>`<option value="${esc(p)}">`).join("")}</datalist>
+ ${x.legs.map(legHTML).join("")}<button type="button" class="sec" id="eAddLeg">${esc(t("tAddLeg"))}</button><button type="button" id="eSave">${esc(t("tSave"))}</button>${canFix()&&trips().some(o=>o.id===x.id)?`<button type="button" class="red" id="eDel">${esc(t("tDel"))}</button>`:""}`}
+function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value);x.note=clean($("eNote").value);
+  x.legs=Array.from(document.querySelectorAll(".leg")).map(b=>{const q=c=>b.querySelector(c);return {from:canPlace(q(".lF").value),to:canPlace(q(".lT").value),d1:q(".lD1").value,d2:q(".lD2").value,mode:q(".lM").value,veh:q(".lV").value,flt:clean(q(".lFl").value),who:splitGroup(q(".lW").value),all:q(".lA").checked}})}
+function impHTML(){const r=imp||[];return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="impTxt">${esc(t("iPaste"))}</label><textarea id="impTxt" rows="7" data-draft="impTxt"></textarea>
+ <label class="fileB">${esc(t("iFile"))}<input type="file" id="impFile" accept=".txt,.htm,.html,.eml,.docx" hidden></label>
+ <button type="button" id="impRead">${esc(t("iRead"))}</button><p class="hint" id="impMsg">${esc(impMsg)}</p></div>
+ ${r.length?`<h3>${esc(t("iFound").replace("%n",r.length))}</h3>${r.map((x,i)=>`<label class="chk box"><input type="checkbox" class="impC" data-i="${i}"${x.dup?"":" checked"}> <span>${tripCard(Object.assign({id:"imp"+i},x)).replace(/<\/?button[^>]*>/g,"")}${x.dup?`<b class="hint">(${esc(t("iDup"))})</b>`:""}</span></label>`).join("")}
+ <button type="button" id="impSave">${esc(t("iSave").replace("%n",r.filter(x=>!x.dup).length))}</button>`:""}`}
+function repHTML(){const T_=trips(),d=today();if(!repSel){repSel={};T_.filter(x=>lastD(x)>=d).forEach(x=>repSel[x.id]=1)}
+  const o=rep||{hello:"Good evening All,",intro:"Please find the next rotation cycles for your planning",from:"Johan"};rep=o;
+  const sel=T_.filter(x=>repSel[x.id]),m=reportModel(sel,o);
+  return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><h3>${esc(t("rPick"))}</h3>${T_.slice().reverse().map(x=>`<label class="chk"><input type="checkbox" class="repC" data-id="${esc(x.id)}"${repSel[x.id]?" checked":""}> ${esc(x.group.join("/"))} · ${esc(fmtShort(x.legs[0]&&x.legs[0].d1))}</label>`).join("")}
+  <label for="rHello">${esc(t("rHello"))}</label><input type="text" id="rHello" value="${esc(o.hello)}"><label for="rIntro">${esc(t("rIntro"))}</label><input type="text" id="rIntro" value="${esc(o.intro)}">
+  <label for="rFromName">${esc(t("rFrom"))}</label><input type="text" id="rFromName" value="${esc(o.from)}"></div>
+  <div class="box rep" id="repOut">${reportHtml(m)}</div><button type="button" id="rCopy">${esc(t("rCopy"))}</button>${can("export")?`<button type="button" class="sec" id="rDocx">${esc(t("rDocx"))}</button>`:""}<p class="hint" id="rMsg"></p>`}
+function moreHTML(){const V=vehicles(),A=all("al");return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button>
+ <div class="box"><h3>🚙 ${esc(t("vT"))}</h3>${V.map(v=>`<div class="urow"><span class="n">${esc(v.name)}</span></div>`).join("")}<input type="text" id="vehName" placeholder="Land Cruiser …"><button type="button" id="vAdd">${esc(t("vAdd"))}</button></div>
+ <div class="box"><h3>🔤 ${esc(t("nT"))}</h3><div class="urow"><span class="n">${esc(t("nA"))}</span><b>${esc(t("nC"))}</b></div>
+ ${A.map(a=>`<div class="urow"><span class="n">${esc(a.a)}</span><b>${esc(a.c)}</b></div>`).join("")}
+ ${Object.keys(PLACES).concat(Object.keys(PEOPLE)).filter(k=>KEY((PLACES[k]||PEOPLE[k]))!==k).map(k=>`<div class="urow"><span class="n">${esc(k)}</span><span>${esc(PLACES[k]||PEOPLE[k])}</span></div>`).join("")}
+ <label>${esc(t("nA"))}</label><input type="text" id="alA"><label>${esc(t("nC"))}</label><input type="text" id="alC">
+ <select id="alT"><option value="n">👤</option><option value="p">📍</option></select><button type="button" id="alAdd">${esc(t("nAdd"))}</button></div>`}
+const blankLeg=()=>({from:"",to:"",d1:"",d2:"",mode:"",veh:"",flt:"",who:[],all:false});
+function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
+  const srv=a=>{const o=$("exOut");api({action:a,token:sTok()||undefined,code:sCode()||undefined}).then(j=>{o.textContent=j.ok?(a==="report"?JSON.stringify(j.counts):(j.rows||[]).length+" rows"):t("noAccess")}).catch(()=>{o.textContent=t("ncT")})};
+  document.querySelectorAll('nav [data-tab="work"]').forEach(b=>b.addEventListener("click",()=>{wv="list";edit=null},true)); /* tapping the tab again → back to the trip list */
+  on("exRep",()=>srv("report"));on("exExp",()=>srv("export"));
+  on("eBack",()=>{edit=null;go_("list")});on("wNew",()=>{edit={id:"t"+Date.now().toString(36),group:[],legs:[blankLeg()],note:"",src:""};go_("edit")});
+  on("wImp",()=>{imp=null;impMsg="";go_("imp")});on("wRep",()=>{repSel=null;go_("rep")});on("wMore",()=>go_("more"));
+  if(canFix())document.querySelectorAll("button[data-trip]").forEach(b=>b.onclick=()=>{const x=trips().find(y=>y.id===b.dataset.trip);if(!x)return;edit=JSON.parse(JSON.stringify(x));delete edit.seed;go_("edit")});
+  on("eAddLeg",()=>{readEdit();const p=edit.legs[edit.legs.length-1];const n=blankLeg();if(p)n.from=p.to;edit.legs.push(n);render()});
+  document.querySelectorAll(".lX").forEach(b=>b.onclick=()=>{readEdit();edit.legs.splice(+b.closest(".leg").dataset.leg,1);render()});
+  on("eSave",()=>{readEdit();edit.legs=edit.legs.filter(l=>l.from||l.to||l.d1);const prev=trips().find(o=>o.id===edit.id),now=new Date().toISOString();if(prev){if(!canFix()){alert(t("fixOnly"));return}const fx=[];["group","legs","note"].forEach(f=>{if(JSON.stringify(prev[f]||"")!==JSON.stringify(edit[f]||""))fx.push({f:f,old:prev[f],by:u.name,at:now})});edit._fix=(prev._fix||[]).concat(fx)}else{edit.by=u.name;edit.at=now}if(put("tr",edit.id,edit)===false)return;edit=null;go_("list")});
+  on("eDel",()=>{if(!canFix())return;if(!confirm(t("tDelQ")))return;if(SEED.some(s=>s.id===edit.id))put("tr",edit.id,{id:edit.id,gone:true});else remove("tr",edit.id);edit=null;go_("list")});
+  const f=$("impFile");if(f)f.onchange=async()=>{const file=f.files[0];if(!file)return;try{const nm=file.name;
+      if(/\.docx$/i.test(nm))imp=await parseDocx(await file.arrayBuffer(),{name:nm});else{const s=await file.text();imp=/<html|<div|<p[ >]/i.test(s)?parseHtml(s,{name:nm}):parseText(s,{name:nm})}
+      markDup();impMsg=imp.length?nm:t("iNone");}catch(e){imp=[];impMsg=t("iNone")}render()};
+  on("impRead",()=>{const s=$("impTxt").value;imp=/<html|<div|<p[ >]/i.test(s)?parseHtml(s):parseText(s);markDup();impMsg=imp.length?"":t("iNone");render()});
+  on("impSave",()=>{let n=0;document.querySelectorAll(".impC").forEach(c=>{if(!c.checked)return;const x=imp[+c.dataset.i];const id="i"+Date.now().toString(36)+n;put("tr",id,Object.assign({id:id,note:"",by:u.name,at:new Date().toISOString()},x,{dup:undefined}));n++});
+    draftClear("impTxt");imp=null;impMsg=t("iDone").replace("%n",n);go_("imp")});
+  document.querySelectorAll(".repC").forEach(c=>c.onchange=()=>{if(c.checked)repSel[c.dataset.id]=1;else delete repSel[c.dataset.id];render()});
+  ["rHello","rIntro","rFromName"].forEach(id=>{const e=$(id);if(e)e.onchange=()=>{rep[id==="rHello"?"hello":id==="rIntro"?"intro":"from"]=e.value;render()}});
+  const cur=()=>reportModel(trips().filter(x=>repSel[x.id]),rep);
+  on("rCopy",async()=>{const m=cur();try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([reportHtml(m)],{type:"text/html"}),"text/plain":new Blob([reportText(m)],{type:"text/plain"})})])}
+    catch(e){try{const r=document.createRange();r.selectNodeContents($("repOut"));const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy")}catch(e2){}}$("rMsg").textContent=t("rCopied")});
+  on("rDocx",async()=>{const b=await reportDocx(cur()),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="Rotation Cycle "+today()+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)});
+  on("vAdd",()=>{const v=clean($("vehName").value);if(!v)return;put("v",KEY(v),{id:KEY(v),name:v});render()});
+  on("alAdd",()=>{const a=clean($("alA").value),c=clean($("alC").value);if(!a||!c)return;const ty=$("alT").value;put("al",ty+KEY(a),{id:ty+KEY(a),a:a,c:c,t:ty});render()});
+  bindFix();const b=$("exAdd");if(!b)return;
+  b.onclick=()=>{const v=$("exTxt").value.trim();if(!v)return;const id="x"+Date.now();put("x",id,{id:id,text:v,by:u.name,at:new Date().toISOString()});draftClear("exTxt");render()};
+}
+function markDup(){const S={};trips().forEach(x=>S[sig(x)]=1);(imp||[]).forEach(x=>{x.dup=!!S[sig(x)]})}
+/* ==================== APP FEATURES END ==================== */
+function canHTML(u){
+  if(u.admin)return `<div class="box"><h2>✅ ${esc(t("can"))}</h2><p><b>${esc(t("canAll"))}</b></p></div>`;
+  return `<div class="box" id="canBox"><h2>✅ ${esc(t("can"))}</h2><p class="hint">${esc(t("canH"))}</p>${(C.PERMS||[]).map(p=>`<div class="canR ${can(p.id,u)?"yes":"no"}" data-cp="${esc(p.id)}"><span class="ci">${can(p.id,u)?"✅":"⬜"}</span><span>${esc(p.icon)} ${esc(permLab(p))}</span></div>`).join("")}<p class="hint">${esc(t("canAdm"))}</p></div>`;
+}
+function permTicks(u){
+  if(u.admin||u.status!=="active"&&u.status!=="pending")return "";
+  const lk=k=>`<div class="permT lock"><span>${esc(t(k))}<small> · ⭐ ${esc(t("admOnly"))}</small></span><span style="flex:none;font-size:24px">🔒</span></div>`;
+  return `<div class="permBox" data-pu="${esc(u.id)}"><div class="hint">${esc(t("canEd"))} ${esc(u.name)}:</div>${(C.PERMS||[]).map(p=>`<label class="permT${permsOf(u).indexOf(p.id)>=0?" on":""}"><span>${esc(p.icon)} ${esc(permLab(p))}</span><input type="checkbox" data-pu="${esc(u.id)}" data-pp="${esc(p.id)}"${permsOf(u).indexOf(p.id)>=0?" checked":""}></label>`).join("")}${lk("lkFix")}${lk("lkApp")}</div>`;
+}
+let openU=null; // Admin users list: which person is open (list form like Purchases)
+function usersHTML(me_){
+  const U=users(),lab={pending:t("pend"),active:t("act"),rejected:t("rej"),blocked:t("blk")};
+  const sum=u=>u.admin?"⭐ "+t("admin"):((C.PERMS||[]).filter(p=>can(p.id,u)).map(p=>p.icon+" "+permLab(p)).join(" · ")||"—");
+  const ico={pending:"⏳",active:"🟢",rejected:"⛔",blocked:"🚫"};
+  const row=u=>{const o=openU===u.id||u.status==="pending";return `<div class="urow ulr" data-uid="${esc(u.id)}" style="display:block;padding:0;border:0"><button type="button" class="uli" data-open="${esc(u.id)}"><span class="ui">${ico[u.status]||"👤"}</span><span class="ut"><span class="n">${esc(u.name)}</span> <span class="st ${esc(u.status)}">${esc(lab[u.status]||u.status)}</span><small>${esc(sum(u))}</small></span><span class="ch">${o?"⌄":"›"}</span></button>${o?`<div class="uopen"><div class="acts">
+   ${u.status==="pending"?`<button type="button" class="sm" data-ua="approve" data-id="${esc(u.id)}">${esc(t("approve"))}</button><button type="button" class="sm red" data-ua="reject" data-id="${esc(u.id)}">${esc(t("reject"))}</button>`:""}
+   ${u.status==="active"&&u.id!==me_.id?`<button type="button" class="sm red" data-ua="block" data-id="${esc(u.id)}">${esc(t("block"))}</button>`:""}
+   ${(u.status==="blocked"||u.status==="rejected")?`<button type="button" class="sm sec" data-ua="unblock" data-id="${esc(u.id)}">${esc(t("unblock"))}</button>`:""}
+   ${u.status==="active"&&(u.pinH||u.hasPin)&&u.id!==me_.id?`<button type="button" class="sm sec" data-ua="reset" data-id="${esc(u.id)}">${esc(t("resetPin"))}</button>`:""}</div>${permTicks(u)}</div>`:""}</div>`};
+  const pend=U.filter(u=>u.status==="pending"),rest=U.filter(u=>u.status!=="pending").sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  return `<div class="box"><h3>⏳ ${esc(t("pend"))}</h3>${pend.length?pend.map(row).join(""):`<p class="hint">${esc(t("noPend"))}</p>`}</div><div class="box"><h3>👥 ${esc(t("users"))}</h3>${rest.map(row).join("")}</div>`;
+}
+function bindUsers(){
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{openU=openU===b.dataset.open?null:b.dataset.open;render()});
+  document.querySelectorAll("[data-ua]").forEach(b=>b.onclick=()=>{
+    const u=Object.assign({},users().find(x=>x.id===b.dataset.id));if(!u.id)return;const a=b.dataset.ua;
+    if(a==="approve"||a==="unblock")u.status="active";if(a==="reject")u.status="rejected";if(a==="block")u.status="blocked";
+    if(a==="reset"){delete u.pinH;delete u.salt;delete u.hasPin;u.pinReset=Date.now()}
+    if(a==="approve"&&!Array.isArray(u.perms))u.perms=(C.PERM_DEFAULT||[]).slice();
+    put("u",u.id,u);render()});
+  document.querySelectorAll("input[data-pp]").forEach(b=>b.onchange=()=>{
+    const u=Object.assign({},users().find(x=>x.id===b.dataset.pu));if(!u.id||u.admin)return;
+    const s=new Set(permsOf(u));if(b.checked)s.add(b.dataset.pp);else s.delete(b.dataset.pp);
+    u.perms=(C.PERMS||[]).map(p=>p.id).filter(id=>s.has(id));put("u",u.id,u);render()});
+}
+function settingsHTML(u){
+  const lo=+(L.get("lastOk")||0);
+  return `<div class="box"><h3>🌐 ${esc(t("lang"))}</h3>${langBtns()}</div>
+  <div class="box"><h3>🔄 ${esc(t("sync"))}</h3><p class="hint" id="sLine"></p><p class="hint">${esc(t("last"))}: ${lo?esc(new Date(lo).toLocaleString()):"—"}</p><button type="button" id="hSync">${esc(t("syncNow"))}</button>
+  ${u.admin?`<label class="hint">${esc(t("syncUrl"))}</label><div class="pw"><input id="sUrl" class="msk" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="${C.APP_ID}-su" value="${esc(sUrl())}"><button type="button" class="eye" data-eye="sUrl">👁</button></div>
+  <label class="hint">${esc(t("syncCode"))}</label><div class="pw"><input id="sCode" class="msk" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="${C.APP_ID}-sc" value="${esc(sCode())}"><button type="button" class="eye" data-eye="sCode">👁</button></div>
+  <button type="button" class="sec" id="sSave">${esc(t("save"))}</button>`:""}</div>
+  <div class="box"><h3>ℹ️ ${esc(t("ver"))} ${C.VER}</h3><button type="button" class="sec" id="uChk">${esc(t("updChk"))}</button><p class="hint" id="uMsg"></p></div>
+  <div class="box"><button type="button" class="sec" id="hShare">📤 ${esc(t("share"))}</button>${insHTML()}<button type="button" class="red" id="sOut">${esc(t("logout"))}</button><button type="button" class="sec" id="sWipe">${esc(t("wipe"))}</button></div>`;
+}
+function bindMain(u){
+  bindCommon();
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});
+  const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
+  on("hSync",()=>syncNow());on("hShare",shareModal);
+  on("sSave",()=>{L.set("syurl",$("sUrl").value.trim());L.set("sycode",$("sCode").value.trim());L.del("since");syncNow().then(render)});
+  on("uChk",()=>checkUpdate(true));
+  on("sOut",logout);on("sWipe",wipe);
+  if(tab==="work")bindWork(u);if(tab==="users")bindUsers();
+  draftBind(u);
+}
+async function logout(){
+  const u=me();if(!u)return;
+  if(pending()&&sUrl()&&navigator.onLine)await syncNow();
+  const n=pending();
+  if(!confirm(n?t("logoutPend").replace("%n",n):t("logoutQ").replace("%n",u.name)))return;
+  signOut();tab="home";render();
+}
+async function wipe(){
+  if(pending()&&sUrl()&&navigator.onLine)await syncNow();
+  const n=pending();if(!confirm(n?t("wipePend").replace("%n",n):t("wipeQ")))return;
+  await wipeThisApp();location.reload();
+}
+// Deletes ONLY this app's keys, caches and service worker. Other TMC apps are untouched.
+async function wipeThisApp(){
+  Object.keys(localStorage).filter(k=>k.indexOf(P)===0).forEach(k=>localStorage.removeItem(k));
+  try{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.indexOf(CACHE_PREFIX)===0).map(k=>caches.delete(k)))}catch(e){}
+  try{const rg=await navigator.serviceWorker.getRegistration("./");if(rg&&new URL(rg.scope).href===new URL("./",location.href).href)await rg.unregister()}catch(e){}
+}
+window.TMC.wipeThisApp=wipeThisApp;
+
+/* ---------------- Drafts ---------------- */
+const dKey=(u,k)=>"draft_"+NK(u.name)+"_"+k;
+function draftBind(u){document.querySelectorAll("[data-draft]").forEach(el=>{const k=dKey(u,el.dataset.draft),v=L.get(k);if(v&&!el.value){el.value=v;const n=$("drNote");if(n)n.style.display="block"}
+  el.addEventListener("input",()=>{if(el.value)L.set(k,el.value);else L.del(k)})})}
+function draftClear(k){const u=me();if(u)L.del(dKey(u,k))}
+window.TMC.draftClear=draftClear;
+
+/* ---------------- Sync status + unsynced warning ---------------- */
+let pendSince=0;
+function paintNc(){const w=$("ncW");if(!w)return;const off=!sUrl(),show=off||netBad;w.style.display=show?"block":"none";if(!show)return;
+  w.innerHTML=`<b>${esc(t("ncT"))}</b><span>${esc(off?t("ncOff"):t("ncH"))}</span>${off?"":`<button type="button" id="ncB">${esc(t("retry"))}</button>`}`;
+  const b=$("ncB");if(b)b.onclick=()=>{if(syncOn())syncNow();else api({action:"status",name:"x"}).catch(()=>{})}}
+function paintSync(){paintNc();
+  const d=$("sDot");if(d)d.className="dot "+(!syncOn()?"":sState==="busy"?"busy":sState==="err"||!navigator.onLine?"err":sState==="ok"?"ok":"");
+  const s=$("sLine");if(s)s.textContent=!syncOn()?t("syncOff"):!navigator.onLine?t("offline"):sState==="err"?t("syncErr"):t("synced");
+  const w=$("pendW");if(!w)return;const n=sUrl()?pending():0;
+  if(!n){pendSince=0;w.style.display="none";return}if(!pendSince)pendSince=Date.now();
+  const show=!navigator.onLine||sState==="err"||Date.now()-pendSince>6000;w.style.display=show?"block":"none";if(!show)return;
+  w.innerHTML=`${esc(t("pwT").replace("%n",n))}${navigator.onLine?"":`<small>${esc(t("pwOff"))}</small>`}<small>${esc(t("pwDel"))}</small><button type="button" id="pwB">${esc(t("syncNow"))}</button>`;
+  $("pwB").onclick=()=>syncNow();
+}
+setInterval(paintSync,2000);addEventListener("online",paintSync);addEventListener("offline",paintSync);
+function onData(){const u=me();if(flow&&flow.s==="wait"&&!u){/* stay */}if(!u&&L.get("uid")){signOut();render();return}
+  const a=document.activeElement;if(u&&!(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA")))render()}
+
+/* ---------------- Auto-update (service worker) ---------------- */
+let reg=null,updReady=false;
+function paintUpd(){const w=$("updW");if(!w)return;w.style.display=updReady?"block":"none";if(updReady){w.innerHTML=`${esc(t("updT"))}<button type="button" id="updB">${esc(t("updB"))}</button>`;$("updB").onclick=applyUpdate}}
+function applyUpdate(){if(reg&&reg.waiting)reg.waiting.postMessage("skip");else location.reload()}
+function checkUpdate(manual){if(!reg)return;reg.update().then(()=>{if(manual){const m=$("uMsg");if(m)m.textContent=reg.waiting||reg.installing?t("updT"):t("updNone")}}).catch(()=>{})}
+window.TMC.checkUpdate=checkUpdate;
+if("serviceWorker" in navigator&&location.protocol!=="file:"){
+  let reloading=false;const hadCtl=!!navigator.serviceWorker.controller; /* TMC Rotation: no reload on first install (fixes test race) */
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloading||!hadCtl)return;reloading=true;location.reload()});
+  navigator.serviceWorker.register("sw.js",{scope:"./"}).then(r=>{reg=r;
+    const watch=w=>{if(!w)return;w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){updReady=true;paintUpd()}})};
+    if(r.waiting&&navigator.serviceWorker.controller){updReady=true;paintUpd()}
+    watch(r.installing);r.addEventListener("updatefound",()=>watch(r.installing));
+    setInterval(()=>checkUpdate(),30*60000);
+  }).catch(e=>console.warn("sw",e));
+}
+
+/* ---------------- Install button + iPhone hint ---------------- */
+let bip=null;
+const typing=()=>{const a=document.activeElement;return !!(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA")&&a.value)};
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();bip=e;if(!typing())render()});
+addEventListener("appinstalled",()=>{bip=null;render()});
+const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+const isIos=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
+function insHTML(){if(standalone())return "";if(bip)return `<button type="button" class="insB">${esc(t("insBtn"))}</button>`;if(isIos())return `<div class="insH">${esc(t("insIos"))}</div>`;return ""}
+function bindIns(){document.querySelectorAll(".insB").forEach(b=>b.onclick=async()=>{if(!bip)return;bip.prompt();try{await bip.userChoice}catch(e){}bip=null;render()})}
+
+/* ---------------- Share app + QR ---------------- */
+function shareModal(){
+  const url=C.SHARE_URL||new URL("./",location.href).href;
+  const m=document.createElement("div");m.className="modal";
+  m.innerHTML=`<div class="card"><h2>📤 ${esc(t("share"))}</h2>${C.SHARE_URL?`<img class="qr" src="icons/qr.png" alt="QR">`:""}<p class="hint">${esc(t("shareH"))}</p><p style="word-break:break-all"><b>${esc(url)}</b></p>
+  ${navigator.share?`<button type="button" id="shS">${esc(t("shareB"))}</button>`:""}<button type="button" class="sec" id="shC">${esc(t("copy"))}</button><button type="button" class="sec" id="shX">${esc(t("close"))}</button></div>`;
+  document.body.appendChild(m);
+  const x=()=>m.remove();$("shX").onclick=x;m.onclick=e=>{if(e.target===m)x()};
+  if($("shS"))$("shS").onclick=()=>navigator.share({title:C.NAME,url:url}).catch(()=>{});
+  $("shC").onclick=()=>{try{navigator.clipboard.writeText(url).then(()=>{$("shC").textContent=t("copied")})}catch(e){}};
+}
+
+render();
+if(syncOn())syncNow();else if(sUrl())api({action:"status",name:"-"}).catch(()=>{});  // probe so "Not connected" shows on a fresh phone too
+})();
+/* SPELLCHECK START — phone spellcheck on every free-text box (names, items, notes).
+   Never on PIN / number / sync / code / masked fields. Covers boxes built later too. */
+(function(){
+  var SKIP=/pin|url|code|sync|pass|qty|price|amount|num|date|email|phone|tel/i;
+  function want(el){
+    if(el.hasAttribute("data-nospell")||el.classList.contains("msk")||el.classList.contains("mk")||el.readOnly||(el.getAttribute("autocapitalize")||"")==="characters")return false;
+    if(el.tagName==="TEXTAREA")return true;
+    var ty=(el.getAttribute("type")||"text").toLowerCase();
+    if(ty!=="text"&&ty!=="search")return false;
+    var im=(el.getAttribute("inputmode")||"").toLowerCase();
+    if(im==="numeric"||im==="decimal"||im==="tel"||im==="email"||im==="url")return false;
+    if(SKIP.test((el.id||"")+" "+(el.name||"")+" "+(el.className||"")))return false;
+    return true;
+  }
+  function fix(el){
+    if(!want(el)){if(el.tagName==="INPUT"||el.tagName==="TEXTAREA"){el.spellcheck=false;el.setAttribute("spellcheck","false")}return}
+    el.spellcheck=true;el.setAttribute("spellcheck","true");el.setAttribute("autocorrect","on");
+    var nm=/name|who/i.test((el.id||"")+" "+(el.name||""))&&el.tagName!=="TEXTAREA";
+    el.setAttribute("autocapitalize",nm?"words":"sentences");
+  }
+  function scan(root){if(!root||!root.querySelectorAll)return;if(root.matches&&root.matches("input,textarea"))fix(root);root.querySelectorAll("input,textarea").forEach(fix)}
+  window.TMC_spell=scan;
+  function go(){scan(document.body);new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(scan)})}).observe(document.body,{childList:true,subtree:true})}
+  if(document.body)go();else document.addEventListener("DOMContentLoaded",go);
+})();
+/* SPELLCHECK END */
+</script>
+</body></html>
