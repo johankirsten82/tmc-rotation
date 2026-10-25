@@ -23,8 +23,9 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 7,
+ "VER": 8,
  "COLOR": "#1d4ed8",
+ "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
  "BG": "#f1f5f9",
  "SYNC_URL": "https://script.google.com/macros/s/AKfycbyX4vLQSxgQ1D_oAHkyRDimAh9i7iTO-m7LKnr1McVUsoqguQn3LD-e6X8FKHPsVgurBw/exec",
@@ -115,6 +116,8 @@ nav.tabs button .ticon{font-size:24px}nav.tabs button.on{color:var(--c);border-t
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
 .tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:150px;margin:0;padding:12px 6px;background:#fff;color:#0f172a;border:2px solid #bbf7d0;border-radius:16px;box-shadow:0 2px 8px #0000000f;font-size:17px;font-weight:700}
 .tile.sec{background:#fff}.tile:active{background:#f0fdf4}.tile b{font-size:40px;line-height:1}
+.phPick{display:flex;gap:8px}.phPick label{flex:1;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--c);color:#fff;border-radius:10px;font-weight:700;font-size:17px;padding:6px;margin:6px 0;cursor:pointer}.phPick label.alt{background:#fff;color:var(--c);border:2px solid var(--c)}.phPick input{display:none}.phPrev{max-width:100%;border-radius:10px;margin-top:6px}
+.rep{width:100%;border-collapse:collapse;font-size:17px;margin:6px 0}.rep th{background:var(--rc);color:#fff;text-align:left;padding:12px 10px}.rep td{padding:12px 10px;border-bottom:1px solid #d1e7d8}.rep tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--rc) 10%,#fff)}.rep tfoot td{background:color-mix(in srgb,var(--rc) 22%,#fff);color:var(--rc);font-weight:800;border-top:3px solid var(--rc)}.repH{background:var(--rc);color:#fff;border-radius:10px;padding:12px;font-weight:800;font-size:19px;margin:6px 0}
 .box{background:#fff;border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:0 1px 3px #0002}
 .ph{border:4px dashed #f59e0b;background:#fffbeb;text-align:center}
 .bar{display:none;margin:0 0 12px;padding:12px;border-radius:14px;font-weight:700}
@@ -166,7 +169,7 @@ nav.tabs button .ticon{font-size:24px}nav.tabs button.on{color:var(--c);border-t
 (function(){
 const C=window.CONFIG,P=C.APP_ID+"_";            // every localStorage key starts with APP_ID_
 const CACHE_PREFIX=(C.CACHE_PREFIX||C.APP_ID)+"-v"; // every cache name starts with CACHE_PREFIX-v (default APP_ID)
-document.documentElement.style.setProperty("--c",C.COLOR);document.documentElement.style.setProperty("--cd",C.COLOR_DARK);document.documentElement.style.setProperty("--bg",C.BG);
+document.documentElement.style.setProperty("--c",C.COLOR);document.documentElement.style.setProperty("--cd",C.COLOR_DARK);document.documentElement.style.setProperty("--bg",C.BG);document.documentElement.style.setProperty("--rc",C.REPORT_COLOR||"#1B7F3B");
 const L={get:k=>localStorage.getItem(P+k),set:(k,v)=>localStorage.setItem(P+k,v),del:k=>localStorage.removeItem(P+k),
   j:(k,d)=>{try{const v=localStorage.getItem(P+k);return v==null?d:JSON.parse(v)}catch(e){return d}},sj:(k,v)=>localStorage.setItem(P+k,JSON.stringify(v))};
 window.TMC={P:P,L:L};
@@ -176,7 +179,7 @@ window.TMC={P:P,L:L};
 
 /* ---------------- Texts EN / FR / AR ---------------- */
 const T={en:{
-hello:"Hello",name:"Your name",nameH:"Type your name",go:"Continue",needName:"Please type your name.",
+hello:"Hello",phTake:"📷 Take photo",phPick:"🖼️ Choose from phone",rpTot:"Total",rpItem:"Item",rpQty:"Count",name:"Your name",nameH:"Type your name",go:"Continue",needName:"Please type your name.",
 pinT:"Enter your PIN",pin:"PIN",pinWrong:"Wrong PIN. Try again.",pinLock:"Too many wrong PINs. Try again in %m min.",other:"Use a different name",
 setT:"Choose a PIN",setH:"4 to 6 numbers. You will use it every time.",pin2:"Type the PIN again",pinBad:"Use 4 to 6 numbers.",pinDiff:"The two PINs are not the same.",save:"Save",
 setupT:"First Admin setup",setupH:"You are the first user. Choose the Admin PIN.",
@@ -196,7 +199,7 @@ logoutPend:"⚠️ %n change(s) are not sent yet. They stay on this phone and wi
 wipe:"🗑️ Clear this app on this phone",wipeQ:"Delete this app's data on this phone? Other apps are not touched.",wipePend:"⚠️ %n change(s) are NOT sent and will be LOST. Delete anyway?",
 draft:"Your unsaved text was kept.",ncT:"🔴 Not connected",ncH:"The app cannot reach the Sheet. Your work is kept on this phone and sent when it connects.",ncOff:"Sync link missing in this app. Tell the Admin."},
 fr:{
-hello:"Bonjour",name:"Votre nom",nameH:"Écrivez votre nom",go:"Continuer",needName:"Écrivez votre nom.",
+hello:"Bonjour",phTake:"📷 Prendre une photo",phPick:"🖼️ Choisir dans le téléphone",rpTot:"Total",rpItem:"Élément",rpQty:"Nombre",name:"Votre nom",nameH:"Écrivez votre nom",go:"Continuer",needName:"Écrivez votre nom.",
 pinT:"Entrez votre PIN",pin:"PIN",pinWrong:"PIN incorrect. Réessayez.",pinLock:"Trop de PIN erronés. Réessayez dans %m min.",other:"Utiliser un autre nom",
 setT:"Choisissez un PIN",setH:"4 à 6 chiffres. Vous l'utiliserez à chaque fois.",pin2:"Retapez le PIN",pinBad:"Utilisez 4 à 6 chiffres.",pinDiff:"Les deux PIN ne sont pas pareils.",save:"Enregistrer",
 setupT:"Configuration de l'Admin",setupH:"Vous êtes le premier utilisateur. Choisissez le PIN Admin.",
@@ -216,7 +219,7 @@ logoutPend:"⚠️ %n modification(s) pas encore envoyée(s). Elles restent sur 
 wipe:"🗑️ Effacer cette app sur ce téléphone",wipeQ:"Effacer les données de cette app sur ce téléphone ? Les autres apps ne sont pas touchées.",wipePend:"⚠️ %n modification(s) NON envoyée(s) seront PERDUES. Effacer quand même ?",
 draft:"Votre texte non enregistré a été gardé.",ncT:"🔴 Pas connecté",ncH:"L'app n'arrive pas à joindre la feuille. Votre travail reste sur ce téléphone et sera envoyé à la connexion.",ncOff:"Lien de synchro absent dans cette app. Prévenez l'Admin."},
 ar:{
-hello:"مرحبا",name:"اسمك",nameH:"اكتب اسمك",go:"متابعة",needName:"من فضلك اكتب اسمك.",
+hello:"مرحبا",phTake:"📷 التقط صورة",phPick:"🖼️ اختر من الهاتف",rpTot:"المجموع",rpItem:"البند",rpQty:"العدد",name:"اسمك",nameH:"اكتب اسمك",go:"متابعة",needName:"من فضلك اكتب اسمك.",
 pinT:"أدخل رمز PIN",pin:"PIN",pinWrong:"رمز خاطئ. حاول مرة أخرى.",pinLock:"رموز PIN خاطئة كثيرة. حاول مرة أخرى بعد %m دقيقة.",other:"استخدام اسم آخر",
 setT:"اختر رمز PIN",setH:"من 4 إلى 6 أرقام. ستستخدمه كل مرة.",pin2:"اكتب الرمز مرة أخرى",pinBad:"استخدم من 4 إلى 6 أرقام.",pinDiff:"الرمزان غير متطابقين.",save:"حفظ",
 setupT:"إعداد المسؤول الأول",setupH:"أنت أول مستخدم. اختر رمز المسؤول.",
@@ -578,13 +581,15 @@ function parseSchedule(txt,opt){opt=opt||{};const lines=String(txt||"").replace(
       const n=canName(nm.replace(/\s*\(.*?\)\s*/g," ").replace(/\s+-\s+.*$/,""));if(cur.who.indexOf(n)<0)cur.who.push(n);if(/to be confirmed|\btbc\b/i.test(nm))cur.tbc.push(n);nm="";return}
     nm=t});
   const src=opt.subject||opt.name||"Schedule";
-  return out.filter(x=>x.who.length&&x.d.length).map(x=>{x.d.sort();return {group:x.who,src:src,sent:opt.date||"",
+  const sc=schedFromName(opt.name)||schedFromName(opt.subject)||schedFromName((lines[0]||""));
+  return out.filter(x=>x.who.length&&x.d.length).map(x=>{x.d.sort();return {group:x.who,src:src,sched:sc,sent:opt.date||"",
     note:(x.via?"Via "+x.via+". ":"")+(x.tbc.length?"To be confirmed: "+x.tbc.join(", ")+".":""),legs:[L_(x.from,x.to,x.d[0],x.d.length>1?x.d[x.d.length-1]:"",modeOf(x.from,x.to))]}})}
 async function parseDocx(buf,opt){const h=await docxLines(buf);const r=parseText(h.text,Object.assign({},opt||{},{under:h.under}));
   return r.length||!/^travel from /im.test(h.text)?r:parseSchedule(h.text,opt)}
 
 /* ---- back-dated history (Shaun's emails Jan–Mar 2026) + Johan's Dec 2026 trip ---- */
 const L_=(from,to,d1,d2,mode,x)=>Object.assign({from:from,to:to,d1:d1,d2:d2||"",mode:mode||"",all:false,who:[],veh:"",flt:""},x||{});
+const SCH6="Schedule 6 – October 2026",SCH7="Schedule 7 – November/December 2026";
 const SEED=[
  {id:"s01",group:["Ken","Sean","Sebastiaan"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Postponed to 18 Feb (see 10 Feb email).",legs:[L_("SA","N'Djamena","2026-02-11","2026-02-12","air"),L_("N'Djamena","Bardai","2026-02-15","","charter"),L_("Bardai","HQ","2026-02-16","","road")]},
  {id:"s02",group:["Johan","Cliff"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Next charter 5th or 6th March. Later changed.",legs:[L_("Bardai","N'Djamena","2026-03-05","2026-03-06","charter")]},
@@ -601,11 +606,11 @@ const SEED=[
  {id:"s13",group:["Johan","Mahamout","Abdoullay","Sabour"],src:"Johan (Dec 2026 rotation)",note:"Mahamout, Abdoullay and Sabour stop in N'Djamena. Sabour: assumed, check.",legs:[L_("GZ","HQ","2026-12-01","","road"),L_("HQ","Bardai","2026-12-02","","road"),L_("Bardai","N'Djamena","2026-12-03","","charter"),
    L_("N'Djamena","Addis Ababa","2026-12-05","","air",{who:["Johan"],flt:"ET938 14:05"}),L_("Addis Ababa","Johannesburg","2026-12-05","2026-12-06","air",{who:["Johan"],flt:"ET859 23:30, lands 03:55"})]},
  /* Shaun's draft rotation schedules (24 Oct 2026, "for review and comment"). Not confirmed. */
- {id:"s14",group:["Ibrahim","Hamid","Yacoub","Langsana"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Yacoub = new truck driver, Langsana = new translator. Mahamout drives them Bardai to HQ.",legs:[L_("N'Djamena","Bardai","2026-11-01","","charter"),L_("Bardai","HQ","2026-11-02","","road",{all:true})]},
- {id:"s15",group:["Shaun","Ben","Abdul","Haroon","Mahamat Moussa","Nouradine","Pedro","Djmal"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Mahamout drives HQ to Bardai. Only Shaun, Ben and Pedro fly on to SA (via Addis).",legs:[L_("HQ","Bardai","2026-10-31","","road",{all:true}),L_("Bardai","N'Djamena","2026-11-01","","charter",{all:true}),L_("N'Djamena","SA","2026-11-04","","air",{who:["Shaun","Ben","Pedro"],flt:"via Addis Ababa"})]},
- {id:"s16",group:["Mahamout"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Driver run: takes the team to Bardai, brings Hamid, Ibrahim, Yacoub and Langsana back.",legs:[L_("HQ","Bardai","2026-10-31","","road"),L_("Bardai","HQ","2026-11-02","","road")]},
- {id:"s17",group:["Ben","Shaun","Haroon","Nouradine","Abdul","Ibrahim"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Shaun and Abdul to be confirmed. Ibrahim drives Bardai to HQ.",legs:[L_("SA","N'Djamena","2026-11-30","2026-12-01","air",{who:["Ben","Shaun"],flt:"via Addis Ababa"}),L_("N'Djamena","Bardai","2026-12-03","","charter",{who:["Ben","Shaun","Haroon","Nouradine","Abdul"]}),L_("Bardai","HQ","2026-12-04","","road",{all:true})]},
- {id:"s18",group:["Johan","Cliff","Abdelhadi","Sabour","Mahamout","Fadoul","Ibrahim","Abdoullay"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Same dates as Johan's s13. Abdoullay: 'to resign'. Abdelhadi and Ibrahim stay in Bardai (Ibrahim drives back 4 Dec). Shaun and Abdul also listed Bardai to N'Djamena, to be confirmed.",legs:[L_("HQ","Bardai","2026-12-02","","road",{all:true}),L_("Bardai","N'Djamena","2026-12-03","","charter",{who:["Johan","Cliff","Abdoullay","Sabour","Mahamout","Fadoul"]}),L_("N'Djamena","SA","2026-12-05","","air",{who:["Johan","Cliff"],flt:"via Addis Ababa"})]}
+ {id:"s14",sched:SCH6,group:["Ibrahim","Hamid","Yacoub","Langsana"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Yacoub = new truck driver, Langsana = new translator. Mahamout drives them Bardai to HQ.",legs:[L_("N'Djamena","Bardai","2026-11-01","","charter"),L_("Bardai","HQ","2026-11-02","","road",{all:true})]},
+ {id:"s15",sched:SCH6,group:["Shaun","Ben","Abdul","Haroon","Mahamat Moussa","Nouradine","Pedro","Djmal"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Mahamout drives HQ to Bardai. Only Shaun, Ben and Pedro fly on to SA (via Addis).",legs:[L_("HQ","Bardai","2026-10-31","","road",{all:true}),L_("Bardai","N'Djamena","2026-11-01","","charter",{all:true}),L_("N'Djamena","SA","2026-11-04","","air",{who:["Shaun","Ben","Pedro"],flt:"via Addis Ababa"})]},
+ {id:"s16",sched:SCH6,group:["Mahamout"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Driver run: takes the team to Bardai, brings Hamid, Ibrahim, Yacoub and Langsana back.",legs:[L_("HQ","Bardai","2026-10-31","","road"),L_("Bardai","HQ","2026-11-02","","road")]},
+ {id:"s17",sched:SCH7,group:["Ben","Shaun","Haroon","Nouradine","Abdul","Ibrahim"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Shaun and Abdul to be confirmed. Ibrahim drives Bardai to HQ.",legs:[L_("SA","N'Djamena","2026-11-30","2026-12-01","air",{who:["Ben","Shaun"],flt:"via Addis Ababa"}),L_("N'Djamena","Bardai","2026-12-03","","charter",{who:["Ben","Shaun","Haroon","Nouradine","Abdul"]}),L_("Bardai","HQ","2026-12-04","","road",{all:true})]},
+ {id:"s18",sched:SCH7,group:["Johan","Cliff","Abdelhadi","Sabour","Mahamout","Fadoul","Ibrahim","Abdoullay"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Same dates as Johan's s13. Abdoullay: 'to resign'. Abdelhadi and Ibrahim stay in Bardai (Ibrahim drives back 4 Dec). Shaun and Abdul also listed Bardai to N'Djamena, to be confirmed.",legs:[L_("HQ","Bardai","2026-12-02","","road",{all:true}),L_("Bardai","N'Djamena","2026-12-03","","charter",{who:["Johan","Cliff","Abdoullay","Sabour","Mahamout","Fadoul"]}),L_("N'Djamena","SA","2026-12-05","","air",{who:["Johan","Cliff"],flt:"via Addis Ababa"})]}
 ].map(x=>Object.assign({seed:1,note:""},x));
 const VEH0=[{id:"b052052",name:"Land Cruiser B052052"}];
 function trips(){const own={};all("tr").forEach(x=>{if(x&&x.id)own[x.id]=x});const out=[];
@@ -647,6 +652,24 @@ async function reportDocx(m){const x=docxXml(m),z=new JSZip();
   z.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
   z.file("word/document.xml",x.doc);z.file("word/numbering.xml",x.num);z.file("word/styles.xml",x.sty);
   return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
+/* base helpers (photo: for future fields, not used yet) */
+/* ---- PHOTO: every photo field = 2 big buttons (camera OR phone gallery), same handler ----
+   photoHTML(id) -> HTML; bindPhoto(id, cb) -> cb(dataUrl) after resize/compress (max 1280px, JPEG 0.7). */
+function photoHTML(id){return `<div class="phPick" id="${id}"><label class="phCam"><input type="file" accept="image/*" capture="environment" data-ph="${id}">${esc(t("phTake"))}</label><label class="alt phGal"><input type="file" accept="image/*" data-ph="${id}">${esc(t("phPick"))}</label></div>`}
+function shrinkPhoto(file,max,q){return new Promise((ok,no)=>{const r=new FileReader();r.onerror=no;r.onload=()=>{const im=new Image();im.onerror=no;im.onload=()=>{const k=Math.min(1,(max||1280)/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",q||0.7))};im.src=r.result};r.readAsDataURL(file)})}
+function bindPhoto(id,cb){document.querySelectorAll(`input[data-ph="${id}"]`).forEach(i=>i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;window.TMC.lastPhotoFrom=i.hasAttribute("capture")?"camera":"phone";shrinkPhoto(f).then(cb).catch(()=>{});i.value=""})}
+window.TMC.photoHTML=photoHTML;window.TMC.bindPhoto=bindPhoto;window.TMC.shrinkPhoto=shrinkPhoto;
+/* ---- REPORT: green company table (CONFIG REPORT_COLOR). rows=[[label,value],...] ---- */
+function reportHTML(title,rows){const tot=rows.reduce((a,r)=>a+(+r[1]||0),0);return `<div class="repH">📊 ${esc(title)}</div><table class="rep"><thead><tr><th>${esc(t("rpItem"))}</th><th>${esc(t("rpQty"))}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("rpTot"))}</td><td>${tot}</td></tr></tfoot></table>`}
+window.TMC.reportHTML=reportHTML;
+/* Full Name + Surname from staff-rotation.xlsx (Setup). Not in list = shown as saved. */
+const FULLN={"Shaun": "Shaun Smith", "Johan": "Johan Kirsten", "Elton": "Elton Spiers", "Cliff": "Cliff Nel", "Pedro": "Pedro Boshoff", "Micheal": "Micheal vd Merwe", "Alex": "Alex Gillian", "Ben": "Ben Marais", "Abdul": "Abdul Oumar Abdoul", "Hamid": "Hamid Ahamat Lode", "Ibrahim": "Ibrahim Youssouf Ali", "Sabour": "Sabour Kertemar Appollinaire", "Mahamout": "Mahamout Abakar Bourma", "Sean": "Sean Versfeld", "Sebastiaan": "Sebastiaan Janse van Vuuren", "Hendrik": "Hendrik Joubert", "Abdelhadi": "Abdelhadi Silay", "Ahmat": "Ahmat Bourma", "Fadoul": "Fadoul Adam", "Haroon": "Haroon Zoulla", "Mahamat Moussa": "Mahamat Moussa Abema", "Mahamat": "Mahamat Moussa Abema", "Nouradine": "Nouradine Mahamat Adam", "Abdoullay": "Abdoullay Younouss", "Andrew": "Andrew Holloway", "Yacoub": "Yacoub Oumar Brahim", "Langsana": "Langsana Vi-Fikaoussou Djidda"};const fullName=n=>FULLN[n]||n;
+const schedOf=x=>{if(x.sched)return x.sched;const m=/schedule\s*(\d+)/i.exec(x.src||"");if(m)return ({"6":SCH6,"7":SCH7})[m[1]]||"Schedule "+m[1];return "Earlier trips"};
+const schedNum=s=>{const m=/schedule\s*(\d+)/i.exec(s);return m?+m[1]:-1};
+function schedList(T_){const S={};T_.forEach(x=>{const k=schedOf(x);S[k]=S[k]||{name:k,last:""};const d=lastD(x);if(d>S[k].last)S[k].last=d});
+  return Object.values(S).sort((a,b)=>schedNum(b.name)-schedNum(a.name)||b.last.localeCompare(a.last)).map(o=>o.name)}
+function schedFromName(nm){const m=/schedule[\s_-]*(\d+)(?:[\s_–-]+(.+?))?(?:\.\w+)?$/i.exec(String(nm||""));if(!m)return "";
+  const k=({"6":SCH6,"7":SCH7})[m[1]];if(k)return k;return "Schedule "+m[1]+(m[2]?" – "+m[2].replace(/[_]/g," ").replace(/-/g,"/").replace(/^\d{4}\/\d\d\/\d\d\s*/,""):"")}
 /* ---- trip sheet in Shaun's schedule layout (title, "Travel from X to Y", table Item | Name | Date). No key/meanings. ---- */
 const ROUTE_ORDER=[["SA","N'Djamena","Travel from S A to Addis & then to N’djamena"],["N'Djamena","Bardai","Travel from N’djamena to Bardai"],["HQ","Bardai","Travel from Seneker (HQ) to Bardai"],
  ["Bardai","N'Djamena","Travel from Bardai to N’djamena"],["Bardai","HQ","Travel from Bardai to Seneker"],["N'Djamena","SA","Travel from N’djamena to Addis and onto SA"]];
@@ -658,23 +681,23 @@ function schedModel(sel,o){o=o||{};const S={},order=[];
     if(!S[k]){const r=ROUTE_ORDER.findIndex(z=>z[0]===l.from&&z[1]===l.to);S[k]={from:l.from,to:l.to,head:r>=0?ROUTE_ORDER[r][2]:"Travel from "+l.from+" to "+l.to,ri:r<0?99:r,rows:[],first:l.d1||"9999"};order.push(k)}
     const s=S[k];if(l.d1&&l.d1<s.first)s.first=l.d1;
     const who=(l.who&&l.who.length&&!l.all)?l.who:(x.group||[]),date=longD(l.d1)+(l.d2&&l.d2!==l.d1?" – "+longD(l.d2):"");
-    who.forEach(n=>{if(!s.rows.some(r=>r.name===n&&r.date===date))s.rows.push({name:n,date:date,d:l.d1||""})})}));
+    who.map(fullName).forEach(n=>{if(!s.rows.some(r=>r.name===n&&r.date===date))s.rows.push({name:n,date:date,d:l.d1||""})})}));
   const secs=order.map(k=>S[k]).sort((a,b)=>a.ri-b.ri||a.first.localeCompare(b.first));secs.forEach(s=>s.rows.sort((a,b)=>a.d.localeCompare(b.d)));
   const ds=[];secs.forEach(s=>s.rows.forEach(r=>{if(r.d)ds.push(r.d)}));ds.sort();
   let mon="";if(ds.length){const a=ds[0].split("-").map(Number),b=ds[ds.length-1].split("-").map(Number);const ms=[];for(let y=a[0],mm=a[1];y<b[0]||(y===b[0]&&mm<=b[1]);mm===12?(y++,mm=1):mm++)ms.push(capM(mm-1)+(y!==b[0]?" "+y:""));mon=ms.join("/")+" "+b[0]}
-  const title=o.title||((mon?mon+" – ":"")+"Updated "+longD(o.today||today()));
+  const title=o.title||(o.sched&&o.sched!=="Earlier trips"?o.sched.replace(/^Schedule \d+ – /,"")+" – Updated "+longD(o.today||today()):"")||((mon?mon+" – ":"")+"Updated "+longD(o.today||today()));
   return {title:title,secs:secs.map(s=>({head:s.head,rows:s.rows.map((r,i)=>({item:i+1,name:r.name,date:r.date}))}))}}
-function schedHtml(m){const td='style="border:1px solid #000;padding:3px 6px;text-align:left;vertical-align:top"';
-  return `<div class="sched" style="font-family:Calibri,Arial,sans-serif;color:#000;background:#fff;padding:8px"><p style="font-weight:bold;font-size:14pt;margin:0 0 10px">${esc(m.title)}</p>`+
-  m.secs.map(s=>`<p style="font-weight:bold;font-size:10pt;margin:12px 0 4px">${esc(s.head)}</p><table style="border-collapse:collapse;width:100%;table-layout:fixed;font-size:10pt"><colgroup><col style="width:3.2em"><col style="width:44%"><col></colgroup><tr><th ${td}>Item</th><th ${td}>Name</th><th ${td}>Date</th></tr>`+
-    s.rows.map(r=>`<tr><td ${td}>${r.item}</td><td ${td}>${esc(r.name)}</td><td ${td}>${esc(r.date)}</td></tr>`).join("")+`</table>`).join("")+`</div>`}
+function schedHtml(m){const G=C.REPORT_COLOR||"#1B7F3B",bd='border:1px solid #9cc9aa;padding:6px 8px;text-align:left;vertical-align:top',td='style="'+bd+'"',th='style="'+bd+';background:'+G+';color:#fff"',tdE='style="'+bd+';background:#e8f3ec"';
+  return `<div class="sched" style="font-family:Calibri,Arial,sans-serif;color:#000;background:#fff;padding:8px"><p style="font-weight:bold;font-size:14pt;margin:0 0 10px;color:${G}">${esc(m.title)}</p>`+
+  m.secs.map(s=>`<p style="font-weight:bold;font-size:10pt;margin:12px 0 4px">${esc(s.head)}</p><table style="border-collapse:collapse;width:100%;table-layout:fixed;font-size:10pt"><colgroup><col style="width:3.2em"><col style="width:44%"><col></colgroup><tr><th ${th}>Item</th><th ${th}>Name</th><th ${th}>Date</th></tr>`+
+    s.rows.map((r,i)=>{const c=i%2?tdE:td;return `<tr><td ${c}>${r.item}</td><td ${c}>${esc(r.name)}</td><td ${c}>${esc(r.date)}</td></tr>`}).join("")+`</table>`).join("")+`</div>`}
 function schedText(m){return m.title+"\n\n"+m.secs.map(s=>s.head+"\nItem\tName\tDate\n"+s.rows.map(r=>r.item+"\t"+r.name+"\t"+r.date).join("\n")).join("\n\n")+"\n"}
 async function schedDocx(m){const NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
-  const R=(t,sz,u,b)=>`<w:r><w:rPr>${b?"<w:b/>":""}<w:sz w:val="${sz}"/>${u?'<w:u w:val="single"/>':""}</w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`,P=(r,sp)=>`<w:p><w:pPr><w:spacing w:before="${sp||0}" w:after="60"/></w:pPr>${r||""}</w:p>`;
-  const W=[718,3963,4335],cell=(t,i,b)=>`<w:tc><w:tcPr><w:tcW w:w="${W[i]}" w:type="dxa"/></w:tcPr><w:p>${t===""?"":R(String(t),20,false,b)}</w:p></w:tc>`,row=(a,b)=>`<w:tr>${a.map((t,i)=>cell(t,i,b)).join("")}</w:tr>`;
-  let body=P(R(m.title,28,false,true));
+  const GH=String(C.REPORT_COLOR||"#1B7F3B").replace("#",""),R=(t,sz,u,b,col)=>`<w:r><w:rPr>${b?"<w:b/>":""}${col?`<w:color w:val="${col}"/>`:""}<w:sz w:val="${sz}"/>${u?'<w:u w:val="single"/>':""}</w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`,P=(r,sp)=>`<w:p><w:pPr><w:spacing w:before="${sp||0}" w:after="60"/></w:pPr>${r||""}</w:p>`;
+  const W=[718,3963,4335],cell=(t,i,b,f)=>`<w:tc><w:tcPr><w:tcW w:w="${W[i]}" w:type="dxa"/>${f?`<w:shd w:val="clear" w:color="auto" w:fill="${f}"/>`:""}</w:tcPr><w:p>${t===""?"":R(String(t),20,false,b,b?"FFFFFF":"")}</w:p></w:tc>`,row=(a,b,f)=>`<w:tr>${a.map((t,i)=>cell(t,i,b,f)).join("")}</w:tr>`;
+  let body=P(R(m.title,28,false,true,GH));
   m.secs.forEach(s=>{body+=P(R(s.head,20,false,true),200)+`<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="9016" w:type="dxa"/><w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(b=>`<w:${b} w:val="single" w:sz="4" w:space="0" w:color="000000"/>`).join("")}</w:tblBorders></w:tblPr><w:tblGrid>${W.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`+
-    row(["Item","Name","Date"],true)+s.rows.map(r=>row([r.item,r.name,r.date])).join("")+`</w:tbl>`});
+    row(["Item","Name","Date"],true,GH)+s.rows.map((r,i)=>row([r.item,r.name,r.date],false,i%2?"E8F3EC":"")).join("")+`</w:tbl>`});
   const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
   const sty=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles ${NS}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="20"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="table" w:styleId="TableGrid"><w:name w:val="Table Grid"/></w:style></w:styles>`;
   const z=new JSZip();
@@ -683,7 +706,7 @@ async function schedDocx(m){const NS='xmlns:w="http://schemas.openxmlformats.org
   z.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
   z.file("word/document.xml",doc);z.file("word/styles.xml",sty);
   return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
-window.TRV={schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
+window.TRV={schedOf:schedOf,schedList:schedList,schedFromName:schedFromName,fullName:fullName,schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
 
 /* ---- screens ---- */
 let wv="list",edit=null,imp=null,rep=null,repSel=null,impMsg="";
@@ -720,22 +743,24 @@ function legHTML(l,i){const V=vehicles();return `<div class="box leg" data-leg="
  <label class="chk"><input type="checkbox" class="lA"${l.all?" checked":""}> ${esc(t("tAll"))}</label>
  <button type="button" class="sec lX">${esc(t("tDelLeg"))}</button></div>`}
 function editHTML(){const x=edit;return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="eGroup">${esc(t("tGroup"))}</label><input type="text" id="eGroup" value="${esc(x.group.join("/"))}">
+ <label for="eSched">Schedule</label><input type="text" id="eSched" list="schL" value="${esc(x.sched||"")}" placeholder="Schedule 8 – …"><datalist id="schL">${schedList(trips()).filter(n=>n!=="Earlier trips").map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
  <label for="eNote">${esc(t("tNote"))}</label><textarea id="eNote" rows="2">${esc(x.note||"")}</textarea>${x.src?`<p class="hint">${esc(t("src"))}: ${esc(x.src)}</p>`:""}</div>
  <datalist id="plc">${placeList().map(p=>`<option value="${esc(p)}">`).join("")}</datalist>
  ${x.legs.map(legHTML).join("")}<button type="button" class="sec" id="eAddLeg">${esc(t("tAddLeg"))}</button><button type="button" id="eSave">${esc(t("tSave"))}</button>${canFix()&&trips().some(o=>o.id===x.id)?`<button type="button" class="red" id="eDel">${esc(t("tDel"))}</button>`:""}`}
-function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value);x.note=clean($("eNote").value);
+function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value);x.note=clean($("eNote").value);x.sched=clean($("eSched").value);
   x.legs=Array.from(document.querySelectorAll(".leg")).map(b=>{const q=c=>b.querySelector(c);return {from:canPlace(q(".lF").value),to:canPlace(q(".lT").value),d1:q(".lD1").value,d2:q(".lD2").value,mode:q(".lM").value,veh:q(".lV").value,flt:clean(q(".lFl").value),who:splitGroup(q(".lW").value),all:q(".lA").checked}})}
 function impHTML(){const r=imp||[];return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="impTxt">${esc(t("iPaste"))}</label><textarea id="impTxt" rows="7" data-draft="impTxt"></textarea>
  <label class="fileB">${esc(t("iFile"))}<input type="file" id="impFile" accept=".txt,.htm,.html,.eml,.docx" hidden></label>
  <button type="button" id="impRead">${esc(t("iRead"))}</button><p class="hint" id="impMsg">${esc(impMsg)}</p></div>
  ${r.length?`<h3>${esc(t("iFound").replace("%n",r.length))}</h3>${r.map((x,i)=>`<label class="chk box"><input type="checkbox" class="impC" data-i="${i}"${x.dup?"":" checked"}> <span>${tripCard(Object.assign({id:"imp"+i},x)).replace(/<\/?button[^>]*>/g,"")}${x.dup?`<b class="hint">(${esc(t("iDup"))})</b>`:""}</span></label>`).join("")}
  <button type="button" id="impSave">${esc(t("iSave").replace("%n",r.filter(x=>!x.dup).length))}</button>`:""}`}
-function repHTML(){const T_=trips(),d=today();if(!repSel){repSel={};T_.filter(x=>lastD(x)>=d).forEach(x=>repSel[x.id]=1)}
-  const o=rep||{title:""};rep=o;
+function repHTML(){const T_=trips(),d=today(),SL=schedList(T_);const o=rep||{title:""};rep=o;
+  if(!repSel){o.sched=o.sched||SL[0]||"";repSel={};T_.filter(x=>schedOf(x)===o.sched).forEach(x=>repSel[x.id]=1)}
   const sel=T_.filter(x=>repSel[x.id]),m=schedModel(sel,o);
-  return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><h3>${esc(t("rPick"))}</h3>${T_.slice().reverse().map(x=>`<label class="chk"><input type="checkbox" class="repC" data-id="${esc(x.id)}"${repSel[x.id]?" checked":""}> ${esc(x.group.join("/"))} · ${esc(fmtShort(x.legs[0]&&x.legs[0].d1))}</label>`).join("")}
-  <label for="rTitle">${esc(t("rTitle"))}</label><input type="text" id="rTitle" value="${esc(o.title||m.title)}"></div>
-  <div class="box rep" id="repOut">${schedHtml(m)}</div><button type="button" id="rCopy">${esc(t("rCopy"))}</button>${can("export")?`<button type="button" class="sec" id="rDocx">${esc(t("rDocx"))}</button>`:""}<p class="hint" id="rMsg"></p>`}
+  return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="rSched"><b>📅 Schedule</b></label><select id="rSched" class="big" style="font-size:20px;min-height:56px;width:100%">${SL.map(n=>`<option value="${esc(n)}"${n===o.sched?" selected":""}>${esc(n)}</option>`).join("")}</select></div>
+  <div class="box rep" id="repOut">${schedHtml(m)}</div><button type="button" id="rCopy">${esc(t("rCopy"))}</button>${can("export")?`<button type="button" class="sec" id="rDocx">${esc(t("rDocx"))}</button>`:""}<p class="hint" id="rMsg"></p>
+  <details class="box"><summary>${esc(t("rPick"))}</summary>${T_.slice().reverse().map(x=>`<label class="chk"><input type="checkbox" class="repC" data-id="${esc(x.id)}"${repSel[x.id]?" checked":""}> ${esc(x.group.join("/"))} · ${esc(fmtShort(x.legs[0]&&x.legs[0].d1))}</label>`).join("")}
+  <label for="rTitle">${esc(t("rTitle"))}</label><input type="text" id="rTitle" value="${esc(o.title||m.title)}"></details>`}
 function moreHTML(){const V=vehicles(),A=all("al");return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button>
  <div class="box"><h3>🚙 ${esc(t("vT"))}</h3>${V.map(v=>`<div class="urow"><span class="n">${esc(v.name)}</span></div>`).join("")}<input type="text" id="vehName" placeholder="Land Cruiser …"><button type="button" id="vAdd">${esc(t("vAdd"))}</button></div>
  <div class="box"><h3>🔤 ${esc(t("nT"))}</h3><div class="urow"><span class="n">${esc(t("nA"))}</span><b>${esc(t("nC"))}</b></div>
@@ -753,7 +778,7 @@ function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
   if(canFix())document.querySelectorAll("button[data-trip]").forEach(b=>b.onclick=()=>{const x=trips().find(y=>y.id===b.dataset.trip);if(!x)return;edit=JSON.parse(JSON.stringify(x));delete edit.seed;go_("edit")});
   on("eAddLeg",()=>{readEdit();const p=edit.legs[edit.legs.length-1];const n=blankLeg();if(p)n.from=p.to;edit.legs.push(n);render()});
   document.querySelectorAll(".lX").forEach(b=>b.onclick=()=>{readEdit();edit.legs.splice(+b.closest(".leg").dataset.leg,1);render()});
-  on("eSave",()=>{readEdit();edit.legs=edit.legs.filter(l=>l.from||l.to||l.d1);const prev=trips().find(o=>o.id===edit.id),now=new Date().toISOString();if(prev){if(!canFix()){alert(t("fixOnly"));return}const fx=[];["group","legs","note"].forEach(f=>{if(JSON.stringify(prev[f]||"")!==JSON.stringify(edit[f]||""))fx.push({f:f,old:prev[f],by:u.name,at:now})});edit._fix=(prev._fix||[]).concat(fx)}else{edit.by=u.name;edit.at=now}if(put("tr",edit.id,edit)===false)return;edit=null;go_("list")});
+  on("eSave",()=>{readEdit();edit.legs=edit.legs.filter(l=>l.from||l.to||l.d1);const prev=trips().find(o=>o.id===edit.id),now=new Date().toISOString();if(prev){if(!canFix()){alert(t("fixOnly"));return}const fx=[];["group","legs","note","sched"].forEach(f=>{if(JSON.stringify(prev[f]||"")!==JSON.stringify(edit[f]||""))fx.push({f:f,old:prev[f],by:u.name,at:now})});edit._fix=(prev._fix||[]).concat(fx)}else{edit.by=u.name;edit.at=now}if(put("tr",edit.id,edit)===false)return;edit=null;go_("list")});
   on("eDel",()=>{if(!canFix())return;if(!confirm(t("tDelQ")))return;if(SEED.some(s=>s.id===edit.id))put("tr",edit.id,{id:edit.id,gone:true});else remove("tr",edit.id);edit=null;go_("list")});
   const f=$("impFile");if(f)f.onchange=async()=>{const file=f.files[0];if(!file)return;try{const nm=file.name;
       if(/\.docx$/i.test(nm))imp=await parseDocx(await file.arrayBuffer(),{name:nm});else{const s=await file.text();imp=/<html|<div|<p[ >]/i.test(s)?parseHtml(s,{name:nm}):parseText(s,{name:nm})}
@@ -762,11 +787,12 @@ function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
   on("impSave",()=>{let n=0;document.querySelectorAll(".impC").forEach(c=>{if(!c.checked)return;const x=imp[+c.dataset.i];const id="i"+Date.now().toString(36)+n;put("tr",id,Object.assign({id:id,note:"",by:u.name,at:new Date().toISOString()},x,{dup:undefined}));n++});
     draftClear("impTxt");imp=null;impMsg=t("iDone").replace("%n",n);go_("imp")});
   document.querySelectorAll(".repC").forEach(c=>c.onchange=()=>{if(c.checked)repSel[c.dataset.id]=1;else delete repSel[c.dataset.id];render()});
+  {const e=$("rSched");if(e)e.onchange=()=>{rep.sched=e.value;rep.title="";repSel=null;render()}}
   {const e=$("rTitle");if(e)e.onchange=()=>{rep.title=clean(e.value);render()}}
   const cur=()=>schedModel(trips().filter(x=>repSel[x.id]),rep);
   on("rCopy",async()=>{const m=cur();try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([schedHtml(m)],{type:"text/html"}),"text/plain":new Blob([schedText(m)],{type:"text/plain"})})])}
     catch(e){try{const r=document.createRange();r.selectNodeContents($("repOut"));const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy")}catch(e2){}}$("rMsg").textContent=t("rCopied")});
-  on("rDocx",async()=>{const b=await schedDocx(cur()),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="Rotation Schedule "+today()+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)});
+  on("rDocx",async()=>{const b=await schedDocx(cur()),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=((rep&&rep.sched)||"Rotation Schedule").replace(/[\\/:*?"<>|]/g,"-")+" "+today()+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)});
   on("vAdd",()=>{const v=clean($("vehName").value);if(!v)return;put("v",KEY(v),{id:KEY(v),name:v});render()});
   on("alAdd",()=>{const a=clean($("alA").value),c=clean($("alC").value);if(!a||!c)return;const ty=$("alT").value;put("al",ty+KEY(a),{id:ty+KEY(a),a:a,c:c,t:ty});render()});
   bindFix();const b=$("exAdd");if(!b)return;
