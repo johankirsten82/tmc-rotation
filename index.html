@@ -23,7 +23,7 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 4,
+ "VER": 6,
  "COLOR": "#1d4ed8",
  "COLOR_DARK": "#1e3a8a",
  "BG": "#f1f5f9",
@@ -297,13 +297,13 @@ function syncNow(){
   const keys=Object.keys(dirty),sent={};
   const changes=keys.map(k=>{const r=R[k];sent[k]=r.u;return {kind:r.kind,id:r.id,u:r.u,del:r.del,data:r.data}});
   sState="busy";paintSync();
-  busy=fetch(sUrl(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"sync",code:sCode()||undefined,token:sCode()?undefined:sTok(),device:dev,since:+(L.get("since")||0),changes:changes})})
+  busy=fetch(sUrl(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"sync",code:sCode()||undefined,token:sTok()||undefined,device:dev,since:+(L.get("since")||0),changes:changes})})
   .then(r=>r.json()).then(j=>{
     if(j&&!j.ok&&(j.error==="bad_token"||j.error==="not_active")&&!sCode()){L.del("tok")}
     if(!j||!j.ok)throw new Error(j&&j.error||"sync");
     Object.keys(sent).forEach(k=>{if(R[k]&&R[k].u===sent[k])delete dirty[k]});
     (j.records||[]).forEach(s=>{const k=s.kind+":"+s.id,u=+s.u||0,loc=R[k];if(loc&&(loc.u>u||(dirty[k]&&loc.u>=u)))return;
-      let d=s.data;if(typeof d==="string"){try{d=d?JSON.parse(d):null}catch(e){d=null}}if(s.kind==="u"&&(s.del||!d)&&loc&&!loc.del)return;R[k]={kind:s.kind,id:String(s.id),u:u,del:s.del?1:0,data:d}});
+      let d=s.data;if(typeof d==="string"){try{d=d?JSON.parse(d):null}catch(e){d=null}}if(s.kind==="u"&&(s.del||!d)&&loc&&!loc.del)return;if(s.kind==="u"&&d&&!d.pinH&&d.hasPin&&!d.pinReset&&loc&&loc.data&&loc.data.pinH){d.pinH=loc.data.pinH;d.salt=loc.data.salt}R[k]={kind:s.kind,id:String(s.id),u:u,del:s.del?1:0,data:d}});
     L.set("since",String(j.now||Date.now()));L.set("lastOk",String(Date.now()));saveR();fails=0;sState="ok";netBad=false;return true})
   .catch(e=>{fails++;sState="err";netBad=true;syncSoon(navigator.onLine?Math.min(120000,5000*Math.pow(2,fails-1)):60000);return false})
   .then(ok=>{busy=null;paintSync();try{onData()}catch(e){console.warn(e)}if(ok&&pending())syncSoon(300);return ok});
@@ -408,12 +408,13 @@ async function gotToken(j,u){
   L.set("tok",j.token);L.del("since");await syncNow();
   const me_=users().find(x=>x.id===j.id);
   if(!me_){flow={s:"net",name:flow&&flow.name};return render()}
+  if(!me_.pinH&&u&&u.pinH){me_.pinH=u.pinH;me_.salt=u.salt;saveR()}
   L.set("uid",me_.id);L.set("uok",me_.id+":"+me_.pinH);tab="home";flow=null;render();
 }
 function lookup(name,localOnly){
   if(tokMode()&&!localOnly)return srvLookup(name,true);
   const K=NK(name),all_=users().filter(u=>NK(u.name)===K),ok=all_.filter(approved);
-  if(ok.length===1){if(tokMode()&&!ok[0].pinH){flow={s:"net",name:name};return render()}  // token phones only hold their own PIN hash
+  if(ok.length===1){if(!ok[0].pinH&&ok[0].hasPin&&!tokMode()&&navigator.onLine&&!localOnly)return srvLookup(name,true);if((tokMode()||ok[0].hasPin)&&!ok[0].pinH){flow={s:"net",name:name};return render()}  // token phones only hold their own PIN hash
     flow={s:ok[0].pinH?"pin":"set",u:ok[0],name:name};return render()}
   if(ok.length===0){
     if(all_.some(u=>u.status==="blocked")){flow={s:"blk",name:name};return render()}
@@ -432,7 +433,7 @@ async function checkPin(){
   let F=fails_(k);
   if(F.length>=5){$("fPin").value="";return err(t("pinLock").replace("%m",Math.max(1,Math.ceil((F[0]+36e5-Date.now())/6e4))))}
   if(flow.srv&&navigator.onLine){let j=null;try{j=await api({action:"login",id:u.id,pinH:await H(v,u.salt)})}catch(e){}
-    if(j&&j.ok){clearFail(k);return gotToken(j,u)}
+    if(j&&j.ok){clearFail(k);return gotToken(j,Object.assign({},u,{pinH:await H(v,u.salt)}))}
     if(j){addFail(k);$("fPin").value="";return err(j.error==="locked"?t("pinLock").replace("%m",Math.max(1,Math.ceil(((j.until||Date.now()+36e5)-Date.now())/6e4))):t("pinWrong"))}}
   if(u.pinH&&await H(v,u.salt)===u.pinH){clearFail(k);L.set("uid",u.id);L.set("uok",u.id+":"+u.pinH);tab="home";flow=null;render();return}
   addFail(k);F=fails_(k);$("fPin").value="";
