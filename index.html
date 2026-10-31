@@ -23,7 +23,7 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 11,
+ "VER": 12,
  "COLOR": "#1d4ed8",
  "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
@@ -256,6 +256,10 @@ if(!T[lang])lang="en";
 const t=k=>(T[lang]&&T[lang][k]!=null)?T[lang][k]:(T.en[k]!=null?T.en[k]:k);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
+/* Home standard (base VER 8, Johan 31 Oct 2026): every time is 24-hour HH:MM (18:05), never AM/PM or seconds */
+const p2=n=>(n<10?"0":"")+n,hm=d=>p2(d.getHours())+":"+p2(d.getMinutes());
+const dLoc=()=>lang==="af"?"af-ZA":lang==="fr"?"fr-FR":lang==="ar"?"ar-TD":"en-GB";
+window.TMC.hm=hm;
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.title=C.NAME}
 window.TMC.T=T;window.TMC.t=t;
 
@@ -958,7 +962,7 @@ function bindUsers(){
 function settingsHTML(u){
   const lo=+(L.get("lastOk")||0);
   return `<div class="box"><h3>🌐 ${esc(t("lang"))}</h3>${langBtns()}</div>
-  <div class="box"><h3>🔄 ${esc(t("sync"))}</h3><p class="hint" id="sLine"></p><p class="hint">${esc(t("last"))}: ${lo?esc(new Date(lo).toLocaleString()):"—"}</p><button type="button" id="hSync">${esc(t("syncNow"))}</button>
+  <div class="box"><h3>🔄 ${esc(t("sync"))}</h3><p class="hint" id="sLine"></p><p class="hint">${esc(t("last"))}: ${lo?esc(new Date(lo).toLocaleDateString(dLoc(),{day:"numeric",month:"short",year:"numeric"})+" "+hm(new Date(lo))):"—"}</p><button type="button" id="hSync">${esc(t("syncNow"))}</button>
   ${u.admin?`<label class="hint">${esc(t("syncUrl"))}</label><div class="pw"><input id="sUrl" class="msk" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="${C.APP_ID}-su" value="${esc(sUrl())}"><button type="button" class="eye" data-eye="sUrl">👁</button></div>
   <label class="hint">${esc(t("syncCode"))}</label><div class="pw"><input id="sCode" class="msk" type="text" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="${C.APP_ID}-sc" value="${esc(sCode())}"><button type="button" class="eye" data-eye="sCode">👁</button></div>
   <button type="button" class="sec" id="sSave">${esc(t("save"))}</button>`:""}</div>
@@ -1011,7 +1015,7 @@ function paintNc(){const w=$("ncW");if(!w)return;const off=!sUrl(),show=off||net
   const b=$("ncB");if(b)b.onclick=()=>{if(syncOn())syncNow();else api({action:"status",name:"x"}).catch(()=>{})}}
 function paintSync(){paintNc();
   const d=$("sDot");if(d)d.className="dot "+(!syncOn()?"":sState==="busy"?"busy":sState==="err"||!navigator.onLine?"err":sState==="ok"?"ok":"");
-  const tm=$("sTime");if(tm){const lo=+(L.get("lastOk")||0),d0=new Date(lo);tm.textContent=lo?(new Date().toDateString()===d0.toDateString()?d0.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):d0.toLocaleDateString([],{day:"numeric",month:"short"})+" "+d0.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})):"—"}
+  const tm=$("sTime");if(tm){const lo=+(L.get("lastOk")||0),d0=new Date(lo);tm.textContent=lo?(new Date().toDateString()===d0.toDateString()?hm(d0):d0.toLocaleDateString(dLoc(),{day:"numeric",month:"short"})+" "+hm(d0)):"—"}
   const s=$("sLine");if(s)s.textContent=!syncOn()?t("syncOff"):!navigator.onLine?t("offline"):sState==="err"?t("syncErr"):t("synced");
   const w=$("pendW");if(!w)return;const n=sUrl()?pending():0;
   if(!n){pendSince=0;w.style.display="none";return}if(!pendSince)pendSince=Date.now();
