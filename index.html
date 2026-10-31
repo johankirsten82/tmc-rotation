@@ -23,14 +23,14 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 9,
+ "VER": 10,
  "COLOR": "#1d4ed8",
  "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
  "BG": "#f1f5f9",
  "SYNC_URL": "https://script.google.com/macros/s/AKfycbyX4vLQSxgQ1D_oAHkyRDimAh9i7iTO-m7LKnr1McVUsoqguQn3LD-e6X8FKHPsVgurBw/exec",
  "SYNC_CODE": "",
- "SHARE_URL": "",
+ "SHARE_URL": "https://johankirsten82.github.io/tmc-rotation/",
  "ADMIN_NAME": "JA Kirsten",
  "ADMIN_ALIASES": [
   "jakirsten",
@@ -125,7 +125,7 @@ nav.tabs button .ticon{font-size:24px}nav.tabs button.on{color:var(--c);border-t
 .rep{width:100%;border-collapse:collapse;font-size:17px;margin:6px 0}.rep th{background:var(--rc);color:#fff;text-align:left;padding:12px 10px}.rep td{padding:12px 10px;border-bottom:1px solid #d1e7d8}.rep tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--rc) 10%,#fff)}.rep tfoot td{background:color-mix(in srgb,var(--rc) 22%,#fff);color:var(--rc);font-weight:800;border-top:3px solid var(--rc)}.repH{background:var(--rc);color:#fff;border-radius:10px;padding:12px;font-weight:800;font-size:19px;margin:6px 0}
 nav.tabs .tlab{font-size:13px;line-height:1.1;text-align:center;overflow-wrap:anywhere;max-width:100%}
 .rpBar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.rpBar button{margin:0;padding:6px 4px;font-size:16px}.rpBar button.on{background:var(--rc);color:#fff}
-.rpDates{display:grid;grid-template-columns:1fr 1fr;gap:6px}.rpDates label{margin:4px 0 0}
+.rpDates{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}.rpDates>div{min-width:0}.rpDates input{width:100%;min-width:0;max-width:100%;box-sizing:border-box}.rpDates label{margin:4px 0 0}
 .rpAct{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rpAct button{margin:0}.rpAct .rpBk{grid-column:1/-1}
 .rpXls{background:var(--rc)}.rpList button{text-align:start}
 #rpOut .rep{table-layout:fixed;font-size:15px}#rpOut .rep th,#rpOut .rep td{padding:10px 6px;overflow-wrap:anywhere}.rep th{text-align:start}.rep .nm{text-align:end}
@@ -559,28 +559,28 @@ Object.assign(window.TMC,{addReport:addReport,REPORTS:REPORTS,XL:XL,repXlsx:repX
 /* ==================== APP FEATURES START ====================
    TMC Rotation: trips (group + numbered legs), import of Shaun's
    "Rotation Cycle" emails (.txt/.html/.docx), report in Shaun's style (email + .docx).
-   Kinds: "tr" trips, "v" vehicles, "al" name/place lookups, "x" notes. */
+   Kinds: "tr" trips, "v" vehicles, "al" name/place lookups. (v10: demo "x" notes box removed.) */
 Object.assign(T.en,{work:"Trips",tNew:"New trip",tImp:"Import",tRep:"Report",tMore:"Lists",tUp:"Coming trips",tHist:"History",tNone:"No trips yet.",
  tGroup:"Who travels (names with /)",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
  tAddLeg:"➕ Add leg",tDelLeg:"🗑️ Remove leg",tSave:"💾 Save trip",tDel:"🗑️ Delete trip",tDelQ:"Delete this trip?",tBack:"⬅️ Back",tNote:"Note",
  mRoad:"🚙 Road",mCharter:"🛩️ Charter",mAir:"✈️ Airline",mNone:"—",
  iPaste:"Paste the email here",iFile:"📎 Choose file (.txt .html .docx)",iRead:"🔍 Read",iFound:"Found %n trip(s)",iSave:"💾 Save %n trip(s)",iNone:"No trips found. Check the text.",iDup:"already saved",iDone:"Saved %n trip(s).",
  rPick:"Trips in the report",rHello:"Greeting",rIntro:"First line",rFrom:"Your name",rMake:"📝 Make report",rTitle:"Title",rCopy:"📋 Copy",rDocx:"⬇️ Word file",rCopied:"Copied. Paste it into the email.",
- vT:"Vehicles",vAdd:"➕ Add vehicle",nT:"Names and places",nA:"Written as",nC:"Means",nAdd:"➕ Add",hNote:"Note (demo box kept)",exT:"Quick note",exAdd:"💾 Save note",exNone:"No notes yet.",src:"From"});
+ vT:"Vehicles",vAdd:"➕ Add vehicle",nT:"Names and places",nA:"Written as",nC:"Means",nAdd:"➕ Add",src:"From"});
 Object.assign(T.fr,{work:"Voyages",tNew:"Nouveau voyage",tImp:"Importer",tRep:"Rapport",tMore:"Listes",tUp:"Voyages à venir",tHist:"Historique",tNone:"Pas encore de voyages.",
  tGroup:"Qui voyage (noms avec /)",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
  tAddLeg:"➕ Ajouter une étape",tDelLeg:"🗑️ Retirer l'étape",tSave:"💾 Enregistrer",tDel:"🗑️ Supprimer le voyage",tDelQ:"Supprimer ce voyage ?",tBack:"⬅️ Retour",tNote:"Note",
  mRoad:"🚙 Route",mCharter:"🛩️ Charter",mAir:"✈️ Vol",mNone:"—",
  iPaste:"Collez l'e-mail ici",iFile:"📎 Choisir un fichier (.txt .html .docx)",iRead:"🔍 Lire",iFound:"%n voyage(s) trouvé(s)",iSave:"💾 Enregistrer %n voyage(s)",iNone:"Aucun voyage trouvé. Vérifiez le texte.",iDup:"déjà enregistré",iDone:"%n voyage(s) enregistré(s).",
  rPick:"Voyages du rapport",rHello:"Salutation",rIntro:"Première ligne",rFrom:"Votre nom",rMake:"📝 Faire le rapport",rTitle:"Titre",rCopy:"📋 Copier",rDocx:"⬇️ Fichier Word",rCopied:"Copié. Collez-le dans l'e-mail.",
- vT:"Véhicules",vAdd:"➕ Ajouter",nT:"Noms et lieux",nA:"Écrit",nC:"Veut dire",nAdd:"➕ Ajouter",hNote:"Note",exT:"Note rapide",exAdd:"💾 Enregistrer la note",exNone:"Pas encore de notes.",src:"Source"});
+ vT:"Véhicules",vAdd:"➕ Ajouter",nT:"Noms et lieux",nA:"Écrit",nC:"Veut dire",nAdd:"➕ Ajouter",src:"Source"});
 Object.assign(T.ar,{work:"الرحلات",tNew:"رحلة جديدة",tImp:"استيراد",tRep:"تقرير",tMore:"القوائم",tUp:"الرحلات القادمة",tHist:"السجل",tNone:"لا توجد رحلات بعد.",
  tGroup:"من يسافر (أسماء مع /)",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
  tAddLeg:"➕ إضافة مرحلة",tDelLeg:"🗑️ حذف المرحلة",tSave:"💾 حفظ الرحلة",tDel:"🗑️ حذف الرحلة",tDelQ:"حذف هذه الرحلة؟",tBack:"⬅️ رجوع",tNote:"ملاحظة",
  mRoad:"🚙 طريق",mCharter:"🛩️ طائرة خاصة",mAir:"✈️ طيران",mNone:"—",
  iPaste:"الصق البريد هنا",iFile:"📎 اختر ملفا (.txt .html .docx)",iRead:"🔍 قراءة",iFound:"وُجدت %n رحلة",iSave:"💾 حفظ %n رحلة",iNone:"لم توجد رحلات. تحقق من النص.",iDup:"محفوظة من قبل",iDone:"تم حفظ %n رحلة.",
  rPick:"رحلات التقرير",rHello:"التحية",rIntro:"السطر الأول",rFrom:"اسمك",rMake:"📝 إنشاء التقرير",rTitle:"العنوان",rCopy:"📋 نسخ",rDocx:"⬇️ ملف وورد",rCopied:"تم النسخ. الصقه في البريد.",
- vT:"المركبات",vAdd:"➕ إضافة مركبة",nT:"الأسماء والأماكن",nA:"مكتوب",nC:"يعني",nAdd:"➕ إضافة",hNote:"ملاحظة",exT:"ملاحظة سريعة",exAdd:"💾 حفظ الملاحظة",exNone:"لا توجد ملاحظات بعد.",src:"المصدر"});
+ vT:"المركبات",vAdd:"➕ إضافة مركبة",nT:"الأسماء والأماكن",nA:"مكتوب",nC:"يعني",nAdd:"➕ إضافة",src:"المصدر"});
 
 /* ---- lookup lists (spelling variants → one name) ---- */
 const PLACES={ndjamena:"N'Djamena",ndjemena:"N'Djamena",njamena:"N'Djamena",ndj:"N'Djamena",seneker:"HQ",hq:"HQ",headquarters:"HQ","1tb":"HQ",onetb:"HQ",bardai:"Bardai",faya:"Faya",fayalargeau:"Faya",
@@ -808,16 +808,12 @@ function tripCard(x){const tg=canFix()?"button":"div";return `<${tg}${tg==="butt
 function workHTML(u){
   if(wv==="edit"&&edit)return editHTML();if(wv==="imp")return impHTML();if(wv==="rep")return repHTML();if(wv==="more")return moreHTML();
   const T_=trips(),d=today(),up=T_.filter(x=>lastD(x)>=d),old=T_.filter(x=>lastD(x)<d).reverse();
-  const notes=all("x").sort((a,b)=>String(b.at).localeCompare(String(a.at)));
   const tools=[can("reports")?`<button type="button" class="sec" id="exRep">${esc(t("repT"))}</button>`:"",can("export")?`<button type="button" class="sec" id="exExp">${esc(t("expT"))}</button>`:""].join("");
   const cAdd=canKind("tr","add"),cView=canKind("tr","view");
   return `<div class="tiles">${cAdd?`<button type="button" class="tile" id="wNew"><b>➕</b>${esc(t("tNew"))}</button><button type="button" class="tile" id="wImp"><b>📥</b>${esc(t("tImp"))}</button>`:""}
   ${can("reports")&&cView?`<button type="button" class="tile" id="wRep"><b>📝</b>${esc(t("tRep"))}</button>`:""}<button type="button" class="tile" id="wMore"><b>🚙</b>${esc(t("tMore"))}</button></div>
   ${cView?`<h3>🗓️ ${esc(t("tUp"))} (${up.length})</h3>${up.length?up.map(tripCard).join(""):`<p class="hint">${esc(t("tNone"))}</p>`}
   <h3>📚 ${esc(t("tHist"))} (${old.length})</h3>${old.map(tripCard).join("")}`:""}
-  <div class="box"><h3>${esc(t("exT"))}</h3><textarea id="exTxt" rows="3" data-draft="exTxt" autocomplete="off" spellcheck="true" autocorrect="on" autocapitalize="sentences"></textarea><p class="hint" id="drNote" style="display:none">${esc(t("draft"))}</p>
-  <button type="button" id="exAdd">${esc(t("exAdd"))}</button>
-  ${notes.length?notes.map(n=>`<div class="urow"><span class="n">${esc(n.text)}</span><span class="hint">${esc(n.by)}</span>${fixBtn("x",n.id,"text")}${fixedNote(n)}</div>`).join(""):`<p class="hint">${esc(t("exNone"))}</p>`}</div>
   ${tools?`<div class="box">${tools}<p class="hint" id="exOut"></p></div>`:""}`;
 }
 const placeList=()=>{const s={};Object.keys(PLACES).forEach(k=>s[PLACES[k]]=1);all("al").forEach(a=>{if(a.t==="p")s[a.c]=1});return Object.keys(s).sort()};
@@ -885,8 +881,7 @@ function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
   on("rDocx",async()=>{const b=await schedDocx(cur()),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=((rep&&rep.sched)||"Rotation Schedule").replace(/[\\/:*?"<>|]/g,"-")+" "+today()+".docx";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)});
   on("vAdd",()=>{const v=clean($("vehName").value);if(!v)return;put("v",KEY(v),{id:KEY(v),name:v});render()});
   on("alAdd",()=>{const a=clean($("alA").value),c=clean($("alC").value);if(!a||!c)return;const ty=$("alT").value;put("al",ty+KEY(a),{id:ty+KEY(a),a:a,c:c,t:ty});render()});
-  bindFix();const b=$("exAdd");if(!b)return;
-  b.onclick=()=>{const v=$("exTxt").value.trim();if(!v)return;const id="x"+Date.now();put("x",id,{id:id,text:v,by:u.name,at:new Date().toISOString()});draftClear("exTxt");render()};
+  bindFix();
 }
 function markDup(){const S={};trips().forEach(x=>S[sig(x)]=1);(imp||[]).forEach(x=>{x.dup=!!S[sig(x)]})}
 /* ==================== APP FEATURES END ==================== */
