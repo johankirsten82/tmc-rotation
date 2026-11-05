@@ -23,7 +23,7 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 12,
+ "VER": 14,
  "COLOR": "#1d4ed8",
  "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
@@ -112,15 +112,17 @@ header .hLang{width:auto;min-height:56px;min-width:64px;margin:0;padding:0 8px;b
 @media (max-width:380px){header{gap:6px;padding:8px 10px}header img{width:30px;height:30px}header .t{font-size:17px}}
 .dot{width:14px;height:14px;border-radius:50%;background:#94a3b8;display:inline-block}.dot.ok{background:#22c55e}.dot.err{background:#ef4444}.dot.busy{background:#f59e0b}
 main{padding:12px 12px 110px;max-width:600px;margin:0 auto}
-nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #cbd5e1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-nav.tabs button{flex:1;margin:0;border-radius:0;background:#fff;color:#475569;min-height:64px;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;padding:0 2px}
-nav.tabs button .ticon{font-size:24px}nav.tabs button.on{color:var(--c);border-top:3px solid var(--c);background:#f0fdfa}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:2px solid #cbd5e1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs button{flex:1;margin:0;border-radius:0;background:#fff;color:#334155;min-height:72px;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;padding:0 2px}
+nav.tabs button .ticon{font-size:28px}nav.tabs button.on{color:var(--c);background:#f0fdf4;box-shadow:inset 0 4px 0 var(--c)}
 .badge{position:absolute;top:4px;inset-inline-end:18%;background:#dc2626;color:#fff;border-radius:9px;padding:0 5px;font-size:12px;line-height:18px;font-weight:700}
 .hhero{display:flex;align-items:center;gap:14px}.hhero img{border-radius:14px;flex:none}.hhero h2{margin:0;font-size:21px}#hDate{color:#475569;margin-top:2px}.hhi{font-size:18px;font-weight:700;color:#0f766e;margin-top:2px}
 .loBand{width:100%;min-height:56px;margin:0 0 10px;font-size:18px;font-weight:700}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
-.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:150px;margin:0;padding:12px 6px;background:#fff;color:#0f172a;border:2px solid #bbf7d0;border-radius:16px;box-shadow:0 2px 8px #0000000f;font-size:17px;font-weight:700}
-.tile.sec{background:#fff}.tile:active{background:#f0fdf4}.tile b{font-size:40px;line-height:1}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:110px;margin:0;padding:12px 6px;background:#fff;color:#0f172a;border:2px solid var(--c);border-radius:16px;box-shadow:0 2px 8px #0000000f;font-size:19px;font-weight:700}
+.tile.sec{background:#fff}.tile:active{background:#f0fdf4}.tile b{font-size:38px;line-height:1}
+/* v14 look (Fuel pattern): Log out band styled like a Home tile */
+.loBand{background:#fff!important;color:#0f172a!important;border:2px solid var(--c)!important;border-radius:16px;font-weight:700;box-shadow:0 2px 8px #0000000f}
 .phPick{display:flex;gap:8px}.phPick label{flex:1;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--c);color:#fff;border-radius:10px;font-weight:700;font-size:17px;padding:6px;margin:6px 0;cursor:pointer}.phPick label.alt{background:#fff;color:var(--c);border:2px solid var(--c)}.phPick input{display:none}.phPrev{max-width:100%;border-radius:10px;margin-top:6px}
 .rep{width:100%;border-collapse:collapse;font-size:17px;margin:6px 0}.rep th{background:var(--rc);color:#fff;text-align:left;padding:12px 10px}.rep td{padding:12px 10px;border-bottom:1px solid #d1e7d8}.rep tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--rc) 10%,#fff)}.rep tfoot td{background:color-mix(in srgb,var(--rc) 22%,#fff);color:var(--rc);font-weight:800;border-top:3px solid var(--rc)}.repH{background:var(--rc);color:#fff;border-radius:10px;padding:12px;font-weight:800;font-size:19px;margin:6px 0}
 nav.tabs .tlab{font-size:13px;line-height:1.1;text-align:center;overflow-wrap:anywhere;max-width:100%}
@@ -134,6 +136,7 @@ nav.tabs .tlab{font-size:13px;line-height:1.1;text-align:center;overflow-wrap:an
 .ph{border:4px dashed #f59e0b;background:#fffbeb;text-align:center}
 .bar{display:none;margin:0 0 12px;padding:12px;border-radius:14px;font-weight:700}
 .pendW{background:#fef3c7;border:1px solid #f59e0b;color:#78350f}.updW{background:#fef3c7;border:1px solid #f59e0b;color:#78350f}.updW button{background:#b45309}
+#updGo{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:18px}#updGo img{width:96px;height:96px;border-radius:20px}#updGo b{font-size:30px;line-height:1.25;color:#0f172a}#updGo span{font-size:20px;color:#475569}#updGo i{width:64px;height:64px;border:7px solid #e2e8f0;border-top-color:#0f766e;border-radius:50%;animation:updSp 1s linear infinite}@keyframes updSp{to{transform:rotate(360deg)}}
 .bar small{display:block;font-weight:500;margin-top:4px}
 .urow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;border-bottom:1px solid #e2e8f0;padding:8px 0}.urow .n{flex:1;min-width:140px;font-weight:700}
 .st{font-size:14px;border-radius:99px;padding:2px 8px;background:#e2e8f0}.st.pending{background:#fef3c7}.st.blocked,.st.rejected{background:#fee2e2}.st.active{background:#dcfce7}
@@ -174,6 +177,7 @@ nav.tabs .tlab{font-size:13px;line-height:1.1;text-align:center;overflow-wrap:an
 .chk{display:flex;align-items:center;gap:10px;min-height:58px;font-size:17px;color:#0f172a;margin:4px 0}.chk input{width:30px;height:30px;min-height:0;margin:0;flex:none}
 .fileB{display:flex;align-items:center;justify-content:center;min-height:58px;border-radius:10px;background:#e2e8f0;color:#0f172a;font-weight:600;font-size:18px;margin:6px 0;cursor:pointer}
 .leg h3{margin:0 0 4px}.rep{text-align:start;overflow-x:auto;overflow-wrap:anywhere}
+.pchip{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:20px;padding:10px 12px;margin:6px 0;border:2px solid #1B7F3B;border-radius:12px;background:#fff}.pchip .pX{width:auto;min-width:52px;min-height:48px;font-size:20px;margin:0}.pFull{font-size:18px;font-weight:700;color:#b00020;background:#fdecea;border:2px solid #b00020;border-radius:12px;padding:12px;margin:8px 0}.pPick{font-size:20px;min-height:56px;width:100%;margin:8px 0}
 </style></head><body>
 <div id="app"></div>
 <script src="lib/jszip.min.js"></script>
@@ -203,7 +207,7 @@ home:"Home",work:"Work",users:"Users",settings:"Settings",share:"Share app",sync
 phT:"🧩 APP FEATURES GO HERE",phH:"This tab is a placeholder. Each app puts its own screens here.",exT:"Example note (demo)",exAdd:"Save note",fix:"✏️ Fix",fixT:"✏️ Fix a mistake (Admin)",fixSave:"💾 Save fix",fixOnly:"Only the Admin can fix a saved record.",fixed:"fixed by",can:"What I can do",canH:"Ticked = allowed. Ask the Admin to change it.",canEd:"✅ Allowed for",dupT:"Already asked - wait for Admin",dupH:"This name already asked once. Wait for the Admin. If you were approved, type your name and PIN to sign in.",canAdm:"⭐ Admin only: ✏️ Fix, 👥 Approve users",lkFix:"✏️ Fix",lkApp:"👥 Approve users",admOnly:"Admin only",canAll:"⭐ Admin: you can do everything.",noAccess:"You are not allowed to do this.",repT:"📊 Report",expT:"📤 Export",exNone:"No notes yet.",
 synced:"Synced",syncErr:"Sync problem",syncOff:"Sync not set up",offline:"Offline",last:"Last sync",
 pwT:"⚠️ %n change(s) not sent to the Sheet yet",pwOff:"No internet — they will be sent when you are online.",pwDel:"Tap 🔄 Sync now before deleting the app or clearing data, or these changes will be lost.",
-updT:"🆕 A new version is ready",updB:"⬆️ Update now",updChk:"Check for update",updNone:"You have the latest version.",ver:"Version",
+updT:"🆕 A new version is ready",updB:"⬆️ Update now",updChk:"Check for update",updNone:"You have the latest version.",updGo:"Updating… please wait",updGo2:"Do not close the app. Your saved work is kept.",ver:"Version",
 insBtn:"📲 Install app",insIos:"Tap Share ⬆️ then Add to Home Screen ➕",
 shareH:"Scan this code with the other phone, or send the link.",shareB:"📤 Send link",copy:"📋 Copy link",copied:"Copied",close:"Close",
 pend:"Waiting",act:"Approved",rej:"Rejected",blk:"Blocked",approve:"✅ Approve",reject:"❌ Reject",block:"⛔ Block",unblock:"↩️ Unblock",resetPin:"🔑 Reset PIN",admin:"Admin",noPend:"No one is waiting.",dscBT:"⛔ Block and remove %n?",dscRT:"❌ Reject and remove %n?",dscH:"%n is taken off the list. Their old PIN stops working. They can send a new request later.",dscY:"🗑️ Yes, remove",dscN:"↩️ Back",dscOld:"🗑️ Remove",dscDone:"%n was removed.",dscSelf:"You cannot remove yourself.",dscLast:"You cannot remove the last Admin.",dscMain:"The main Admin can never be removed, blocked, demoted or renamed.",dscTok:"Sign in again with your PIN to remove people.",goneT:"Not approved",goneH:"The Admin removed this request. You can send a new one.",again:"📨 Send a new request",
@@ -223,7 +227,7 @@ home:"Accueil",work:"Travail",users:"Utilisateurs",settings:"Réglages",share:"P
 phT:"🧩 LES FONCTIONS DE L'APP VONT ICI",phH:"Cet onglet est un emplacement. Chaque app y met ses écrans.",exT:"Note d'exemple (démo)",exAdd:"Enregistrer la note",fix:"✏️ Corriger",fixT:"✏️ Corriger une erreur (Admin)",fixSave:"💾 Enregistrer",fixOnly:"Seul l'Admin peut corriger un enregistrement.",fixed:"corrigé par",can:"Mes droits",canH:"Coché = autorisé. Demandez à l'Admin pour changer.",canEd:"✅ Autorisé pour",dupT:"Déjà demandé - attendez l'Admin",dupH:"Ce nom a déjà demandé. Attendez l'Admin. Si vous êtes accepté, tapez votre nom et PIN.",canAdm:"⭐ Admin seulement : ✏️ Corriger, 👥 Approuver",lkFix:"✏️ Corriger",lkApp:"👥 Approuver",admOnly:"Admin seulement",canAll:"⭐ Admin : vous pouvez tout faire.",noAccess:"Vous n'avez pas le droit de faire ceci.",repT:"📊 Rapport",expT:"📤 Exporter",exNone:"Pas encore de notes.",
 synced:"Synchronisé",syncErr:"Problème de synchro",syncOff:"Synchro non configurée",offline:"Hors ligne",last:"Dernière synchro",
 pwT:"⚠️ %n modification(s) pas encore envoyée(s) à la feuille",pwOff:"Pas d'internet — elles seront envoyées dès que vous serez en ligne.",pwDel:"Touchez 🔄 Synchroniser avant de supprimer l'application ou d'effacer les données, sinon ces modifications seront perdues.",
-updT:"🆕 Une nouvelle version est prête",updB:"⬆️ Mettre à jour",updChk:"Chercher une mise à jour",updNone:"Vous avez la dernière version.",ver:"Version",
+updT:"🆕 Une nouvelle version est prête",updB:"⬆️ Mettre à jour",updChk:"Chercher une mise à jour",updNone:"Vous avez la dernière version.",updGo:"Mise à jour… veuillez patienter",updGo2:"Ne fermez pas l’app. Votre travail enregistré est gardé.",ver:"Version",
 insBtn:"📲 Installer l'application",insIos:"Touchez Partager ⬆️ puis Sur l'écran d'accueil ➕",
 shareH:"Scannez ce code avec l'autre téléphone, ou envoyez le lien.",shareB:"📤 Envoyer le lien",copy:"📋 Copier le lien",copied:"Copié",close:"Fermer",
 pend:"En attente",act:"Approuvé",rej:"Refusé",blk:"Bloqué",approve:"✅ Approuver",reject:"❌ Refuser",block:"⛔ Bloquer",unblock:"↩️ Débloquer",resetPin:"🔑 Réinitialiser PIN",admin:"Admin",noPend:"Personne n'attend.",dscBT:"⛔ Bloquer et retirer %n ?",dscRT:"❌ Refuser et retirer %n ?",dscH:"%n est retiré de la liste. Son ancien PIN ne marche plus. Il peut envoyer une nouvelle demande plus tard.",dscY:"🗑️ Oui, retirer",dscN:"↩️ Retour",dscOld:"🗑️ Retirer",dscDone:"%n a été retiré.",dscSelf:"Vous ne pouvez pas vous retirer vous-même.",dscLast:"Vous ne pouvez pas retirer le dernier Admin.",dscMain:"L'Admin principal ne peut jamais être retiré, bloqué, rétrogradé ni renommé.",dscTok:"Reconnectez-vous avec votre PIN pour retirer quelqu'un.",goneT:"Non approuvé",goneH:"L'Admin a retiré cette demande. Vous pouvez en envoyer une nouvelle.",again:"📨 Nouvelle demande",
@@ -243,7 +247,7 @@ home:"الرئيسية",work:"العمل",users:"المستخدمون",settings:
 phT:"🧩 ميزات التطبيق توضع هنا",phH:"هذا التبويب مكان مخصص. كل تطبيق يضع شاشاته هنا.",exT:"ملاحظة مثال (تجربة)",exAdd:"حفظ الملاحظة",fix:"✏️ تصحيح",fixT:"✏️ تصحيح خطأ (المدير)",fixSave:"💾 حفظ التصحيح",fixOnly:"المدير فقط يمكنه تصحيح سجل محفوظ.",fixed:"صححه",can:"ما يمكنني فعله",canH:"المؤشَّر = مسموح. اطلب من المدير التغيير.",canEd:"✅ مسموح لـ",dupT:"تم الطلب - انتظر المدير",dupH:"هذا الاسم طلب من قبل. انتظر المدير. إذا تمت الموافقة، اكتب اسمك والرقم السري.",canAdm:"⭐ للمدير فقط: ✏️ تصحيح، 👥 قبول المستخدمين",lkFix:"✏️ تصحيح",lkApp:"👥 قبول المستخدمين",admOnly:"للمدير فقط",canAll:"⭐ المدير: يمكنك فعل كل شيء.",noAccess:"غير مسموح لك بهذا.",repT:"📊 تقرير",expT:"📤 تصدير",exNone:"لا توجد ملاحظات بعد.",
 synced:"تمت المزامنة",syncErr:"مشكلة في المزامنة",syncOff:"المزامنة غير مُعدة",offline:"غير متصل",last:"آخر مزامنة",
 pwT:"⚠️ %n تغيير لم يُرسل إلى الجدول بعد",pwOff:"لا يوجد إنترنت — سيتم الإرسال عند الاتصال.",pwDel:"اضغط 🔄 مزامنة الآن قبل حذف التطبيق أو مسح البيانات، وإلا ستضيع هذه التغييرات.",
-updT:"🆕 نسخة جديدة جاهزة",updB:"⬆️ تحديث الآن",updChk:"البحث عن تحديث",updNone:"لديك آخر نسخة.",ver:"النسخة",
+updT:"🆕 نسخة جديدة جاهزة",updB:"⬆️ تحديث الآن",updChk:"البحث عن تحديث",updNone:"لديك آخر نسخة.",updGo:"جارٍ التحديث… يرجى الانتظار",updGo2:"لا تغلق التطبيق. عملك المحفوظ يبقى كما هو.",ver:"النسخة",
 insBtn:"📲 تثبيت التطبيق",insIos:"اضغط مشاركة ⬆️ ثم إضافة إلى الشاشة الرئيسية ➕",
 shareH:"امسح هذا الرمز بالهاتف الآخر، أو أرسل الرابط.",shareB:"📤 إرسال الرابط",copy:"📋 نسخ الرابط",copied:"تم النسخ",close:"إغلاق",
 pend:"بانتظار",act:"موافق عليه",rej:"مرفوض",blk:"محظور",approve:"✅ موافقة",reject:"❌ رفض",block:"⛔ حظر",unblock:"↩️ إلغاء الحظر",resetPin:"🔑 إعادة تعيين الرمز",admin:"مسؤول",noPend:"لا أحد بالانتظار.",dscBT:"⛔ حظر وحذف %n؟",dscRT:"❌ رفض وحذف %n؟",dscH:"سيُحذف %n من القائمة. رمزه القديم لن يعمل بعد الآن. يمكنه إرسال طلب جديد لاحقاً.",dscY:"🗑️ نعم، احذف",dscN:"↩️ رجوع",dscOld:"🗑️ حذف",dscDone:"تم حذف %n.",dscSelf:"لا يمكنك حذف نفسك.",dscLast:"لا يمكنك حذف آخر مسؤول.",dscMain:"لا يمكن أبدًا حذف المسؤول الرئيسي أو حظره أو تخفيض رتبته أو تغيير اسمه.",dscTok:"سجّل الدخول مجدداً برمزك لحذف الأشخاص.",goneT:"لم تتم الموافقة",goneH:"حذف المسؤول هذا الطلب. يمكنك إرسال طلب جديد.",again:"📨 إرسال طلب جديد",
@@ -281,8 +285,8 @@ function can(p,u){u=u||me();return !!u&&(!!u.admin||permsOf(u).indexOf(p)>=0)}
 function canKind(kind,what,u){const k=(C.PERM_KINDS||{})[kind];return !k||!k[what]||can(k[what],u)}
 function permLab(p){return p[lang]||p.en}
 function canFix(){const m=me();return !!(m&&m.admin)}
-function put(kind,id,data){const k=kind+":"+id;if(kind==="u"&&R[k]&&!R[k].del&&isMain(R[k].data)&&!mainKept(data)){toast(t("dscMain"));return false}/* v11: main Admin never demoted, blocked or renamed (PIN reset still ok) */if(kind!=="u"&&R[k]&&!R[k].del&&!canFix()){alert(t("fixOnly"));return false}if(kind!=="u"&&!R[k]&&!canKind(kind,"add")){alert(t("noAccess"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:0,data:data};dirty[k]=1;saveR();syncSoon();}
-function remove(kind,id){const k=kind+":"+id;if(kind==="u")return false;if(kind!=="u"&&!canFix()){alert(t("fixOnly"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:1,data:null};dirty[k]=1;saveR();syncSoon();}
+function put(kind,id,data){if(window.TMC.updLock&&TMC.updLock()){toast(t("updGo"));return false}/* VER 13 (base VER 11): no saves while the app updates itself */const k=kind+":"+id;if(kind==="u"&&R[k]&&!R[k].del&&isMain(R[k].data)&&!mainKept(data)){toast(t("dscMain"));return false}/* v11: main Admin never demoted, blocked or renamed (PIN reset still ok) */if(kind!=="u"&&R[k]&&!R[k].del&&!canFix()){alert(t("fixOnly"));return false}if(kind!=="u"&&!R[k]&&!canKind(kind,"add")){alert(t("noAccess"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:0,data:data};dirty[k]=1;saveR();syncSoon();}
+function remove(kind,id){if(window.TMC.updLock&&TMC.updLock()){toast(t("updGo"));return false}/* VER 13 (base VER 11): no saves while the app updates itself */const k=kind+":"+id;if(kind==="u")return false;if(kind!=="u"&&!canFix()){alert(t("fixOnly"));return false}const u=Math.max(Date.now(),R[k]?R[k].u+1:0);R[k]={kind:kind,id:String(id),u:u,del:1,data:null};dirty[k]=1;saveR();syncSoon();}
 /* fix(): Admin changes one field; old value, Admin name and time are kept in data._fix (audit column) and the server "Fix log" tab. */
 function fix(kind,id,field,val){if(!canFix())return false;const k=kind+":"+id,r=R[k];if(!r||r.del)return false;const d=Object.assign({},r.data),old=d[field];if(String(old)===String(val))return true;
   d._fix=(Array.isArray(d._fix)?d._fix:[]).concat([{f:field,old:old,by:me().name,at:new Date().toISOString()}]);d[field]=val;return put(kind,id,d)!==false}
@@ -380,7 +384,7 @@ function render(){
   bindMain(u);paintSync();paintUpd();
 }
 /* ONE list feeds the bottom tabs AND the Home tiles (same screens, icons, names, order) */
-function tabsOf(u){return [["home","🏠"],...(workOk(u)?[["work","🧩"]]:[]),...(repOk(u)&&REPORTS.length?[["reports","📊"]]:[]),["can","✅"],...(u.admin?[["users","👥",users().filter(x=>x.status==="pending").length]]:[]),["settings","⚙️"]]}
+function tabsOf(u){return [["home","🏠"],...(workOk(u)?[["work","🧳"]]:[]),...(repOk(u)&&REPORTS.length?[["reports","📊"]]:[]),["can","✅"],...(u.admin?[["users","👥",users().filter(x=>x.status==="pending").length]]:[]),["settings","⚙️"]]}
 function repOk(u){u=u||me();return !!u&&(!!u.admin||can("reports",u))}
 function workOk(u){return (C.PERMS||[]).length===0||["view","add","reports","export"].some(p=>can(p,u))}
 function navBtn(k,ic,n){return `<button type="button" data-tab="${k}" class="${tab===k?"on":""}"><span class="ticon">${ic}</span><span class="tlab">${esc(t(k))}</span>${n?`<span class="badge">${n}</span>`:""}</button>`}
@@ -493,7 +497,7 @@ function viewHTML(u){
   if(tab==="reports")return repScreenHTML(u);
   const np=users().filter(x=>x.status==="pending").length;
   return `<div class="box hhero" id="hHero"><img src="icons/icon-192.png" alt="" width="64" height="64"><div><h2>${esc(C.NAME)}</h2><div id="hDate">${esc(new Date().toLocaleDateString(lang==="ar"?"ar-TD":lang==="fr"?"fr-FR":"en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</div><div class="hhi" id="hHello">👋 ${esc(t("hello"))}, ${esc(u.name)}</div></div></div><button type="button" class="sec loBand" id="hOut">${esc(t("logout"))}</button>
-  <div class="tiles">${tabsOf(u).filter(x=>x[0]!=="home").map(([k,ic,n])=>`<button type="button" class="tile" data-tab="${k}"${k==="can"?' id="hCan"':""}><b>${ic}</b>${esc(t(k))}${n?` (${n})`:""}</button>`).join("")}</div>`;
+  <div class="tiles">${tabsOf(u).filter(x=>x[0]!=="home").map(([k,ic,n])=>`<button type="button" class="tile" data-tab="${k}"${k==="can"?' id="hCan"':""}><b>${ic}</b>${esc(t(k))}${n?` (${n})`:""}</button>`+(k==="work"?`<button type="button" class="tile" id="hLists"><b>🚙</b>${esc(t("tMore"))}</button>`:"")).join("")}</div>`;
 }
 /* ---- PHOTO: every photo field = 2 big buttons (camera OR phone gallery), same handler ----
    photoHTML(id) -> HTML; bindPhoto(id, cb) -> cb(dataUrl) after resize/compress (max 1280px, JPEG 0.7). */
@@ -579,21 +583,21 @@ Object.assign(window.TMC,{addReport:addReport,REPORTS:REPORTS,XL:XL,repXlsx:repX
    "Rotation Cycle" emails (.txt/.html/.docx), report in Shaun's style (email + .docx).
    Kinds: "tr" trips, "v" vehicles, "al" name/place lookups. (v10: demo "x" notes box removed.) */
 Object.assign(T.en,{work:"Trips",tNew:"New trip",tImp:"Import",tRep:"Report",tMore:"Lists",tUp:"Coming trips",tHist:"History",tNone:"No trips yet.",
- tGroup:"Who travels (names with /)",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
+ tGroup:"Passengers (max 9)",tDrv:"🚗 Driver",tPAdd:"➕ Add passenger…",tPFull:"Full: 9 passengers is the most. Remove one to add another.",tDNone:"— Pick driver —",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
  tAddLeg:"➕ Add leg",tDelLeg:"🗑️ Remove leg",tSave:"💾 Save trip",tDel:"🗑️ Delete trip",tDelQ:"Delete this trip?",tBack:"⬅️ Back",tNote:"Note",
  mRoad:"🚙 Road",mCharter:"🛩️ Charter",mAir:"✈️ Airline",mNone:"—",
  iPaste:"Paste the email here",iFile:"📎 Choose file (.txt .html .docx)",iRead:"🔍 Read",iFound:"Found %n trip(s)",iSave:"💾 Save %n trip(s)",iNone:"No trips found. Check the text.",iDup:"already saved",iDone:"Saved %n trip(s).",
  rPick:"Trips in the report",rHello:"Greeting",rIntro:"First line",rFrom:"Your name",rMake:"📝 Make report",rTitle:"Title",rCopy:"📋 Copy",rDocx:"⬇️ Word file",rCopied:"Copied. Paste it into the email.",
  vT:"Vehicles",vAdd:"➕ Add vehicle",nT:"Names and places",nA:"Written as",nC:"Means",nAdd:"➕ Add",src:"From"});
 Object.assign(T.fr,{work:"Voyages",tNew:"Nouveau voyage",tImp:"Importer",tRep:"Rapport",tMore:"Listes",tUp:"Voyages à venir",tHist:"Historique",tNone:"Pas encore de voyages.",
- tGroup:"Qui voyage (noms avec /)",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
+ tGroup:"Passagers (max 9)",tDrv:"🚗 Chauffeur",tPAdd:"➕ Ajouter un passager…",tPFull:"Complet : 9 passagers au maximum. Retirez-en un pour en ajouter un autre.",tDNone:"— Choisir le chauffeur —",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
  tAddLeg:"➕ Ajouter une étape",tDelLeg:"🗑️ Retirer l'étape",tSave:"💾 Enregistrer",tDel:"🗑️ Supprimer le voyage",tDelQ:"Supprimer ce voyage ?",tBack:"⬅️ Retour",tNote:"Note",
  mRoad:"🚙 Route",mCharter:"🛩️ Charter",mAir:"✈️ Vol",mNone:"—",
  iPaste:"Collez l'e-mail ici",iFile:"📎 Choisir un fichier (.txt .html .docx)",iRead:"🔍 Lire",iFound:"%n voyage(s) trouvé(s)",iSave:"💾 Enregistrer %n voyage(s)",iNone:"Aucun voyage trouvé. Vérifiez le texte.",iDup:"déjà enregistré",iDone:"%n voyage(s) enregistré(s).",
  rPick:"Voyages du rapport",rHello:"Salutation",rIntro:"Première ligne",rFrom:"Votre nom",rMake:"📝 Faire le rapport",rTitle:"Titre",rCopy:"📋 Copier",rDocx:"⬇️ Fichier Word",rCopied:"Copié. Collez-le dans l'e-mail.",
  vT:"Véhicules",vAdd:"➕ Ajouter",nT:"Noms et lieux",nA:"Écrit",nC:"Veut dire",nAdd:"➕ Ajouter",src:"Source"});
 Object.assign(T.ar,{work:"الرحلات",tNew:"رحلة جديدة",tImp:"استيراد",tRep:"تقرير",tMore:"القوائم",tUp:"الرحلات القادمة",tHist:"السجل",tNone:"لا توجد رحلات بعد.",
- tGroup:"من يسافر (أسماء مع /)",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
+ tGroup:"الركاب (9 كحد أقصى)",tDrv:"🚗 السائق",tPAdd:"➕ أضف راكبًا…",tPFull:"ممتلئ: 9 ركاب كحد أقصى. احذف واحدًا لإضافة آخر.",tDNone:"— اختر السائق —",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
  tAddLeg:"➕ إضافة مرحلة",tDelLeg:"🗑️ حذف المرحلة",tSave:"💾 حفظ الرحلة",tDel:"🗑️ حذف الرحلة",tDelQ:"حذف هذه الرحلة؟",tBack:"⬅️ رجوع",tNote:"ملاحظة",
  mRoad:"🚙 طريق",mCharter:"🛩️ طائرة خاصة",mAir:"✈️ طيران",mNone:"—",
  iPaste:"الصق البريد هنا",iFile:"📎 اختر ملفا (.txt .html .docx)",iRead:"🔍 قراءة",iFound:"وُجدت %n رحلة",iSave:"💾 حفظ %n رحلة",iNone:"لم توجد رحلات. تحقق من النص.",iDup:"محفوظة من قبل",iDone:"تم حفظ %n رحلة.",
@@ -607,8 +611,8 @@ const PLACES={ndjamena:"N'Djamena",ndjemena:"N'Djamena",njamena:"N'Djamena",ndj:
 const PEOPLE={shaun:"Shaun",johan:"Johan",cliff:"Cliff",clifford:"Cliff",elton:"Elton",micheal:"Micheal",michael:"Micheal",pedro:"Pedro",alex:"Alex",ben:"Ben",abdul:"Abdul",
  hamid:"Hamid",ibrahim:"Ibrahim",brahim:"Ibrahim",sabour:"Sabour",sabo:"Sabour",mahamout:"Mahamout",mahmount:"Mahamout",mahamot:"Mahamout",mahmout:"Mahamout",mahmoud:"Mahamout",
  ken:"Ken",sean:"Sean",sebastiaan:"Sebastiaan",sebastian:"Sebastiaan",hendrik:"Hendrik",abdoullay:"Abdoullay",abdullah:"Abdoullay",abdoulay:"Abdoullay",andre:"Andre",andrew:"Andrew",
- abdelhadi:"Abdelhadi",ahmat:"Ahmat",djmal:"Djmal",fadoul:"Fadoul",haroon:"Haroon",nouradine:"Nouradine",
- haroun:"Haroon",mahamount:"Mahamout",djamal:"Djmal",djamel:"Djmal",abderahamane:"Abdul",aderahame:"Abdul",abdoulhadi:"Abdelhadi",addoullay:"Abdoullay",
+ abdelhadi:"Abdelhadi",ahmat:"Ahmat",djmal:"Djamal Ahmad",fadoul:"Fadoul",haroon:"Haroon",nouradine:"Nouradine",
+ haroun:"Haroon",mahamount:"Mahamout",djamal:"Djamal Ahmad",djamel:"Djamal Ahmad",abderahamane:"Abdul",aderahame:"Abdul",abdoulhadi:"Abdelhadi",addoullay:"Abdoullay",
  mahamatmoussaabena:"Mahamat Moussa",mahamatmoussaabema:"Mahamat Moussa",mahamat:"Mahamat Moussa",yacoub:"Yacoub",langsana:"Langsana"};
 const KEY=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
 function lookMap(t_){const m=Object.assign({},t_==="p"?PLACES:PEOPLE);all("al").forEach(a=>{if(a&&a.t===t_&&a.a&&a.c)m[KEY(a.a)]=a.c});return m}
@@ -695,7 +699,8 @@ async function parseDocx(buf,opt){const h=await docxLines(buf);const r=parseText
 
 /* ---- back-dated history (Shaun's emails Jan–Mar 2026) + Johan's Dec 2026 trip ---- */
 const L_=(from,to,d1,d2,mode,x)=>Object.assign({from:from,to:to,d1:d1,d2:d2||"",mode:mode||"",all:false,who:[],veh:"",flt:""},x||{});
-const SCH6="Schedule 6 – October 2026",SCH7="Schedule 7 – November/December 2026";
+const SCH6="Schedule 6",SCH7="Schedule 7",SCHMON={"6":"October 2026","7":"November/December 2026"};
+const normSched=s=>{const m=/schedule[\s_-]*(\d+)/i.exec(String(s||""));return m?"Schedule "+(+m[1]):clean(s||"")};
 const SEED=[
  {id:"s01",group:["Ken","Sean","Sebastiaan"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Postponed to 18 Feb (see 10 Feb email).",legs:[L_("SA","N'Djamena","2026-02-11","2026-02-12","air"),L_("N'Djamena","Bardai","2026-02-15","","charter"),L_("Bardai","HQ","2026-02-16","","road")]},
  {id:"s02",group:["Johan","Cliff"],src:"Feb 2026 Planning (27 Jan 2026)",note:"Next charter 5th or 6th March. Later changed.",legs:[L_("Bardai","N'Djamena","2026-03-05","2026-03-06","charter")]},
@@ -712,11 +717,11 @@ const SEED=[
  {id:"s13",group:["Johan","Mahamout","Abdoullay","Sabour"],src:"Johan (Dec 2026 rotation)",note:"Mahamout, Abdoullay and Sabour stop in N'Djamena. Sabour: assumed, check.",legs:[L_("GZ","HQ","2026-12-01","","road"),L_("HQ","Bardai","2026-12-02","","road"),L_("Bardai","N'Djamena","2026-12-03","","charter"),
    L_("N'Djamena","Addis Ababa","2026-12-05","","air",{who:["Johan"],flt:"ET938 14:05"}),L_("Addis Ababa","Johannesburg","2026-12-05","2026-12-06","air",{who:["Johan"],flt:"ET859 23:30, lands 03:55"})]},
  /* Shaun's draft rotation schedules (24 Oct 2026, "for review and comment"). Not confirmed. */
- {id:"s14",sched:SCH6,group:["Ibrahim","Hamid","Yacoub","Langsana"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Yacoub = new truck driver, Langsana = new translator. Mahamout drives them Bardai to HQ.",legs:[L_("N'Djamena","Bardai","2026-11-01","","charter"),L_("Bardai","HQ","2026-11-02","","road",{all:true})]},
- {id:"s15",sched:SCH6,group:["Shaun","Ben","Abdul","Haroon","Mahamat Moussa","Nouradine","Pedro","Djmal"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Mahamout drives HQ to Bardai. Only Shaun, Ben and Pedro fly on to SA (via Addis).",legs:[L_("HQ","Bardai","2026-10-31","","road",{all:true}),L_("Bardai","N'Djamena","2026-11-01","","charter",{all:true}),L_("N'Djamena","SA","2026-11-04","","air",{who:["Shaun","Ben","Pedro"],flt:"via Addis Ababa"})]},
- {id:"s16",sched:SCH6,group:["Mahamout"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Driver run: takes the team to Bardai, brings Hamid, Ibrahim, Yacoub and Langsana back.",legs:[L_("HQ","Bardai","2026-10-31","","road"),L_("Bardai","HQ","2026-11-02","","road")]},
- {id:"s17",sched:SCH7,group:["Ben","Shaun","Haroon","Nouradine","Abdul","Ibrahim"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Shaun and Abdul to be confirmed. Ibrahim drives Bardai to HQ.",legs:[L_("SA","N'Djamena","2026-11-30","2026-12-01","air",{who:["Ben","Shaun"],flt:"via Addis Ababa"}),L_("N'Djamena","Bardai","2026-12-03","","charter",{who:["Ben","Shaun","Haroon","Nouradine","Abdul"]}),L_("Bardai","HQ","2026-12-04","","road",{all:true})]},
- {id:"s18",sched:SCH7,group:["Johan","Cliff","Abdelhadi","Sabour","Mahamout","Fadoul","Ibrahim","Abdoullay"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Same dates as Johan's s13. Abdoullay: 'to resign'. Abdelhadi and Ibrahim stay in Bardai (Ibrahim drives back 4 Dec). Shaun and Abdul also listed Bardai to N'Djamena, to be confirmed.",legs:[L_("HQ","Bardai","2026-12-02","","road",{all:true}),L_("Bardai","N'Djamena","2026-12-03","","charter",{who:["Johan","Cliff","Abdoullay","Sabour","Mahamout","Fadoul"]}),L_("N'Djamena","SA","2026-12-05","","air",{who:["Johan","Cliff"],flt:"via Addis Ababa"})]}
+ {id:"s14",sched:SCH6,group:["Ibrahim","Hamid","Yacoub","Langsana"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Yacoub = new truck driver, Langsana = new translator. Mahamout drives them Bardai to HQ.",legs:[L_("N'Djamena","Bardai","2026-11-01","","charter"),L_("Bardai","HQ","2026-11-02","","road",{who:["Hamid","Ibrahim","Mahamout","Yacoub","Langsana"]})]},
+ {id:"s15",sched:SCH6,group:["Shaun","Ben","Abdul","Haroon","Mahamat Moussa","Nouradine","Pedro","Djamal Ahmad"],src:"Schedule 6, draft (24 Oct 2026)",note:"Draft. Mahamout drives HQ to Bardai (listed 4th in Schedule 6) and brings Hamid, Ibrahim, Yacoub and Langsana back on 2 Nov. Only Shaun, Ben and Pedro fly on to SA (via Addis).",legs:[L_("HQ","Bardai","2026-10-31","","road",{who:["Shaun","Ben","Abdul","Mahamout","Haroon","Mahamat Moussa","Nouradine","Pedro","Djamal Ahmad"]}),L_("Bardai","N'Djamena","2026-11-01","","charter",{all:true}),L_("N'Djamena","SA","2026-11-04","","air",{who:["Shaun","Ben","Pedro"],flt:"via Addis Ababa"})]},
+ /* s16 (Mahamout driver run) folded into s15 leg 1 and s14 leg 2 so each stage lists names in Schedule 6 order */
+ {id:"s17",sched:SCH7,group:["Ben","Shaun","Haroon","Nouradine","Abdul","Ibrahim"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Shaun and Abdul to be confirmed. Ibrahim drives Bardai to HQ.",legs:[L_("SA","N'Djamena","2026-11-30","2026-12-01","air",{who:["Ben","Shaun"],flt:"via Addis Ababa"}),L_("N'Djamena","Bardai","2026-12-03","","charter",{who:["Ben","Haroon","Nouradine","Abdul","Shaun"]}),L_("Bardai","HQ","2026-12-04","","road",{who:["Ben","Haroon","Nouradine","Ibrahim","Shaun","Abdul"]})]},
+ {id:"s18",sched:SCH7,group:["Johan","Cliff","Abdelhadi","Sabour","Mahamout","Fadoul","Ibrahim","Abdoullay"],src:"Schedule 7, draft (24 Oct 2026)",note:"Draft. Same dates as Johan's s13. Abdoullay: 'to resign'. Abdelhadi and Ibrahim stay in Bardai (Ibrahim drives back 4 Dec). Shaun and Abdul also listed Bardai to N'Djamena, to be confirmed.",legs:[L_("HQ","Bardai","2026-12-02","","road",{all:true}),L_("Bardai","N'Djamena","2026-12-03","","charter",{who:["Johan","Cliff","Abdoullay","Sabour","Mahamout","Fadoul","Shaun","Abdul"]}),L_("N'Djamena","SA","2026-12-05","","air",{who:["Johan","Cliff"],flt:"via Addis Ababa"})]}
 ].map(x=>Object.assign({seed:1,note:""},x));
 const VEH0=[{id:"b052052",name:"Land Cruiser B052052"}];
 function trips(){const own={};all("tr").forEach(x=>{if(x&&x.id)own[x.id]=x});const out=[];
@@ -760,12 +765,14 @@ async function reportDocx(m){const x=docxXml(m),z=new JSZip();
   return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
 /* Full Name + Surname from staff-rotation.xlsx (Setup). Not in list = shown as saved. */
 const FULLN={"Shaun": "Shaun Smith", "Johan": "Johan Kirsten", "Elton": "Elton Spiers", "Cliff": "Cliff Nel", "Pedro": "Pedro Boshoff", "Micheal": "Micheal vd Merwe", "Alex": "Alex Gillian", "Ben": "Ben Marais", "Abdul": "Abdul Oumar Abdoul", "Hamid": "Hamid Ahamat Lode", "Ibrahim": "Ibrahim Youssouf Ali", "Sabour": "Sabour Kertemar Appollinaire", "Mahamout": "Mahamout Abakar Bourma", "Sean": "Sean Versfeld", "Sebastiaan": "Sebastiaan Janse van Vuuren", "Hendrik": "Hendrik Joubert", "Abdelhadi": "Abdelhadi Silay", "Ahmat": "Ahmat Bourma", "Fadoul": "Fadoul Adam", "Haroon": "Haroon Zoulla", "Mahamat Moussa": "Mahamat Moussa Abema", "Mahamat": "Mahamat Moussa Abema", "Nouradine": "Nouradine Mahamat Adam", "Abdoullay": "Abdoullay Younouss", "Andrew": "Andrew Holloway", "Yacoub": "Yacoub Oumar Brahim", "Langsana": "Langsana Vi-Fikaoussou Djidda"};const fullName=n=>FULLN[n]||n;
-const schedOf=x=>{if(x.sched)return x.sched;const m=/schedule\s*(\d+)/i.exec(x.src||"");if(m)return ({"6":SCH6,"7":SCH7})[m[1]]||"Schedule "+m[1];return "Earlier trips"};
+function staffAll(){const S={};Object.keys(FULLN).filter(k=>k!=="Mahamat").forEach(k=>S[k]=1);Object.values(PEOPLE).forEach(v=>S[v]=1);trips().forEach(x=>(x.group||[]).forEach(g=>S[g]=1));return Object.keys(S).sort((a,b)=>fullName(a).localeCompare(fullName(b)))}
+const schedOf=x=>{if(x.sched)return normSched(x.sched);const m=/schedule\s*(\d+)/i.exec(x.src||"");if(m)return "Schedule "+(+m[1]);return "Earlier trips"};
+const nextSched=T_=>{let n=0;(T_||trips()).forEach(x=>{const k=schedNum(schedOf(x));if(k>n)n=k});return "Schedule "+(n+1)};
 const schedNum=s=>{const m=/schedule\s*(\d+)/i.exec(s);return m?+m[1]:-1};
 function schedList(T_){const S={};T_.forEach(x=>{const k=schedOf(x);S[k]=S[k]||{name:k,last:""};const d=lastD(x);if(d>S[k].last)S[k].last=d});
   return Object.values(S).sort((a,b)=>schedNum(b.name)-schedNum(a.name)||b.last.localeCompare(a.last)).map(o=>o.name)}
 function schedFromName(nm){const m=/schedule[\s_-]*(\d+)(?:[\s_–-]+(.+?))?(?:\.\w+)?$/i.exec(String(nm||""));if(!m)return "";
-  const k=({"6":SCH6,"7":SCH7})[m[1]];if(k)return k;return "Schedule "+m[1]+(m[2]?" – "+m[2].replace(/[_]/g," ").replace(/-/g,"/").replace(/^\d{4}\/\d\d\/\d\d\s*/,""):"")}
+  return "Schedule "+(+m[1])}
 /* ---- trip sheet in Shaun's schedule layout (title, "Travel from X to Y", table Item | Name | Date). No key/meanings. ---- */
 const ROUTE_ORDER=[["SA","N'Djamena","Travel from S A to Addis & then to N’djamena"],["N'Djamena","Bardai","Travel from N’djamena to Bardai"],["HQ","Bardai","Travel from Seneker (HQ) to Bardai"],
  ["Bardai","N'Djamena","Travel from Bardai to N’djamena"],["Bardai","HQ","Travel from Bardai to Seneker"],["N'Djamena","SA","Travel from N’djamena to Addis and onto SA"]];
@@ -781,7 +788,7 @@ function schedModel(sel,o){o=o||{};const S={},order=[];
   const secs=order.map(k=>S[k]).sort((a,b)=>a.ri-b.ri||a.first.localeCompare(b.first));secs.forEach(s=>s.rows.sort((a,b)=>a.d.localeCompare(b.d)));
   const ds=[];secs.forEach(s=>s.rows.forEach(r=>{if(r.d)ds.push(r.d)}));ds.sort();
   let mon="";if(ds.length){const a=ds[0].split("-").map(Number),b=ds[ds.length-1].split("-").map(Number);const ms=[];for(let y=a[0],mm=a[1];y<b[0]||(y===b[0]&&mm<=b[1]);mm===12?(y++,mm=1):mm++)ms.push(capM(mm-1)+(y!==b[0]?" "+y:""));mon=ms.join("/")+" "+b[0]}
-  const title=o.title||(o.sched&&o.sched!=="Earlier trips"?o.sched.replace(/^Schedule \d+ – /,"")+" – Updated "+longD(o.today||today()):"")||((mon?mon+" – ":"")+"Updated "+longD(o.today||today()));
+  const title=o.title||(o.sched&&o.sched!=="Earlier trips"?(SCHMON[schedNum(o.sched)]?SCHMON[schedNum(o.sched)]+" – ":o.sched+" – ")+"Updated "+longD(o.today||today()):"")||((mon?mon+" – ":"")+"Updated "+longD(o.today||today()));
   return {title:title,secs:secs.map(s=>({head:s.head,rows:s.rows.map((r,i)=>({item:i+1,name:r.name,date:r.date}))}))}}
 function schedHtml(m){const G=C.REPORT_COLOR||"#1B7F3B",bd='border:1px solid #9cc9aa;padding:6px 8px;text-align:left;vertical-align:top',td='style="'+bd+'"',th='style="'+bd+';background:'+G+';color:#fff"',tdE='style="'+bd+';background:#e8f3ec"';
   return `<div class="sched" style="font-family:Calibri,Arial,sans-serif;color:#000;background:#fff;padding:8px"><p style="font-weight:bold;font-size:14pt;margin:0 0 10px;color:${G}">${esc(m.title)}</p>`+
@@ -802,7 +809,7 @@ async function schedDocx(m){const NS='xmlns:w="http://schemas.openxmlformats.org
   z.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
   z.file("word/document.xml",doc);z.file("word/styles.xml",sty);
   return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
-window.TRV={schedOf:schedOf,schedList:schedList,schedFromName:schedFromName,fullName:fullName,schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
+window.TRV={schedOf:schedOf,nextSched:nextSched,normSched:normSched,schedList:schedList,schedFromName:schedFromName,staffAll:staffAll,fullName:fullName,schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
 
 /* ---- screens ---- */
 /* ---- STANDARD 📊 REPORTS (base TMC.addReport): Rotation's own reports, by travel date ---- */
@@ -818,7 +825,7 @@ let wv="list",edit=null,imp=null,rep=null,repSel=null,impMsg="";
 const go_=v=>{wv=v;render();try{scrollTo(0,0)}catch(e){}};
 /* 📅 Schedule (Shaun's stages, Name & Surname, Word) also opens from the 📊 Reports list */
 window.TMC.repExtra=u=>workOk(u)&&can("reports")?`<button type="button" class="sec" id="rpSched">📅 Schedule – ${esc(t("tRep"))}</button>`:"";
-window.TMC.repExtraBind=()=>{const b=$("rpSched");if(b)b.onclick=()=>{repSel=null;tab="work";go_("rep")}};
+window.TMC.repExtraBind=()=>{const b=$("rpSched");if(b)b.onclick=()=>{repSel=null;backRep=1;tab="work";go_("rep")}};let backRep=0;
 const modeIc={road:"🚙",charter:"🛩️",air:"✈️"};
 function tripCard(x){const tg=canFix()?"button":"div";return `<${tg}${tg==="button"?' type="button"':""} class="box trip" data-trip="${esc(x.id)}"><b class="tg">${esc(x.group.join("/")||"?")}</b>
  ${x.legs.map((l,i)=>`<span class="tl">${i+1}. ${modeIc[l.mode]||""} ${esc(l.from)} → ${esc(l.to)} · ${esc(fmtShort(l.d1))}${l.d2?" / "+esc(fmtShort(l.d2)):""}${l.flt?" · "+esc(l.flt):""}</span>`).join("")}
@@ -829,7 +836,7 @@ function workHTML(u){
   const tools=[can("reports")?`<button type="button" class="sec" id="exRep">${esc(t("repT"))}</button>`:"",can("export")?`<button type="button" class="sec" id="exExp">${esc(t("expT"))}</button>`:""].join("");
   const cAdd=canKind("tr","add"),cView=canKind("tr","view");
   return `<div class="tiles">${cAdd?`<button type="button" class="tile" id="wNew"><b>➕</b>${esc(t("tNew"))}</button><button type="button" class="tile" id="wImp"><b>📥</b>${esc(t("tImp"))}</button>`:""}
-  ${can("reports")&&cView?`<button type="button" class="tile" id="wRep"><b>📝</b>${esc(t("tRep"))}</button>`:""}<button type="button" class="tile" id="wMore"><b>🚙</b>${esc(t("tMore"))}</button></div>
+  </div>
   ${cView?`<h3>🗓️ ${esc(t("tUp"))} (${up.length})</h3>${up.length?up.map(tripCard).join(""):`<p class="hint">${esc(t("tNone"))}</p>`}
   <h3>📚 ${esc(t("tHist"))} (${old.length})</h3>${old.map(tripCard).join("")}`:""}
   ${tools?`<div class="box">${tools}<p class="hint" id="exOut"></p></div>`:""}`;
@@ -846,12 +853,12 @@ function legHTML(l,i){const V=vehicles();return `<div class="box leg" data-leg="
  <label>${esc(t("tWho"))}</label><input type="text" class="lW" value="${esc((l.who||[]).join("/"))}">
  <label class="chk"><input type="checkbox" class="lA"${l.all?" checked":""}> ${esc(t("tAll"))}</label>
  <button type="button" class="sec lX">${esc(t("tDelLeg"))}</button></div>`}
-function editHTML(){const x=edit;return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="eGroup">${esc(t("tGroup"))}</label><input type="text" id="eGroup" value="${esc(x.group.join("/"))}">
- <label for="eSched">Schedule</label><input type="text" id="eSched" list="schL" value="${esc(x.sched||"")}" placeholder="Schedule 8 – …"><datalist id="schL">${schedList(trips()).filter(n=>n!=="Earlier trips").map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
+function editHTML(){const x=edit;return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="ePick">${esc(t("tGroup"))}</label><input type="hidden" id="eGroup" value="${esc(x.group.join("/"))}"><div id="eChips">${x.group.map((g,i)=>`<div class="pchip"><span>${esc(fullName(g))}</span><button type="button" class="red pX" data-i="${i}" aria-label="Remove">✕</button></div>`).join("")}</div>${x.group.length>=9?`<p id="pFull" class="pFull">⛔ ${esc(t("tPFull"))}</p>`:`<select id="ePick" class="big pPick"><option value="">${esc(t("tPAdd"))}</option>${staffAll().filter(n=>!x.group.includes(n)&&n!==x.driver).map(n=>`<option value="${esc(n)}">${esc(fullName(n))}</option>`).join("")}</select>`}<label for="eDrv">${esc(t("tDrv"))}</label><select id="eDrv" class="big pPick"><option value="">${esc(t("tDNone"))}</option>${staffAll().filter(n=>!x.group.includes(n)).map(n=>`<option value="${esc(n)}"${x.driver===n?" selected":""}>${esc(fullName(n))}</option>`).join("")}</select>
+ <label for="eSched">Schedule</label><input type="text" id="eSched" list="schL" value="${esc(x.sched||"")}" placeholder="${esc(nextSched())}"><datalist id="schL">${schedList(trips()).filter(n=>n!=="Earlier trips").map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
  <label for="eNote">${esc(t("tNote"))}</label><textarea id="eNote" rows="2">${esc(x.note||"")}</textarea>${x.src?`<p class="hint">${esc(t("src"))}: ${esc(x.src)}</p>`:""}</div>
  <datalist id="plc">${placeList().map(p=>`<option value="${esc(p)}">`).join("")}</datalist>
  ${x.legs.map(legHTML).join("")}<button type="button" class="sec" id="eAddLeg">${esc(t("tAddLeg"))}</button><button type="button" id="eSave">${esc(t("tSave"))}</button>${canFix()&&trips().some(o=>o.id===x.id)?`<button type="button" class="red" id="eDel">${esc(t("tDel"))}</button>`:""}`}
-function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value);x.note=clean($("eNote").value);x.sched=clean($("eSched").value);
+function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value).slice(0,9);{const d=$("eDrv");if(d)x.driver=d.value}x.note=clean($("eNote").value);x.sched=normSched($("eSched").value);
   x.legs=Array.from(document.querySelectorAll(".leg")).map(b=>{const q=c=>b.querySelector(c);return {from:canPlace(q(".lF").value),to:canPlace(q(".lT").value),d1:q(".lD1").value,d2:q(".lD2").value,mode:q(".lM").value,veh:q(".lV").value,flt:clean(q(".lFl").value),who:splitGroup(q(".lW").value),all:q(".lA").checked}})}
 function impHTML(){const r=imp||[];return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="impTxt">${esc(t("iPaste"))}</label><textarea id="impTxt" rows="7" data-draft="impTxt"></textarea>
  <label class="fileB">${esc(t("iFile"))}<input type="file" id="impFile" accept=".txt,.htm,.html,.eml,.docx" hidden></label>
@@ -877,7 +884,8 @@ function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
   const srv=a=>{const o=$("exOut");api({action:a,token:sTok()||undefined,code:sCode()||undefined}).then(j=>{o.textContent=j.ok?(a==="report"?JSON.stringify(j.counts):(j.rows||[]).length+" rows"):t("noAccess")}).catch(()=>{o.textContent=t("ncT")})};
   document.querySelectorAll('nav [data-tab="work"]').forEach(b=>b.addEventListener("click",()=>{wv="list";edit=null},true)); /* tapping the tab again → back to the trip list */
   on("exRep",()=>srv("report"));on("exExp",()=>srv("export"));
-  on("eBack",()=>{edit=null;go_("list")});on("wNew",()=>{edit={id:"t"+Date.now().toString(36),group:[],legs:[blankLeg()],note:"",src:""};go_("edit")});
+  on("eBack",()=>{edit=null;if(backRep){tab=backRep===2?"home":"reports";backRep=0;wv="list";render();return}go_("list")});{const pk=$("ePick");if(pk&&edit){pk.onchange=()=>{if(!pk.value)return;readEdit();if(edit.group.length<9)edit.group.push(pk.value);render()};document.querySelectorAll(".pX").forEach(b=>b.onclick=()=>{readEdit();edit.group.splice(+b.dataset.i,1);render()})}}
+  on("wNew",()=>{edit={id:"t"+Date.now().toString(36),group:[],legs:[blankLeg()],note:"",src:"",sched:nextSched()};go_("edit")});
   on("wImp",()=>{imp=null;impMsg="";go_("imp")});on("wRep",()=>{repSel=null;go_("rep")});on("wMore",()=>go_("more"));
   if(canFix())document.querySelectorAll("button[data-trip]").forEach(b=>b.onclick=()=>{const x=trips().find(y=>y.id===b.dataset.trip);if(!x)return;edit=JSON.parse(JSON.stringify(x));delete edit.seed;go_("edit")});
   on("eAddLeg",()=>{readEdit();const p=edit.legs[edit.legs.length-1];const n=blankLeg();if(p)n.from=p.to;edit.legs.push(n);render()});
@@ -974,7 +982,7 @@ function bindMain(u){
   bindCommon();
   document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});
   const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
-  on("hSync",()=>syncNow());on("hShare",shareModal);
+  on("hSync",()=>syncNow());on("hLists",()=>{tab="work";backRep=2;edit=null;wv="more";render();try{scrollTo(0,0)}catch(e){}});on("hShare",shareModal);
   on("sSave",()=>{L.set("syurl",$("sUrl").value.trim());L.set("sycode",$("sCode").value.trim());L.del("since");syncNow().then(render)});
   on("uChk",()=>checkUpdate(true));
   on("sOut",logout);on("hOut",logout);on("sWipe",wipe);
@@ -1027,21 +1035,32 @@ setInterval(paintSync,2000);addEventListener("online",paintSync);addEventListene
 function onData(){const u=me();if(flow&&flow.s==="wait"&&!u){/* stay */}if(!u&&L.get("uid")){signOut();render();return}
   const a=document.activeElement;if(u&&!formDirty&&!(a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA")))render()}
 
-/* ---------------- Auto-update (service worker) ---------------- */
-let reg=null,updReady=false;
+/* ---------------- Auto-update (service worker) ----------------
+   Base VER 11 (Rotation VER 13): on open and on coming back to the foreground the app checks for a new version. If one is found it
+   locks saves (put() refuses), shows a full-screen "Updating… please wait", activates the new worker and reloads.
+   Offline / check fails: nothing happens, the app works normally, it tries again next open. Saved records live in
+   localStorage / IndexedDB (APP_ID_ keys), so a reload never loses unsynced work. */
+let reg=null,updReady=false,updLock=false,updT0=0;
 function paintUpd(){const w=$("updW");if(!w)return;w.style.display=updReady?"block":"none";if(updReady){w.innerHTML=`${esc(t("updT"))}<button type="button" id="updB">${esc(t("updB"))}</button>`;$("updB").onclick=applyUpdate}}
-function applyUpdate(){if(reg&&reg.waiting)reg.waiting.postMessage("skip");else location.reload()}
+function updScreen(on){let o=$("updGo");if(!on){if(o)o.remove();return}if(!o){o=document.createElement("div");o.id="updGo";o.setAttribute("role","alert");document.body.appendChild(o)}
+  o.innerHTML=`<img src="icons/icon-192.png" alt=""><i></i><b>${esc(t("updGo"))}</b><span>${esc(t("updGo2"))}</span>`}
+function updOn(){if(updLock)return;updLock=true;updT0=Date.now();try{const a=document.activeElement;if(a&&a.blur)a.blur()}catch(e){}updScreen(1);
+  setTimeout(()=>{if(updLock&&!(reg&&reg.waiting)&&Date.now()-updT0>=45000)updOff()},45000)}   // download stuck: let staff work, retry next open
+function updOff(){updLock=false;updScreen(0)}
+function applyUpdate(){updOn();if(reg&&reg.waiting)reg.waiting.postMessage("skip");else location.reload();setTimeout(()=>location.reload(),8000)}
 function checkUpdate(manual){if(!reg)return;reg.update().then(()=>{if(manual){const m=$("uMsg");if(m)m.textContent=reg.waiting||reg.installing?t("updT"):t("updNone")}}).catch(()=>{})}
-window.TMC.checkUpdate=checkUpdate;
+window.TMC.checkUpdate=checkUpdate;window.TMC.updLock=()=>updLock;
 if("serviceWorker" in navigator&&location.protocol!=="file:"){
   let reloading=false;const hadCtl=!!navigator.serviceWorker.controller; /* TMC Rotation: no reload on first install (fixes test race) */
   navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloading||!hadCtl)return;reloading=true;location.reload()});
-  navigator.serviceWorker.register("sw.js",{scope:"./"}).then(r=>{reg=r;
-    const watch=w=>{if(!w)return;w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){updReady=true;paintUpd()}})};
-    if(r.waiting&&navigator.serviceWorker.controller){updReady=true;paintUpd()}
-    watch(r.installing);r.addEventListener("updatefound",()=>watch(r.installing));
-    setInterval(()=>checkUpdate(),30*60000);
-  }).catch(e=>console.warn("sw",e));
+  const hook=r=>{if(!r||reg)return;reg=r;   // ready answers at once when installed; register() can wait for the network
+    const watch=w=>{if(!w||!navigator.serviceWorker.controller)return;updOn();w.addEventListener("statechange",()=>{if(w.state==="installed"){updReady=true;paintUpd();applyUpdate()}else if(w.state==="redundant"&&!r.waiting)updOff()})};
+    if(r.waiting&&navigator.serviceWorker.controller){updReady=true;applyUpdate()}
+    else{watch(r.installing);checkUpdate()}
+    r.addEventListener("updatefound",()=>watch(r.installing));
+    setInterval(()=>checkUpdate(),30*60000)};
+  if(navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(r=>{if(new URL(r.scope).href===new URL("./",location.href).href)hook(r)}).catch(()=>{});
+  navigator.serviceWorker.register("sw.js",{scope:"./"}).then(hook).catch(e=>console.warn("sw",e));
 }
 
 /* ---------------- Install button + iPhone hint ---------------- */
