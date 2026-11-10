@@ -23,7 +23,7 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 15,
+ "VER": 16,
  "COLOR": "#1d4ed8",
  "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
@@ -178,6 +178,8 @@ nav.tabs .tlab{font-size:13px;line-height:1.1;text-align:center;overflow-wrap:an
 .fileB{display:flex;align-items:center;justify-content:center;min-height:58px;border-radius:10px;background:#e2e8f0;color:#0f172a;font-weight:600;font-size:18px;margin:6px 0;cursor:pointer}
 .leg h3{margin:0 0 4px}.rep{text-align:start;overflow-x:auto;overflow-wrap:anywhere}
 .pchip{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:20px;padding:10px 12px;margin:6px 0;border:2px solid #1B7F3B;border-radius:12px;background:#fff}.pchip .pX{width:auto;min-width:52px;min-height:48px;font-size:20px;margin:0}.pFull{font-size:18px;font-weight:700;color:#b00020;background:#fdecea;border:2px solid #b00020;border-radius:12px;padding:12px;margin:8px 0}.pPick{font-size:20px;min-height:56px;width:100%;margin:8px 0}
+.seg{display:flex;gap:8px}.seg button{margin:4px 0;flex:1}.seg button.on{outline:4px solid #f59e0b}
+.seg.sv button{min-height:84px;font-size:22px;font-weight:700}.seg.sv button.on{outline:5px solid #f59e0b;background:#fde68a}
 </style></head><body>
 <div id="app"></div>
 <script src="lib/jszip.min.js"></script>
@@ -583,21 +585,21 @@ Object.assign(window.TMC,{addReport:addReport,REPORTS:REPORTS,XL:XL,repXlsx:repX
    "Rotation Cycle" emails (.txt/.html/.docx), report in Shaun's style (email + .docx).
    Kinds: "tr" trips, "v" vehicles, "al" name/place lookups. (v10: demo "x" notes box removed.) */
 Object.assign(T.en,{work:"Trips",tNew:"New trip",tImp:"Import",tRep:"Report",tMore:"Lists",tUp:"Coming trips",tHist:"History",tNone:"No trips yet.",
- tGroup:"Passengers (max 9)",tDrv:"🚗 Driver",tPAdd:"➕ Add passenger…",tPFull:"Full: 9 passengers is the most. Remove one to add another.",tDNone:"— Pick driver —",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
+ tGroup:"Passengers (max 9)",tDrv:"🚗 Driver",tPAdd:"➕ Add passenger…",tPFull:"Full: 9 passengers is the most. Remove one to add another.",tDNone:"— Pick driver —",t2v:"2nd vehicle",tYes:"Yes",tNo:"No",tLeg:"Leg",tFrom:"From",tTo:"To",tD1:"Date",tD2:"2nd date (overnight)",tMode:"How",tVeh:"Vehicle",tFlt:"Flight no. / time",tWho:"Only these people (optional)",tAll:"Total team",
  tAddLeg:"➕ Add leg",tDelLeg:"🗑️ Remove leg",tSave:"💾 Save trip",tDel:"🗑️ Delete trip",tDelQ:"Delete this trip?",tBack:"⬅️ Back",tNote:"Note",
  mRoad:"🚙 Road",mCharter:"🛩️ Charter",mAir:"✈️ Airline",mNone:"—",
  iPaste:"Paste the email here",iFile:"📎 Choose file (.txt .html .docx)",iRead:"🔍 Read",iFound:"Found %n trip(s)",iSave:"💾 Save %n trip(s)",iNone:"No trips found. Check the text.",iDup:"already saved",iDone:"Saved %n trip(s).",
  rPick:"Trips in the report",rHello:"Greeting",rIntro:"First line",rFrom:"Your name",rMake:"📝 Make report",rTitle:"Title",rCopy:"📋 Copy",rDocx:"⬇️ Word file",rCopied:"Copied. Paste it into the email.",rDrv:"Driver",
  vT:"Vehicles",vAdd:"➕ Add vehicle",nT:"Names and places",nA:"Written as",nC:"Means",nAdd:"➕ Add",src:"From"});
 Object.assign(T.fr,{work:"Voyages",tNew:"Nouveau voyage",tImp:"Importer",tRep:"Rapport",tMore:"Listes",tUp:"Voyages à venir",tHist:"Historique",tNone:"Pas encore de voyages.",
- tGroup:"Passagers (max 9)",tDrv:"🚗 Chauffeur",tPAdd:"➕ Ajouter un passager…",tPFull:"Complet : 9 passagers au maximum. Retirez-en un pour en ajouter un autre.",tDNone:"— Choisir le chauffeur —",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
+ tGroup:"Passagers (max 9)",tDrv:"🚗 Chauffeur",tPAdd:"➕ Ajouter un passager…",tPFull:"Complet : 9 passagers au maximum. Retirez-en un pour en ajouter un autre.",tDNone:"— Choisir le chauffeur —",t2v:"2e véhicule",tYes:"Oui",tNo:"Non",tLeg:"Étape",tFrom:"De",tTo:"À",tD1:"Date",tD2:"2e date (nuit)",tMode:"Comment",tVeh:"Véhicule",tFlt:"Vol / heure",tWho:"Seulement ces personnes (option)",tAll:"Toute l'équipe",
  tAddLeg:"➕ Ajouter une étape",tDelLeg:"🗑️ Retirer l'étape",tSave:"💾 Enregistrer",tDel:"🗑️ Supprimer le voyage",tDelQ:"Supprimer ce voyage ?",tBack:"⬅️ Retour",tNote:"Note",
  mRoad:"🚙 Route",mCharter:"🛩️ Charter",mAir:"✈️ Vol",mNone:"—",
  iPaste:"Collez l'e-mail ici",iFile:"📎 Choisir un fichier (.txt .html .docx)",iRead:"🔍 Lire",iFound:"%n voyage(s) trouvé(s)",iSave:"💾 Enregistrer %n voyage(s)",iNone:"Aucun voyage trouvé. Vérifiez le texte.",iDup:"déjà enregistré",iDone:"%n voyage(s) enregistré(s).",
  rPick:"Voyages du rapport",rHello:"Salutation",rIntro:"Première ligne",rFrom:"Votre nom",rMake:"📝 Faire le rapport",rTitle:"Titre",rCopy:"📋 Copier",rDocx:"⬇️ Fichier Word",rCopied:"Copié. Collez-le dans l'e-mail.",rDrv:"Chauffeur",
  vT:"Véhicules",vAdd:"➕ Ajouter",nT:"Noms et lieux",nA:"Écrit",nC:"Veut dire",nAdd:"➕ Ajouter",src:"Source"});
 Object.assign(T.ar,{work:"الرحلات",tNew:"رحلة جديدة",tImp:"استيراد",tRep:"تقرير",tMore:"القوائم",tUp:"الرحلات القادمة",tHist:"السجل",tNone:"لا توجد رحلات بعد.",
- tGroup:"الركاب (9 كحد أقصى)",tDrv:"🚗 السائق",tPAdd:"➕ أضف راكبًا…",tPFull:"ممتلئ: 9 ركاب كحد أقصى. احذف واحدًا لإضافة آخر.",tDNone:"— اختر السائق —",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
+ tGroup:"الركاب (9 كحد أقصى)",tDrv:"🚗 السائق",tPAdd:"➕ أضف راكبًا…",tPFull:"ممتلئ: 9 ركاب كحد أقصى. احذف واحدًا لإضافة آخر.",tDNone:"— اختر السائق —",t2v:"المركبة الثانية",tYes:"نعم",tNo:"لا",tLeg:"مرحلة",tFrom:"من",tTo:"إلى",tD1:"التاريخ",tD2:"التاريخ الثاني (ليلة)",tMode:"الوسيلة",tVeh:"المركبة",tFlt:"رقم الرحلة / الوقت",tWho:"هؤلاء فقط (اختياري)",tAll:"كل الفريق",
  tAddLeg:"➕ إضافة مرحلة",tDelLeg:"🗑️ حذف المرحلة",tSave:"💾 حفظ الرحلة",tDel:"🗑️ حذف الرحلة",tDelQ:"حذف هذه الرحلة؟",tBack:"⬅️ رجوع",tNote:"ملاحظة",
  mRoad:"🚙 طريق",mCharter:"🛩️ طائرة خاصة",mAir:"✈️ طيران",mNone:"—",
  iPaste:"الصق البريد هنا",iFile:"📎 اختر ملفا (.txt .html .docx)",iRead:"🔍 قراءة",iFound:"وُجدت %n رحلة",iSave:"💾 حفظ %n رحلة",iNone:"لم توجد رحلات. تحقق من النص.",iDup:"محفوظة من قبل",iDone:"تم حفظ %n رحلة.",
@@ -729,6 +731,11 @@ function trips(){const own={};all("tr").forEach(x=>{if(x&&x.id)own[x.id]=x});con
   Object.keys(own).forEach(k=>{if(!own[k].gone)out.push(own[k])});
   const first=x=>(x.legs[0]&&x.legs[0].d1)||"";return out.sort((a,b)=>first(a).localeCompare(first(b)))}
 function vehicles(){const m={};VEH0.forEach(v=>m[v.id]=v);all("v").forEach(v=>{if(v&&v.id)m[v.id]=v});return Object.keys(m).map(k=>m[k]).filter(v=>!v.gone)}
+const is2v=x=>!!(x&&x.secondVeh);
+const lab2v=()=>t("t2v")+": "+t("tYes");
+function fmtMoneyDate(l){const raw=String((l&&l.d1)||"");if(!raw)return "";const m=raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/);if(!m)return raw;let s=m[3]+"/"+m[2]+"/"+m[1];const tm=(l&&(l.t||l.time||l.hm))||(m[4]?m[4]+":"+m[5]:"");const t2=/^(\d{1,2}):(\d{2})$/.exec(String(tm));if(t2)s+=" "+String(+t2[1]).padStart(2,"0")+":"+t2[2];return s}
+function vehLabel(v){if(!v)return "";const hit=vehicles().find(x=>x.id===v||x.name===v);return hit?hit.name:v}
+function moneyExport(list){const out=[];(list||[]).forEach(x=>{(x.legs||[]).forEach((l,i)=>{const n=i+1,sc=x.sched?normSched(x.sched):"",head=(sc&&sc!=="Earlier trips")?sc+" ":"";out.push({"Trip ID":String(x.id)+"-L"+n,Date:fmtMoneyDate(l),From:l.from||"",To:l.to||"",Vehicle:vehLabel(l.veh),Driver:x.driver||"","2nd vehicle":is2v(x)?"Yes":"No",Status:(x.del||x.gone||x._deleted)?"deleted":"active",Description:head+"leg "+n+": "+(l.from||"")+" to "+(l.to||"")})})});return out}
 const today=()=>new Date().toISOString().slice(0,10);
 const lastD=x=>{const l=x.legs[x.legs.length-1];return l?(l.d2||l.d1):""};
 const sig=x=>x.group.join("/")+"|"+x.legs.map(l=>l.from+">"+l.to+"@"+l.d1).join(";");
@@ -738,18 +745,18 @@ const FONT="font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri
 function legText(l){return (l.who&&l.who.length?l.who.join("/")+" from ":l.all?"Total team from ":"")+l.from+" to "+l.to}
 function legExtra(l){return l.flt?" ("+l.flt+")":""}
 function reportModel(sel,o){o=o||{};return {hello:o.hello||"Good evening All,",intro:o.intro||"Please find the next rotation cycles for your planning",from:o.from||"Johan",
-  groups:sel.map(x=>({names:x.group.join("/"),legs:x.legs.map(l=>({text:legText(l),date:dateParts(l),extra:legExtra(l)}))}))}}
+  groups:sel.map(x=>({names:x.group.join("/"),secondVeh:is2v(x),legs:x.legs.map(l=>({text:legText(l),date:dateParts(l),extra:legExtra(l)}))}))}}
 function reportHtml(m){const D=(s,mg)=>`<div style="${mg?"margin: 0px; ":""}${FONT}">${s}</div>`,BR=D("<br>");
   let h=D(esc(m.hello))+BR+D(esc(m.intro))+BR+BR;
-  m.groups.forEach(g=>{h+=D("<u>"+esc(g.names)+"</u>",1)+D("<u><br></u>",1)+`<ol style="margin-top: 0px; margin-bottom: 0px; list-style-type: decimal;" start="1">`+
+  m.groups.forEach(g=>{h+=D("<u>"+esc(g.names)+"</u>",1)+D("<u><br></u>",1)+(g.secondVeh?D(esc(lab2v())):"")+`<ol style="margin-top: 0px; margin-bottom: 0px; list-style-type: decimal;" start="1">`+
     g.legs.map(l=>`<li style="${FONT}"><div style="margin: 0px;">${esc(l.text)} - ${l.date.map(p=>p.t!=null?esc(p.t):esc(p.n)+"<sup>"+p.s+"</sup>").join("")}${esc(l.extra)}</div></li>`).join("")+`</ol>`+BR});
   h+=D("Kind regards")+D(esc(m.from));return `<div style="${FONT}">${h}</div>`}
-function reportText(m){let s=m.hello+"\n\n"+m.intro+"\n\n";m.groups.forEach(g=>{s+=g.names+"\n\n"+g.legs.map((l,i)=>(i+1)+". "+l.text+" - "+l.date.map(p=>p.t!=null?p.t:p.n+p.s).join("")+l.extra).join("\n")+"\n\n"});return s+"Kind regards\n"+m.from}
+function reportText(m){let s=m.hello+"\n\n"+m.intro+"\n\n";m.groups.forEach(g=>{s+=g.names+(g.secondVeh?"\n"+lab2v():"")+"\n\n"+g.legs.map((l,i)=>(i+1)+". "+l.text+" - "+l.date.map(p=>p.t!=null?p.t:p.n+p.s).join("")+l.extra).join("\n")+"\n\n"});return s+"Kind regards\n"+m.from}
 const xe=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function docxXml(m){const RP=x=>`<w:rPr><w:rFonts w:ascii="Aptos" w:hAnsi="Aptos" w:cs="Aptos"/>${x||""}<w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>`;
   const run=(t,x)=>`<w:r>${RP(x)}<w:t xml:space="preserve">${xe(t)}</w:t></w:r>`,P=(r,pp)=>`<w:p><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/>${pp||""}</w:pPr>${r||""}</w:p>`;
   let b=P(run(m.hello))+P()+P(run(m.intro))+P()+P();
-  m.groups.forEach((g,gi)=>{b+=P(run(g.names,'<w:u w:val="single"/>'))+P();g.legs.forEach(l=>{b+=P(run(l.text+" - ")+l.date.map(p=>p.t!=null?run(p.t):run(p.n)+run(p.s,'<w:vertAlign w:val="superscript"/>')).join("")+(l.extra?run(l.extra):""),`<w:numPr><w:ilvl w:val="0"/><w:numId w:val="${gi+1}"/></w:numPr>`)});b+=P()});
+  m.groups.forEach((g,gi)=>{b+=P(run(g.names,'<w:u w:val="single"/>'))+P();if(g.secondVeh)b+=P(run(lab2v()));g.legs.forEach(l=>{b+=P(run(l.text+" - ")+l.date.map(p=>p.t!=null?run(p.t):run(p.n)+run(p.s,'<w:vertAlign w:val="superscript"/>')).join("")+(l.extra?run(l.extra):""),`<w:numPr><w:ilvl w:val="0"/><w:numId w:val="${gi+1}"/></w:numPr>`)});b+=P()});
   b+=P(run("Kind regards"))+P(run(m.from));
   const NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
   const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${b}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
@@ -783,26 +790,26 @@ function schedModel(sel,o){o=o||{};const S={},order=[];
   sel.forEach(x=>(x.legs||[]).forEach(l=>{if(!l.from||!l.to)return;const k=l.from+"→"+l.to;
     if(!S[k]){const r=ROUTE_ORDER.findIndex(z=>z[0]===l.from&&z[1]===l.to);S[k]={from:l.from,to:l.to,head:r>=0?ROUTE_ORDER[r][2]:"Travel from "+l.from+" to "+l.to,ri:r<0?99:r,rows:[],drivers:[],first:l.d1||"9999"};order.push(k)}
     const s=S[k];if(l.d1&&l.d1<s.first)s.first=l.d1;
-    if(x.driver){const dn=fullName(x.driver);if(!s.drivers.includes(dn))s.drivers.push(dn)}
+    if(x.driver){const dn=fullName(x.driver);if(!s.drivers.includes(dn))s.drivers.push(dn)}if(is2v(x))s.secondVeh=1;
     const who=(l.who&&l.who.length&&!l.all)?l.who:(x.group||[]),date=longD(l.d1)+(l.d2&&l.d2!==l.d1?" – "+longD(l.d2):"");
     who.map(fullName).forEach(n=>{if(!s.rows.some(r=>r.name===n&&r.date===date))s.rows.push({name:n,date:date,d:l.d1||""})})}));
   const secs=order.map(k=>S[k]).sort((a,b)=>a.ri-b.ri||a.first.localeCompare(b.first));secs.forEach(s=>s.rows.sort((a,b)=>a.d.localeCompare(b.d)));
   const ds=[];secs.forEach(s=>s.rows.forEach(r=>{if(r.d)ds.push(r.d)}));ds.sort();
   let mon="";if(ds.length){const a=ds[0].split("-").map(Number),b=ds[ds.length-1].split("-").map(Number);const ms=[];for(let y=a[0],mm=a[1];y<b[0]||(y===b[0]&&mm<=b[1]);mm===12?(y++,mm=1):mm++)ms.push(capM(mm-1)+(y!==b[0]?" "+y:""));mon=ms.join("/")+" "+b[0]}
   const title=o.title||(o.sched&&o.sched!=="Earlier trips"?(SCHMON[schedNum(o.sched)]?SCHMON[schedNum(o.sched)]+" – ":o.sched+" – ")+"Updated "+longD(o.today||today()):"")||((mon?mon+" – ":"")+"Updated "+longD(o.today||today()));
-  return {title:title,secs:secs.map(s=>({head:s.head,drivers:s.drivers.slice(),rows:s.rows.map((r,i)=>({item:i+1,name:r.name,date:r.date}))}))}}
+  return {title:title,secs:secs.map(s=>({head:s.head,drivers:s.drivers.slice(),secondVeh:!!s.secondVeh,rows:s.rows.map((r,i)=>({item:i+1,name:r.name,date:r.date}))}))}}
 function schedHtml(m){const G=C.REPORT_COLOR||"#1B7F3B",bd='border:1px solid #9cc9aa;padding:6px 8px;text-align:left;vertical-align:top',td='style="'+bd+'"',th='style="'+bd+';background:'+G+';color:#fff"',tdE='style="'+bd+';background:#e8f3ec"';
   const dLab=(typeof t==="function"?t("rDrv"):"Driver")||"Driver";
   return `<div class="sched" style="font-family:Calibri,Arial,sans-serif;color:#000;background:#fff;padding:8px"><p style="font-weight:bold;font-size:14pt;margin:0 0 10px;color:${G}">${esc(m.title)}</p>`+
-  m.secs.map(s=>`<p style="font-weight:bold;font-size:10pt;margin:12px 0 4px">${esc(s.head)}</p>`+((s.drivers&&s.drivers.length)?s.drivers.map(d=>`<p style="font-size:10pt;margin:0 0 4px">${esc(dLab)}: ${esc(d)}</p>`).join(""):"")+`<table style="border-collapse:collapse;width:100%;table-layout:fixed;font-size:10pt"><colgroup><col style="width:3.2em"><col style="width:44%"><col></colgroup><tr><th ${th}>Item</th><th ${th}>Name</th><th ${th}>Date</th></tr>`+
+  m.secs.map(s=>`<p style="font-weight:bold;font-size:10pt;margin:12px 0 4px">${esc(s.head)}</p>`+((s.drivers&&s.drivers.length)?s.drivers.map(d=>`<p style="font-size:10pt;margin:0 0 4px">${esc(dLab)}: ${esc(d)}</p>`).join(""):"")+(s.secondVeh?`<p style="font-size:10pt;margin:0 0 4px">${esc(lab2v())}</p>`:"")+`<table style="border-collapse:collapse;width:100%;table-layout:fixed;font-size:10pt"><colgroup><col style="width:3.2em"><col style="width:44%"><col></colgroup><tr><th ${th}>Item</th><th ${th}>Name</th><th ${th}>Date</th></tr>`+
     s.rows.map((r,i)=>{const c=i%2?tdE:td;return `<tr><td ${c}>${r.item}</td><td ${c}>${esc(r.name)}</td><td ${c}>${esc(r.date)}</td></tr>`}).join("")+`</table>`).join("")+`</div>`}
-function schedText(m){const dLab=(typeof t==="function"?t("rDrv"):"Driver")||"Driver";return m.title+"\n\n"+m.secs.map(s=>s.head+"\n"+((s.drivers&&s.drivers.length)?s.drivers.map(d=>dLab+": "+d).join("\n")+"\n":"")+"Item\tName\tDate\n"+s.rows.map(r=>r.item+"\t"+r.name+"\t"+r.date).join("\n")).join("\n\n")+"\n"}
+function schedText(m){const dLab=(typeof t==="function"?t("rDrv"):"Driver")||"Driver";return m.title+"\n\n"+m.secs.map(s=>s.head+"\n"+((s.drivers&&s.drivers.length)?s.drivers.map(d=>dLab+": "+d).join("\n")+"\n":"")+(s.secondVeh?lab2v()+"\n":"")+"Item\tName\tDate\n"+s.rows.map(r=>r.item+"\t"+r.name+"\t"+r.date).join("\n")).join("\n\n")+"\n"}
 async function schedDocx(m){const NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
   const GH=String(C.REPORT_COLOR||"#1B7F3B").replace("#",""),R=(t,sz,u,b,col)=>`<w:r><w:rPr>${b?"<w:b/>":""}${col?`<w:color w:val="${col}"/>`:""}<w:sz w:val="${sz}"/>${u?'<w:u w:val="single"/>':""}</w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`,P=(r,sp)=>`<w:p><w:pPr><w:spacing w:before="${sp||0}" w:after="60"/></w:pPr>${r||""}</w:p>`;
   const W=[718,3963,4335],cell=(t,i,b,f)=>`<w:tc><w:tcPr><w:tcW w:w="${W[i]}" w:type="dxa"/>${f?`<w:shd w:val="clear" w:color="auto" w:fill="${f}"/>`:""}</w:tcPr><w:p>${t===""?"":R(String(t),20,false,b,b?"FFFFFF":"")}</w:p></w:tc>`,row=(a,b,f)=>`<w:tr>${a.map((t,i)=>cell(t,i,b,f)).join("")}</w:tr>`;
   let body=P(R(m.title,28,false,true,GH));
   const dLab=(typeof t==="function"?t("rDrv"):"Driver")||"Driver";
-  m.secs.forEach(s=>{body+=P(R(s.head,20,false,true),200);(s.drivers||[]).forEach(d=>{body+=P(R(dLab+": "+d,20,false,false))});body+=`<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="9016" w:type="dxa"/><w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(b=>`<w:${b} w:val="single" w:sz="4" w:space="0" w:color="000000"/>`).join("")}</w:tblBorders></w:tblPr><w:tblGrid>${W.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`+
+  m.secs.forEach(s=>{body+=P(R(s.head,20,false,true),200);(s.drivers||[]).forEach(d=>{body+=P(R(dLab+": "+d,20,false,false))});if(s.secondVeh)body+=P(R(lab2v(),20,false,false));body+=`<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="9016" w:type="dxa"/><w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(b=>`<w:${b} w:val="single" w:sz="4" w:space="0" w:color="000000"/>`).join("")}</w:tblBorders></w:tblPr><w:tblGrid>${W.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`+
     row(["Item","Name","Date"],true,GH)+s.rows.map((r,i)=>row([r.item,r.name,r.date],false,i%2?"E8F3EC":"")).join("")+`</w:tbl>`});
   const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`;
   const sty=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles ${NS}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="20"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="table" w:styleId="TableGrid"><w:name w:val="Table Grid"/></w:style></w:styles>`;
@@ -812,7 +819,7 @@ async function schedDocx(m){const NS='xmlns:w="http://schemas.openxmlformats.org
   z.file("word/_rels/document.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
   z.file("word/document.xml",doc);z.file("word/styles.xml",sty);
   return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
-window.TRV={schedOf:schedOf,nextSched:nextSched,normSched:normSched,schedList:schedList,schedFromName:schedFromName,staffAll:staffAll,fullName:fullName,schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText};
+window.TRV={schedOf:schedOf,nextSched:nextSched,normSched:normSched,schedList:schedList,schedFromName:schedFromName,staffAll:staffAll,fullName:fullName,schedModel:schedModel,schedHtml:schedHtml,schedText:schedText,schedDocx:schedDocx,parseSchedule:parseSchedule,parseText:parseText,parseHtml:parseHtml,parseDocx:parseDocx,docxLines:docxLines,trips:trips,SEED:SEED,reportModel:reportModel,reportHtml:reportHtml,reportText:reportText,reportDocx:reportDocx,canPlace:canPlace,canName:canName,dateText:dateText,is2v:is2v,lab2v:lab2v,moneyExport:moneyExport,fmtMoneyDate:fmtMoneyDate,vehLabel:vehLabel,vehicles:vehicles};
 
 /* ---- screens ---- */
 /* ---- STANDARD 📊 REPORTS (base TMC.addReport): Rotation's own reports, by travel date ---- */
@@ -832,7 +839,7 @@ window.TMC.repExtraBind=()=>{const b=$("rpSched");if(b)b.onclick=()=>{repSel=nul
 const modeIc={road:"🚙",charter:"🛩️",air:"✈️"};
 function tripCard(x){const tg=canFix()?"button":"div";return `<${tg}${tg==="button"?' type="button"':""} class="box trip" data-trip="${esc(x.id)}"><b class="tg">${esc(x.group.join("/")||"?")}</b>
  ${x.legs.map((l,i)=>`<span class="tl">${i+1}. ${modeIc[l.mode]||""} ${esc(l.from)} → ${esc(l.to)} · ${esc(fmtShort(l.d1))}${l.d2?" / "+esc(fmtShort(l.d2)):""}${l.flt?" · "+esc(l.flt):""}</span>`).join("")}
- <span class="hint">${esc(x.src||"")}</span>${fixedNote(x)}</${tg}>`}
+ ${is2v(x)?`<span class="tl">${esc(lab2v())}</span>`:""}<span class="hint">${esc(x.src||"")}</span>${fixedNote(x)}</${tg}>`}
 function workHTML(u){
   if(wv==="edit"&&edit)return editHTML();if(wv==="imp")return impHTML();if(wv==="rep")return repHTML();if(wv==="more")return moreHTML();
   const T_=trips(),d=today(),up=T_.filter(x=>lastD(x)>=d),old=T_.filter(x=>lastD(x)<d).reverse();
@@ -857,11 +864,12 @@ function legHTML(l,i){const V=vehicles();return `<div class="box leg" data-leg="
  <label class="chk"><input type="checkbox" class="lA"${l.all?" checked":""}> ${esc(t("tAll"))}</label>
  <button type="button" class="sec lX">${esc(t("tDelLeg"))}</button></div>`}
 function editHTML(){const x=edit;return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="ePick">${esc(t("tGroup"))}</label><input type="hidden" id="eGroup" value="${esc(x.group.join("/"))}"><div id="eChips">${x.group.map((g,i)=>`<div class="pchip"><span>${esc(fullName(g))}</span><button type="button" class="red pX" data-i="${i}" aria-label="Remove">✕</button></div>`).join("")}</div>${x.group.length>=9?`<p id="pFull" class="pFull">⛔ ${esc(t("tPFull"))}</p>`:`<select id="ePick" class="big pPick"><option value="">${esc(t("tPAdd"))}</option>${staffAll().filter(n=>!x.group.includes(n)&&n!==x.driver).map(n=>`<option value="${esc(n)}">${esc(fullName(n))}</option>`).join("")}</select>`}<label for="eDrv">${esc(t("tDrv"))}</label><select id="eDrv" class="big pPick"><option value="">${esc(t("tDNone"))}</option>${staffAll().filter(n=>!x.group.includes(n)).map(n=>`<option value="${esc(n)}"${x.driver===n?" selected":""}>${esc(fullName(n))}</option>`).join("")}</select>
+ <label>${esc(t("t2v"))}</label><div class="seg sv" id="e2v"><button type="button" class="sec${x.secondVeh?" on":""}" data-sv="1">${esc(t("tYes"))}</button><button type="button" class="sec${x.secondVeh?"":" on"}" data-sv="0">${esc(t("tNo"))}</button></div>
  <label for="eSched">Schedule</label><input type="text" id="eSched" list="schL" value="${esc(x.sched||"")}" placeholder="${esc(nextSched())}"><datalist id="schL">${schedList(trips()).filter(n=>n!=="Earlier trips").map(n=>`<option value="${esc(n)}">`).join("")}</datalist>
  <label for="eNote">${esc(t("tNote"))}</label><textarea id="eNote" rows="2">${esc(x.note||"")}</textarea>${x.src?`<p class="hint">${esc(t("src"))}: ${esc(x.src)}</p>`:""}</div>
  <datalist id="plc">${placeList().map(p=>`<option value="${esc(p)}">`).join("")}</datalist>
  ${x.legs.map(legHTML).join("")}<button type="button" class="sec" id="eAddLeg">${esc(t("tAddLeg"))}</button><button type="button" id="eSave">${esc(t("tSave"))}</button>${canFix()&&trips().some(o=>o.id===x.id)?`<button type="button" class="red" id="eDel">${esc(t("tDel"))}</button>`:""}`}
-function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value).slice(0,9);{const d=$("eDrv");if(d)x.driver=d.value}x.note=clean($("eNote").value);x.sched=normSched($("eSched").value);
+function readEdit(){const x=edit;x.group=splitGroup($("eGroup").value).slice(0,9);{const d=$("eDrv");if(d)x.driver=d.value}{const y=document.querySelector("#e2v button.on");x.secondVeh=!!(y&&y.dataset.sv==="1")}x.note=clean($("eNote").value);x.sched=normSched($("eSched").value);
   x.legs=Array.from(document.querySelectorAll(".leg")).map(b=>{const q=c=>b.querySelector(c);return {from:canPlace(q(".lF").value),to:canPlace(q(".lT").value),d1:q(".lD1").value,d2:q(".lD2").value,mode:q(".lM").value,veh:q(".lV").value,flt:clean(q(".lFl").value),who:splitGroup(q(".lW").value),all:q(".lA").checked}})}
 function impHTML(){const r=imp||[];return `<button type="button" class="sec" id="eBack">${esc(t("tBack"))}</button><div class="box"><label for="impTxt">${esc(t("iPaste"))}</label><textarea id="impTxt" rows="7" data-draft="impTxt"></textarea>
  <label class="fileB">${esc(t("iFile"))}<input type="file" id="impFile" accept=".txt,.htm,.html,.eml,.docx" hidden></label>
@@ -891,9 +899,10 @@ function bindWork(u){const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};
   on("wNew",()=>{edit={id:"t"+Date.now().toString(36),group:[],legs:[blankLeg()],note:"",src:"",sched:nextSched()};go_("edit")});
   on("wImp",()=>{imp=null;impMsg="";go_("imp")});on("wRep",()=>{repSel=null;go_("rep")});on("wMore",()=>go_("more"));
   if(canFix())document.querySelectorAll("button[data-trip]").forEach(b=>b.onclick=()=>{const x=trips().find(y=>y.id===b.dataset.trip);if(!x)return;edit=JSON.parse(JSON.stringify(x));delete edit.seed;go_("edit")});
+  document.querySelectorAll("#e2v [data-sv]").forEach(b=>b.onclick=()=>{readEdit();edit.secondVeh=b.dataset.sv==="1";render()});
   on("eAddLeg",()=>{readEdit();const p=edit.legs[edit.legs.length-1];const n=blankLeg();if(p)n.from=p.to;edit.legs.push(n);render()});
   document.querySelectorAll(".lX").forEach(b=>b.onclick=()=>{readEdit();edit.legs.splice(+b.closest(".leg").dataset.leg,1);render()});
-  on("eSave",()=>{readEdit();edit.legs=edit.legs.filter(l=>l.from||l.to||l.d1);const prev=trips().find(o=>o.id===edit.id),now=new Date().toISOString();if(prev){if(!canFix()){alert(t("fixOnly"));return}const fx=[];["group","legs","note","sched"].forEach(f=>{if(JSON.stringify(prev[f]||"")!==JSON.stringify(edit[f]||""))fx.push({f:f,old:prev[f],by:u.name,at:now})});edit._fix=(prev._fix||[]).concat(fx)}else{edit.by=u.name;edit.at=now}if(put("tr",edit.id,edit)===false)return;edit=null;go_("list")});
+  on("eSave",()=>{readEdit();edit.legs=edit.legs.filter(l=>l.from||l.to||l.d1);const prev=trips().find(o=>o.id===edit.id),now=new Date().toISOString();if(prev){if(!canFix()){alert(t("fixOnly"));return}const fx=[];["group","legs","note","sched","secondVeh","driver"].forEach(f=>{if(JSON.stringify(prev[f]||"")!==JSON.stringify(edit[f]||""))fx.push({f:f,old:prev[f],by:u.name,at:now})});edit._fix=(prev._fix||[]).concat(fx)}else{edit.by=u.name;edit.at=now}if(put("tr",edit.id,edit)===false)return;edit=null;go_("list")});
   on("eDel",()=>{if(!canFix())return;if(!confirm(t("tDelQ")))return;if(SEED.some(s=>s.id===edit.id))put("tr",edit.id,{id:edit.id,gone:true});else remove("tr",edit.id);edit=null;go_("list")});
   const f=$("impFile");if(f)f.onchange=async()=>{const file=f.files[0];if(!file)return;try{const nm=file.name;
       if(/\.docx$/i.test(nm))imp=await parseDocx(await file.arrayBuffer(),{name:nm});else{const s=await file.text();imp=/<html|<div|<p[ >]/i.test(s)?parseHtml(s,{name:nm}):parseText(s,{name:nm})}
