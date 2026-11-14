@@ -23,7 +23,7 @@
  "APP_ID": "tmctravel",
  "NAME": "TMC Rotation",
  "SHORT": "TMC Rotation",
- "VER": 16,
+ "VER": "1.16.1",
  "COLOR": "#1d4ed8",
  "REPORT_COLOR": "#1B7F3B",
  "COLOR_DARK": "#1e3a8a",
@@ -78,7 +78,7 @@
    "add": "add"
   }
  },
- "CACHE_PREFIX": "tmc-travel"
+ "CACHE_PREFIX": "tmc-rotation"
 }/*END*/;</script>
 <title>TMC Rotation</title>
 <link rel="manifest" href="manifest.json">
@@ -106,10 +106,10 @@ label{display:block;font-size:14px;color:#475569;margin:8px 0 4px}
 .err{color:#b91c1c;font-weight:700;display:none;margin:6px 0}.hint{color:#475569;font-size:15px}
 .langs select{text-align:center}
 header{position:sticky;top:0;z-index:5;background:var(--c);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
-header img{width:36px;height:36px;border-radius:8px}header .t{flex:1;min-width:0;font-weight:700;font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}header .u{font-size:15px;opacity:.9}
+header img{width:36px;height:36px;border-radius:8px}header .tBox{flex:1;min-width:0;overflow:hidden}header .t{font-weight:700;font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}header .ver{display:block;font-size:10px;font-weight:400;line-height:1.2;color:#333333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}header .u{font-size:15px;opacity:.9}
 header{min-height:56px;flex-wrap:nowrap}header .hS{display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap;direction:ltr}header .dot{border:2px solid #fff}
 header .hLang{width:auto;min-height:56px;min-width:64px;margin:0;padding:0 8px;border:2px solid #fff;border-radius:12px;background:transparent;color:#fff;font-size:17px;font-weight:700}header .hLang option{color:#0f172a}
-@media (max-width:380px){header{gap:6px;padding:8px 10px}header img{width:30px;height:30px}header .t{font-size:17px}}
+@media (max-width:380px){header{gap:6px;padding:8px 10px}header img{width:30px;height:30px}header .t{font-size:17px}header .ver{font-size:10px}}
 .dot{width:14px;height:14px;border-radius:50%;background:#94a3b8;display:inline-block}.dot.ok{background:#22c55e}.dot.err{background:#ef4444}.dot.busy{background:#f59e0b}
 main{padding:12px 12px 110px;max-width:600px;margin:0 auto}
 nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:2px solid #cbd5e1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
@@ -380,7 +380,7 @@ function render(){
   if(!u){A.innerHTML=signinHTML();bindSignin();return}
   flow=null;
   if(tab==="users"&&!u.admin)tab="home";if(tab==="work"&&!workOk(u))tab="home";if(tab==="reports"&&!(repOk(u)&&REPORTS.length))tab="home";
-  A.innerHTML=`<header id="hBand"><img src="icons/icon-192.png" alt=""><div class="t">${esc(C.SHORT)}</div><span class="hS" id="hS"><span id="sDot" class="dot"></span><span id="sTime" class="sTime"></span></span><select id="hLang" class="hLang" aria-label="Language">${["en","fr","ar"].map(l=>`<option value="${l}"${l===lang?" selected":""}>${l.toUpperCase()}</option>`).join("")}</select></header>
+  A.innerHTML=`<header id="hBand"><img src="icons/icon-192.png" alt=""><div class="tBox"><div class="t">${esc(C.SHORT)}</div><div class="ver" id="verLab">v${esc(C.VER)}</div></div><span class="hS" id="hS"><span id="sDot" class="dot"></span><span id="sTime" class="sTime"></span></span><select id="hLang" class="hLang" aria-label="Language">${["en","fr","ar"].map(l=>`<option value="${l}"${l===lang?" selected":""}>${l.toUpperCase()}</option>`).join("")}</select></header>
   <main><div id="ncW" class="bar ncW"></div><div id="updW" class="bar updW"></div><div id="pendW" class="bar pendW"></div><div id="view">${viewHTML(u)}</div></main>
   <nav class="tabs">${tabsOf(u).map(x=>navBtn(...x)).join("")}</nav>`;
   bindMain(u);paintSync();paintUpd();
